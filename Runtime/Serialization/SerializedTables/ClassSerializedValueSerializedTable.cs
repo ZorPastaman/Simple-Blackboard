@@ -2,6 +2,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.Helpers;
@@ -21,7 +23,11 @@ namespace Zor.SimpleBlackboard.Serialization
 #pragma warning restore CS0649
 
 		/// <inheritdoc/>
-		public sealed override Type valueType => typeof(T);
+		public sealed override Type valueType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(T);
+		}
 
 		/// <inheritdoc/>
 		public sealed override void Apply(Blackboard blackboard)

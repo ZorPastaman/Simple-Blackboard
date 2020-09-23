@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.SimpleBlackboard.Core;
 
@@ -25,12 +26,12 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// Applies its properties to <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Applies its properties to this.</param>
-		public abstract void Apply(Blackboard blackboard);
+		public abstract void Apply([NotNull] Blackboard blackboard);
 
 		/// <summary>
 		/// Gets keys and their types and adds them to <paramref name="keys"/>.
 		/// </summary>
 		/// <param name="keys">Keys are added to this.</param>
-		public abstract void GetKeys(List<(string, Type)> keys);
+		public abstract void GetKeys([NotNull] List<(string, Type)> keys);
 	}
 }

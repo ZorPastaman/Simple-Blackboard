@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.Debugging;
@@ -36,6 +37,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override void GetKeys(List<(string, Type)> keys)
 		{
 			for (int i = 0, count = m_SerializedTables.Length; i < count; ++i)

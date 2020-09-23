@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
 namespace Zor.SimpleBlackboard.Core
@@ -66,18 +67,25 @@ namespace Zor.SimpleBlackboard.Core
 		/// was created with <see cref="BlackboardPropertyName(string)"/> and got the same <see cref="id"/>.
 		/// </para>
 		/// </returns>
-		public string name => id >= 0 && id < s_names.Count ? s_names[id] : string.Empty;
+		public string name
+		{
+			[Pure]
+			get => id >= 0 && id < s_names.Count ? s_names[id] : string.Empty;
+		}
 
+		[Pure]
 		public override bool Equals(object obj)
 		{
 			return obj is BlackboardPropertyName other && other.id == id;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public bool Equals(BlackboardPropertyName other)
 		{
 			return other.id == id;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public override int GetHashCode()
 		{
 			return id;
@@ -88,11 +96,13 @@ namespace Zor.SimpleBlackboard.Core
 			return $"{id.ToString()}({name})";
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static bool operator ==(BlackboardPropertyName lhs, BlackboardPropertyName rhs)
 		{
 			return lhs.id == rhs.id;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public static bool operator !=(BlackboardPropertyName lhs, BlackboardPropertyName rhs)
 		{
 			return lhs.id != rhs.id;

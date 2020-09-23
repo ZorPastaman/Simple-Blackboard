@@ -1,5 +1,7 @@
 ﻿// Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.Debugging;
@@ -21,7 +23,11 @@ namespace Zor.SimpleBlackboard.Components
 
 		private Blackboard m_blackboard;
 
-		public Blackboard blackboard => m_blackboard;
+		public Blackboard blackboard
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_blackboard;
+		}
 
 		private void Awake()
 		{
@@ -37,7 +43,7 @@ namespace Zor.SimpleBlackboard.Components
 					continue;
 				}
 
-				container.Apply(blackboard);
+				container.Apply(m_blackboard);
 			}
 		}
 

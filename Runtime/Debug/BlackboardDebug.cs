@@ -1,6 +1,7 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Zor.SimpleBlackboard.Debugging
@@ -21,31 +22,31 @@ namespace Zor.SimpleBlackboard.Debugging
 
 		private const string Format = "[SimpleBlackboard] {0}.";
 
-		[Conditional(LogDetailsDefine)]
+		[Conditional(LogDetailsDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void LogDetails(string message)
 		{
 			UnityEngine.Debug.LogFormat(Format, message);
 		}
 
-		[Conditional(LogDefine)]
+		[Conditional(LogDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void Log(string message)
 		{
 			UnityEngine.Debug.LogFormat(Format, message);
 		}
 
-		[Conditional(WarningDefine)]
+		[Conditional(WarningDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void LogWarning(string message)
 		{
 			UnityEngine.Debug.LogWarningFormat(Format, message);
 		}
 
-		[Conditional(WarningDefine)]
+		[Conditional(WarningDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void LogWarning(string message, Object context)
 		{
 			UnityEngine.Debug.LogWarningFormat(context, Format, message);
 		}
 
-		[Conditional(ErrorDefine)]
+		[Conditional(ErrorDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void LogError(string message)
 		{
 			UnityEngine.Debug.LogErrorFormat(Format, message);

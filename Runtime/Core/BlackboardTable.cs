@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using JetBrains.Annotations;
 
@@ -22,18 +23,27 @@ namespace Zor.SimpleBlackboard.Core
 		/// <summary>
 		/// Type of values that are contained in the <see cref="BlackboardTable{T}"/>.
 		/// </summary>
-		public Type valueType => typeof(T);
+		public Type valueType
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => typeof(T);
+		}
 
 		/// <summary>
 		/// How many values are contained in the <see cref="BlackboardTable{T}"/>.
 		/// </summary>
-		public int count => m_table.Count;
+		public int count
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_table.Count;
+		}
 
 		/// <summary>
 		/// Gets a value of the property name <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the property to get.</param>
 		/// <returns>Gotten value.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public T GetValue(BlackboardPropertyName propertyName)
 		{
 			return m_table[propertyName];
@@ -50,6 +60,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="propertyName">Name of the property to set.</param>
 		/// <param name="value">Set value.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetValue(BlackboardPropertyName propertyName, T value)
 		{
 			m_table[propertyName] = value;
@@ -68,6 +79,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="properties">Properties are added to this.</param>
 		/// <seealso cref="GetProperties(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{Zor.SimpleBlackboard.Core.BlackboardPropertyName,object}})"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetProperties([NotNull] List<KeyValuePair<BlackboardPropertyName, T>> properties)
 		{
 			properties.AddRange(m_table);
@@ -100,12 +112,14 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <inheritdoc/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool Remove(BlackboardPropertyName propertyName)
 		{
 			return m_table.Remove(propertyName);
 		}
 
 		/// <inheritdoc/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void Clear()
 		{
 			m_table.Clear();

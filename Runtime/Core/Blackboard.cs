@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using JetBrains.Annotations;
 using UnityEngine.Profiling;
@@ -27,12 +28,20 @@ namespace Zor.SimpleBlackboard.Core
 		/// <summary>
 		/// How many value types are contained in the <see cref="Blackboard"/>.
 		/// </summary>
-		public int valueTypesCount => m_tables.Count;
+		public int valueTypesCount
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_tables.Count;
+		}
 
 		/// <summary>
 		/// How many properties are contained in the <see cref="Blackboard"/>.
 		/// </summary>
-		public int propertiesCount => m_propertyTypes.Count;
+		public int propertiesCount
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_propertyTypes.Count;
+		}
 
 		/// <summary>
 		/// Tries to get and return a value of the struct type <typeparamref name="T"/>
@@ -46,6 +55,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetClassValue{T}"/>
 		/// <seealso cref="TryGetObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
 		/// <seealso cref="TryGetObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
+		[Pure]
 		public bool TryGetStructValue<T>(BlackboardPropertyName propertyName, out T value) where T : struct
 		{
 			Profiler.BeginSample("Blackboard.TryGetStructValue<T>");
@@ -81,6 +91,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetStructValue{T}"/>
 		/// <seealso cref="TryGetObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
 		/// <seealso cref="TryGetObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public bool TryGetClassValue<T>(BlackboardPropertyName propertyName, out T value) where T : class
 		{
 			Profiler.BeginSample("Blackboard.TryGetClassValue<T>");
@@ -106,6 +117,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetStructValue{T}"/>
 		/// <seealso cref="TryGetClassValue{T}"/>
 		/// <seealso cref="TryGetObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
+		[Pure]
 		public bool TryGetObjectValue([NotNull] Type valueType, BlackboardPropertyName propertyName, out object value)
 		{
 			Profiler.BeginSample("Blackboard.TryGetObjectValue typed");
@@ -138,6 +150,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetStructValue{T}"/>
 		/// <seealso cref="TryGetClassValue{T}"/>
 		/// <seealso cref="TryGetObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
+		[Pure]
 		public bool TryGetObjectValue(BlackboardPropertyName propertyName, out object value)
 		{
 			Profiler.BeginSample("Blackboard.TryGetObjectValue");
@@ -434,6 +447,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsObjectValue{T}"/>
 		/// <seealso cref="ContainsObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName)"/>
 		/// <seealso cref="ContainsObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName)"/>
+		[Pure]
 		public bool ContainsStructValue<T>(BlackboardPropertyName propertyName) where T : struct
 		{
 			Profiler.BeginSample("Blackboard.ContainsStructValue<T>");
@@ -457,6 +471,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsStructValue{T}"/>
 		/// <seealso cref="ContainsObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName)"/>
 		/// <seealso cref="ContainsObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName)"/>
+		[Pure]
 		public bool ContainsObjectValue<T>(BlackboardPropertyName propertyName)
 		{
 			Profiler.BeginSample("Blackboard.ContainsObjectValue<T>");
@@ -481,6 +496,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsStructValue{T}"/>
 		/// <seealso cref="ContainsObjectValue{T}"/>
 		/// <seealso cref="ContainsObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName)"/>
+		[Pure]
 		public bool ContainsObjectValue([NotNull] Type valueType, BlackboardPropertyName propertyName)
 		{
 			Profiler.BeginSample("Blackboard.ContainsObjectValue typed");
@@ -504,9 +520,10 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsStructValue{T}"/>
 		/// <seealso cref="ContainsObjectValue{T}"/>
 		/// <seealso cref="ContainsObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName)"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public bool ContainsObjectValue(BlackboardPropertyName propertyName)
 		{
-			Profiler.BeginSample("Blackboard.ConstainsObjectValue");
+			Profiler.BeginSample("Blackboard.ContainsObjectValue");
 
 			bool answer = m_propertyTypes.ContainsKey(propertyName);
 
@@ -529,6 +546,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsType"/>
 		/// <seealso cref="ContainsInheritingType{T}"/>
 		/// <seealso cref="ContainsInheritingType"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public bool ContainsType<T>()
 		{
 			Profiler.BeginSample("Blackboard.ContainsType<T>");
@@ -554,6 +572,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsType{T}"/>
 		/// <seealso cref="ContainsInheritingType{T}"/>
 		/// <seealso cref="ContainsInheritingType"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public bool ContainsType([NotNull] Type valueType)
 		{
 			Profiler.BeginSample("Blackboard.ContainsType");
@@ -576,6 +595,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsType{T}"/>
 		/// <seealso cref="ContainsType"/>
 		/// <seealso cref="ContainsInheritingType"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public bool ContainsInheritingType<T>()
 		{
 			Profiler.BeginSample("Blackboard.ContainsInheritingType<T>");
@@ -598,6 +618,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="ContainsType{T}"/>
 		/// <seealso cref="ContainsType"/>
 		/// <seealso cref="ContainsInheritingType{T}"/>
+		[Pure]
 		public bool ContainsInheritingType([NotNull] Type valueType)
 		{
 			Profiler.BeginSample("Blackboard.ContainsInheritingType");
@@ -632,6 +653,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="GetCount"/>
 		/// <seealso cref="GetCountWithInheritors{T}"/>
 		/// <seealso cref="GetCountWithInheritors"/>
+		[Pure]
 		public int GetCount<T>()
 		{
 			Profiler.BeginSample("Blackboard.GetCount<T>");
@@ -662,6 +684,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="GetCount{T}"/>
 		/// <seealso cref="GetCountWithInheritors{T}"/>
 		/// <seealso cref="GetCountWithInheritors"/>
+		[Pure]
 		public int GetCount([NotNull] Type valueType)
 		{
 			Profiler.BeginSample("Blackboard.GetCount");
@@ -688,6 +711,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="GetCount{T}"/>
 		/// <seealso cref="GetCount"/>
 		/// <seealso cref="GetCountWithInheritors"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public int GetCountWithInheritors<T>()
 		{
 			Profiler.BeginSample("Blackboard.GetCountWithInheritors<T>");
@@ -713,6 +737,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="GetCount{T}"/>
 		/// <seealso cref="GetCount"/>
 		/// <seealso cref="GetCountWithInheritors{T}"/>
+		[Pure]
 		public int GetCountWithInheritors([NotNull] Type valueType)
 		{
 			Profiler.BeginSample("Blackboard.GetCountWithInheritors");
