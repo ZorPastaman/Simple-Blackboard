@@ -12,8 +12,8 @@ namespace Zor.SimpleBlackboard.Components
 	[CustomPropertyDrawer(typeof(BlackboardPropertyReference))]
 	public sealed class BlackboardPropertyReferenceEditor : PropertyDrawer
 	{
-private const string BlackboardContainerPropertyName = "blackboardContainer";
-		private const string PropertyNamePropertyName = "propertyName";
+		private const string BlackboardContainerPropertyName = "m_BlackboardContainer";
+		private const string PropertyNamePropertyName = "m_PropertyName";
 
 		private const string SerializedContainersPropertyName = "m_SerializedContainers";
 

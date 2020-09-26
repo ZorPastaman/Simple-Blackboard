@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Some methods became aggressively inlined for performance reasons.
 - Some methods got a pure attribute.
+- Components and Scriptable objects became editable from code.
 
 ## [1.0.0] - 2020-07-15
 

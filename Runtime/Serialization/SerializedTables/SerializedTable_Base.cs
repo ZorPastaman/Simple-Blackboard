@@ -20,6 +20,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// <summary>
 		/// Type of serialized value in this table.
 		/// </summary>
+		[NotNull]
 		public abstract Type valueType { get; }
 
 		/// <summary>
@@ -33,5 +34,9 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// </summary>
 		/// <param name="keys">Keys are added to this.</param>
 		public abstract void GetKeys([NotNull] List<(string, Type)> keys);
+
+		protected virtual void OnValidate()
+		{
+		}
 	}
 }

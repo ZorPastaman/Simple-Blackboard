@@ -37,7 +37,6 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <inheritdoc/>
-		[Pure]
 		public override void GetKeys(List<(string, Type)> keys)
 		{
 			for (int i = 0, count = m_SerializedTables.Length; i < count; ++i)

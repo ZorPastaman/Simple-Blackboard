@@ -28,6 +28,49 @@ namespace Zor.SimpleBlackboard.Serialization
 			get => typeof(T);
 		}
 
+		/// <summary>
+		/// How many keys are contained in this <see cref="StructGeneratedValueSerializedTable{T}"/>.
+		/// </summary>
+		public int keysCount
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_Keys.Length;
+		}
+
+		/// <summary>
+		/// Gets a key at the index <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns>
+		/// A property as a pair of <see cref="string"/> and <typeparamref name="T"/>.
+		/// </returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		public string GetProperty(int index)
+		{
+			return m_Keys[index];
+		}
+
+		/// <summary>
+		/// Sets the key <paramref name="key"/> at the index <paramref name="index"/>.
+		/// </summary>
+		/// <param name="key"></param>
+		/// <param name="index"></param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetProperty(string key, int index)
+		{
+			m_Keys[index] = key;
+		}
+
+		/// <summary>
+		/// Sets <paramref name="keys"/>.
+		/// </summary>
+		/// <param name="keys"></param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetProperties(string[] keys)
+		{
+			m_Keys = keys;
+		}
+
 		/// <inheritdoc/>
 		public sealed override void Apply(Blackboard blackboard)
 		{

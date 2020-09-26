@@ -45,7 +45,6 @@ namespace Zor.SimpleBlackboard.Serialization
 
 			m_keysProperty = serializedObject.FindProperty(KeysPropertyName);
 			m_valuesProperty = serializedObject.FindProperty(ValuesPropertyName);
-			EnsureCapacity();
 
 			m_list = new ReorderableList(serializedObject, m_keysProperty, false, true, true, true)
 			{
@@ -104,13 +103,6 @@ namespace Zor.SimpleBlackboard.Serialization
 			SerializedPropertyHelper.CompletelyRemove(m_valuesProperty, index);
 
 			serializedObject.ApplyModifiedProperties();
-		}
-
-		private void EnsureCapacity()
-		{
-			int capacity = Mathf.Min(m_keysProperty.arraySize, m_valuesProperty.arraySize);
-			m_keysProperty.arraySize = capacity;
-			m_valuesProperty.arraySize = capacity;
 		}
 
 		private static bool IsSubclassOfRightClass(Type toCheck)

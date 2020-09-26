@@ -1,5 +1,7 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Scripting;
 using Zor.SimpleBlackboard.Core;
@@ -13,11 +15,27 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 	public abstract class Accessor_Base : MonoBehaviour
 	{
 #pragma warning disable CS0649
-		[SerializeField] protected BlackboardPropertyReference m_BlackboardPropertyReference;
+		[SerializeField] private BlackboardPropertyReference m_BlackboardPropertyReference;
 #pragma warning restore CS0649
 
 		private BlackboardPropertyName m_blackboardPropertyName;
 		private bool m_initialized;
+
+		public BlackboardPropertyReference blackboardPropertyReference
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_BlackboardPropertyReference;
+			set
+			{
+				if (m_BlackboardPropertyReference == value)
+				{
+					return;
+				}
+
+				m_BlackboardPropertyReference = value;
+				m_initialized = false;
+			}
+		}
 
 		protected BlackboardPropertyName propertyName
 		{

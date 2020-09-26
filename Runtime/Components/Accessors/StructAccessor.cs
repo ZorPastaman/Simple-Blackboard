@@ -7,6 +7,12 @@ using UnityEngine.Scripting;
 
 namespace Zor.SimpleBlackboard.Components.Accessors
 {
+	/// <summary>
+	/// <para>Accessor for a property of struct type <typeparamref name="T"/> in a blackboard.</para>
+	/// <para>Inherit this to implement a new type support.</para>
+	/// </summary>
+	/// <typeparam name="T">Value type.</typeparam>
+	/// <typeparam name="TEvent">Unity event which is invoked on <see cref="Accessor{T,TEvent}.Flush"/>.</typeparam>
 	public abstract class StructAccessor<T, TEvent> : Accessor<T, TEvent> where T : struct where TEvent : UnityEvent<T>
 	{
 		[Preserve]
@@ -15,12 +21,12 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get
 			{
-				m_BlackboardPropertyReference.blackboardContainer.blackboard.TryGetStructValue(propertyName,
+				blackboardPropertyReference.blackboardContainer.blackboard.TryGetStructValue(propertyName,
 					out T answer);
 				return answer;
 			}
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => m_BlackboardPropertyReference.blackboardContainer.blackboard.SetStructValue(propertyName, value);
+			set => blackboardPropertyReference.blackboardContainer.blackboard.SetStructValue(propertyName, value);
 		}
 	}
 }

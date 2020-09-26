@@ -1,6 +1,7 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System.Collections;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Zor.SimpleBlackboard.Components.AccessorFlushers
@@ -19,6 +20,23 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		/// <see cref="Zor.SimpleBlackboard.Components.AccessorFlushers.AccessorFlusher.FlushAccessors"/>.
 		/// </summary>
 		protected abstract YieldInstruction instruction { get; }
+
+		/// <summary>
+		/// Gets a new instruction from <see cref="instruction"/>.
+		/// </summary>
+		/// <remarks>
+		/// It doesn't recreate a current coroutine.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		protected void UpdateInstruction()
+		{
+			m_instruction = instruction;
+		}
+
+		protected override void OnValidate()
+		{
+			m_instruction = instruction;
+		}
 
 		private void Awake()
 		{
