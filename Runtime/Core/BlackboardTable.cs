@@ -43,7 +43,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="propertyName">Name of the property to get.</param>
 		/// <returns>Gotten value.</returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), CanBeNull, Pure]
 		public T GetValue(BlackboardPropertyName propertyName)
 		{
 			return m_table[propertyName];
@@ -61,7 +61,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <param name="propertyName">Name of the property to set.</param>
 		/// <param name="value">Set value.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetValue(BlackboardPropertyName propertyName, T value)
+		public void SetValue(BlackboardPropertyName propertyName, [CanBeNull] T value)
 		{
 			m_table[propertyName] = value;
 		}

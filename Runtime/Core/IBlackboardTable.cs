@@ -24,6 +24,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="propertyName">Name of the property to get.</param>
 		/// <returns>Gotten value.</returns>
+		[CanBeNull, Pure]
 		object GetObjectValue(BlackboardPropertyName propertyName);
 
 		/// <summary>
@@ -31,7 +32,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="propertyName">Name of the property to set.</param>
 		/// <param name="value">Value to set.</param>
-		void SetObjectValue(BlackboardPropertyName propertyName, object value);
+		void SetObjectValue(BlackboardPropertyName propertyName, [CanBeNull] object value);
 
 		/// <summary>
 		/// Gets all properties and adds them to <paramref name="properties"/>.

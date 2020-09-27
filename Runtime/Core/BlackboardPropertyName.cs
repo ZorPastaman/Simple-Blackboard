@@ -69,6 +69,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// was created with <see cref="BlackboardPropertyName(string)"/> and got the same <see cref="id"/>.
 		/// </para>
 		/// </returns>
+		[NotNull]
 		public string name
 		{
 			[Pure]
@@ -93,6 +94,7 @@ namespace Zor.SimpleBlackboard.Core
 			return id;
 		}
 
+		[Pure]
 		public override string ToString()
 		{
 			return $"{id.ToString()}({name})";

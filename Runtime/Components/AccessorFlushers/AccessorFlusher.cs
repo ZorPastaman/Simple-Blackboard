@@ -33,7 +33,7 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns><see cref="Accessor_Base"/> at the index <paramref name="index"/>.</returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		public Accessor_Base GetAccessor(int index)
 		{
 			return m_Accessors[index];

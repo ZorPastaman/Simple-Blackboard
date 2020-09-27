@@ -426,6 +426,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// and adds them to <paramref name="valueTypes"/>.
 		/// </summary>
 		/// <param name="valueTypes">Found value types are added to this.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetValueTypes([NotNull] List<Type> valueTypes)
 		{
 			Profiler.BeginSample("Blackboard.GetValueTypes");
@@ -916,6 +917,7 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.EndSample();
 		}
 
+		[Pure]
 		public override string ToString()
 		{
 			var builder = new StringBuilder();

@@ -30,6 +30,7 @@ namespace Zor.SimpleBlackboard.Components
 		/// <remarks>
 		/// It's not recommended to cache this value.
 		/// </remarks>
+		[NotNull]
 		public Blackboard blackboard
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -54,7 +55,7 @@ namespace Zor.SimpleBlackboard.Components
 		/// If you change a gotten <see cref="SetSerializedContainer"/>,
 		/// you need to call <see cref="RecreateBlackboard"/> to apply changes.
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		public SerializedContainer GetSerializedContainer(int index)
 		{
 			return m_SerializedContainers[index];
