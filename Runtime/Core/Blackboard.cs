@@ -626,7 +626,7 @@ namespace Zor.SimpleBlackboard.Core
 			bool answer = false;
 
 			Dictionary<Type, IBlackboardTable>.KeyCollection.Enumerator enumerator = m_tables.Keys.GetEnumerator();
-			while (enumerator.MoveNext() && !answer)
+			while (enumerator.MoveNext() & !answer)
 			{
 				answer = valueType.IsAssignableFrom(enumerator.Current);
 			}

@@ -16,7 +16,7 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 	public abstract class ClassAccessor<T, TEvent> : Accessor<T, TEvent> where T : class where TEvent : UnityEvent<T>
 	{
 		[Preserve]
-		public override T value
+		public sealed override T value
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get

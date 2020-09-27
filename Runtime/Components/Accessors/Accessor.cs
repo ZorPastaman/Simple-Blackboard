@@ -23,7 +23,7 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 #pragma warning restore CS0649
 
 		/// <summary>
-		/// Unity event which is invoked on <see cref="Flush"/>.
+		/// Unity event that is invoked on <see cref="Flush"/>.
 		/// </summary>
 		[NotNull]
 		public TEvent onFlushed
@@ -39,7 +39,7 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 		/// Invokes a Unity Event with a current value.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Preserve]
-		public override void Flush()
+		public sealed override void Flush()
 		{
 			m_OnFlushed.Invoke(value);
 		}

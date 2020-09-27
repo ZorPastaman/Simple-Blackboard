@@ -15,15 +15,17 @@ namespace Zor.SimpleBlackboard.Core
 	/// </remarks>
 	public readonly struct BlackboardPropertyName : IEquatable<BlackboardPropertyName>
 	{
+		private const int InitialCapacity = 100;
+
 		/// <summary>
 		/// Dictionary of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>
 		/// to their ids.
 		/// </summary>
-		private static readonly Dictionary<string, int> s_nameIds = new Dictionary<string, int>(100);
+		private static readonly Dictionary<string, int> s_nameIds = new Dictionary<string, int>(InitialCapacity);
 		/// <summary>
 		/// List of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>.
 		/// </summary>
-		private static readonly List<string> s_names = new List<string>(100);
+		private static readonly List<string> s_names = new List<string>(InitialCapacity);
 
 		/// <summary>
 		/// Unique per string id.
@@ -70,7 +72,7 @@ namespace Zor.SimpleBlackboard.Core
 		public string name
 		{
 			[Pure]
-			get => id >= 0 && id < s_names.Count ? s_names[id] : string.Empty;
+			get => id >= 0 & id < s_names.Count ? s_names[id] : string.Empty;
 		}
 
 		[Pure]
