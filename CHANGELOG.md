@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.1.0] - 2020-09-27
+
 ### Changed
 
 - Some methods became aggressively inlined for performance reasons.
@@ -23,5 +25,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Unity editor support.
 - Tests.
 
-[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.1.0
 [1.0.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.0.0

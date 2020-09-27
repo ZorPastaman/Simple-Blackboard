@@ -1,6 +1,6 @@
 {
   "name": "com.zor.simple-blackboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "displayName": "Simple Blackboard",
   "description": "Simple Blackboard for Unity is a flexible data storage that can contain any count of properties of any type. The properties can be accessed with property names.",
   "unity": "2018.4",
