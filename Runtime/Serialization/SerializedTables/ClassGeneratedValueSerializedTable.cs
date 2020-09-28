@@ -44,8 +44,8 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// <returns>
 		/// A property as a pair of <see cref="string"/> and <typeparamref name="T"/>.
 		/// </returns>
-		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public string GetProperty(int index)
+		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
+		public string GetKey(int index)
 		{
 			return m_Keys[index];
 		}
@@ -56,7 +56,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// <param name="key"></param>
 		/// <param name="index"></param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetProperty(string key, int index)
+		public void SetKey([NotNull] string key, int index)
 		{
 			m_Keys[index] = key;
 		}
@@ -66,7 +66,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// </summary>
 		/// <param name="keys"></param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetProperties(string[] keys)
+		public void SetKeys([NotNull] string[] keys)
 		{
 			m_Keys = keys;
 		}

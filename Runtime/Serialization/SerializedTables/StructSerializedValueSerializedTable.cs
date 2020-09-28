@@ -61,7 +61,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// <param name="value"></param>
 		/// <param name="index"></param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetProperty(string key, T value, int index)
+		public void SetProperty([NotNull] string key, T value, int index)
 		{
 			m_Keys[index] = key;
 			m_Values[index] = value;
@@ -75,7 +75,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// <remarks>
 		/// Ensure that <paramref name="keys"/> and <paramref name="values"/> are of the same length.
 		/// </remarks>
-		public void SetProperties(string[] keys, T[] values)
+		public void SetProperties([NotNull] string[] keys, [NotNull] T[] values)
 		{
 			m_Keys = keys;
 			m_Values = values;
