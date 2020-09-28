@@ -27,7 +27,7 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		/// <remarks>
 		/// It doesn't recreate a current coroutine.
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining), ContextMenu("Update Instruction")]
 		protected void UpdateInstruction()
 		{
 			m_instruction = instruction;
