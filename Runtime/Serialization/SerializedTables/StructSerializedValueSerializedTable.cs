@@ -118,7 +118,7 @@ namespace Zor.SimpleBlackboard.Serialization
 				return;
 			}
 
-			BlackboardDebug.LogError($"[ClassSerializedValueSerializedTable] On '{name}' Keys and Values have different lengths. Autofixed");
+			BlackboardDebug.LogError($"[StructSerializedValueSerializedTable] On '{name}' Keys and Values have different lengths. Autofixed");
 			int length = Mathf.Min(keysLength, valuesLength);
 			Array.Resize(ref m_Keys, length);
 			Array.Resize(ref m_Values, length);
