@@ -53,8 +53,9 @@ If you use a [BlackboardContainer](https://github.com/ZorPastaman/Simple-Blackbo
 you can create a [SerializedTablesContainer](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Serialization/SerializedTablesContainer.cs)
 in **Assets/Create/Simple Blackboard/Serialized Tables Container** and link it in your
 [BlackboardContainer](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Components/BlackboardContainer.cs).
-It will automatically apply all properties of a
-[Serialized Tables Container](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Serialization/SerializedTablesContainer.cs) on Awake().
+[BlackboardContainer](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Components/BlackboardContainer.cs)
+also supports serialization of local components.
+It will automatically apply all properties of Serialized Tables Containers and references to local components on Awake().
 
 ### How to customize serialization
 

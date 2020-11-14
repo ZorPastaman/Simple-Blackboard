@@ -22,6 +22,7 @@ namespace Zor.SimpleBlackboard.Components
 		[SerializeField, NotNull] private string m_PropertyName;
 #pragma warning restore CS0649
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public BlackboardPropertyReference([NotNull] BlackboardContainer blackboardContainer,
 			[NotNull] string propertyName)
 		{

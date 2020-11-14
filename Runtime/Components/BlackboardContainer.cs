@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
 using Zor.SimpleBlackboard.Core;
-using Zor.SimpleBlackboard.Debugging;
+using Zor.SimpleBlackboard.Helpers;
 using Zor.SimpleBlackboard.Serialization;
 
 namespace Zor.SimpleBlackboard.Components
@@ -18,8 +18,11 @@ namespace Zor.SimpleBlackboard.Components
 	{
 #pragma warning disable CS0649
 		[SerializeField,
-		Tooltip("Array of serialized properties for Blackboard.\nIt is applied to Blackboard only on Awake.")]
+		Tooltip("Array of serialized properties for Blackboard.\nIt is automatically applied to Blackboard on Awake.")]
 		private SerializedContainer[] m_SerializedContainers;
+		[SerializeField,
+		Tooltip("Array of serialized references to local components for Blackboard.\nIt is automatically applied to Blackboard on Awake.")]
+		private ComponentReference[] m_ComponentReferences;
 #pragma warning restore CS0649
 
 		private Blackboard m_blackboard;
@@ -44,6 +47,15 @@ namespace Zor.SimpleBlackboard.Components
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get => m_SerializedContainers.Length;
+		}
+
+		/// <summary>
+		/// How many component references this <see cref="BlackboardContainer"/> depends on.
+		/// </summary>
+		public int componentReferencesCount
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+			get => m_ComponentReferences.Length;
 		}
 
 		/// <summary>
@@ -89,6 +101,44 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
+		/// Gets a <see cref="ComponentReference"/> at the index <paramref name="index"/>.
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns><see cref="ComponentReference"/> at the index <paramref name="index"/>.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		public ComponentReference GetComponentReference(int index)
+		{
+			return m_ComponentReferences[index];
+		}
+
+		/// <summary>
+		/// Sets the component reference <paramref name="componentReference"/> at the index <paramref name="index"/>.
+		/// </summary>
+		/// <param name="componentReference"></param>
+		/// <param name="index"></param>
+		/// <remarks>
+		/// You need to call <see cref="RecreateBlackboard"/> to apply changes.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetComponentReference(ComponentReference componentReference, int index)
+		{
+			m_ComponentReferences[index] = componentReference;
+		}
+
+		/// <summary>
+		/// Sets the component references <paramref name="componentReferences"/>.
+		/// </summary>
+		/// <param name="componentReferences"></param>
+		/// <remarks>
+		/// You need to call <see cref="RecreateBlackboard"/> to apply changes.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetComponentReferences(ComponentReference[] componentReferences)
+		{
+			m_ComponentReferences = componentReferences;
+		}
+
+		/// <summary>
 		/// Creates a new <see cref="Blackboard"/> and applies current serialized containers to it.
 		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), ContextMenu("Recreate Blackboard")]
@@ -100,19 +150,8 @@ namespace Zor.SimpleBlackboard.Components
 		private void Awake()
 		{
 			m_blackboard = new Blackboard();
-
-			for (int i = 0, count = m_SerializedContainers.Length; i < count; ++i)
-			{
-				SerializedContainer container = m_SerializedContainers[i];
-
-				if (container == null)
-				{
-					BlackboardDebug.LogWarning($"[BlackboardContainer] SerializedContainer at index '{i}' is null", this);
-					continue;
-				}
-
-				container.Apply(m_blackboard);
-			}
+			DeserializationHelper.Deserialize(m_SerializedContainers, m_blackboard);
+			DeserializationHelper.Deserialize(m_ComponentReferences, m_blackboard);
 		}
 
 		[ContextMenu("Log")]
