@@ -205,11 +205,41 @@ namespace Zor.SimpleBlackboard.Tests
 		}
 
 		[Test]
+		public static void GetTypeTests()
+		{
+			var blackboard = new Blackboard();
+
+			GetTypeTest(blackboard, new[]
+			{
+				new GameObject(), new Mesh(), new GameObject().AddComponent<Rigidbody>(),
+				new Dictionary<object, object>(), new List<object>(),
+				new GameObject(), new Mesh(), new GameObject().AddComponent<Rigidbody>(),
+				new Dictionary<object, object>(), new List<object>(),
+				(object)56, 134, 56.67, -300.56, 100f, -80f
+			});
+		}
+
+		[Test]
 		public static void GetTypesTests()
 		{
 			var blackboard = new Blackboard();
 
 			GetTypesTest(blackboard, new[]
+			{
+				new GameObject(), new Mesh(), new GameObject().AddComponent<Rigidbody>(),
+				new Dictionary<object, object>(), new List<object>(),
+				new GameObject(), new Mesh(), new GameObject().AddComponent<Rigidbody>(),
+				new Dictionary<object, object>(), new List<object>(),
+				(object)56, 134, 56.67, -300.56, 100f, -80f
+			});
+		}
+
+		[Test]
+		public static void GetPropertyNamesTests()
+		{
+			var blackboard = new Blackboard();
+
+			GetPropertyNamesTest(blackboard, new[]
 			{
 				new GameObject(), new Mesh(), new GameObject().AddComponent<Rigidbody>(),
 				new Dictionary<object, object>(), new List<object>(),
@@ -792,6 +822,31 @@ namespace Zor.SimpleBlackboard.Tests
 			}
 		}
 
+		private static void GetTypeTest([NotNull] Blackboard blackboard, [NotNull] object[] values)
+		{
+			int count = values.Length;
+			var propertyNames = new BlackboardPropertyName[count];
+
+			for (int i = 0; i < count; ++i)
+			{
+				propertyNames[i] = new BlackboardPropertyName(values[i].GetType().FullName + " " + i.ToString());
+			}
+
+			for (int i = 0; i < count; ++i)
+			{
+				blackboard.SetClassValue(propertyNames[i], values[i]);
+			}
+
+			for (int i = 0; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+				Type expectedType = values[i].GetType();
+				Type gottenType = blackboard.GetValueType(propertyName);
+				Assert.AreEqual(expectedType, gottenType,
+					$"Blackboard has a wrong type for the property '{propertyName.ToString()}': '{gottenType.FullName}' instead of '{expectedType.FullName}'");
+			}
+		}
+
 		private static void GetTypesTest([NotNull] Blackboard blackboard, [NotNull] object[] values)
 		{
 			int count = values.Length;
@@ -805,6 +860,42 @@ namespace Zor.SimpleBlackboard.Tests
 			for (int i = 0; i < count; ++i)
 			{
 				blackboard.SetClassValue(propertyNames[i], values[i]);
+			}
+
+			var types = new List<Type>();
+			blackboard.GetValueTypes(types);
+
+			for (int i = 0; i < count; ++i)
+			{
+				Type type = values[i].GetType();
+				Assert.IsTrue(types.Contains(type),
+					$"Blackboard doesn't contain type '{type.FullName}'");
+			}
+		}
+
+		private static void GetPropertyNamesTest([NotNull] Blackboard blackboard, [NotNull] object[] values)
+		{
+			int count = values.Length;
+			var propertyNames = new BlackboardPropertyName[count];
+
+			for (int i = 0; i < count; ++i)
+			{
+				propertyNames[i] = new BlackboardPropertyName(values[i].GetType().FullName + " " + i.ToString());
+			}
+
+			for (int i = 0; i < count; ++i)
+			{
+				blackboard.SetClassValue(propertyNames[i], values[i]);
+			}
+
+			var gottenPropertyNames = new List<BlackboardPropertyName>();
+			blackboard.GetPropertyNames(gottenPropertyNames);
+
+			for (int i = 0; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+				Assert.IsTrue(gottenPropertyNames.Contains(propertyName),
+					$"Blackboard doesn't contain property name '{propertyName.ToString()}'");
 			}
 
 			var types = new List<Type>();

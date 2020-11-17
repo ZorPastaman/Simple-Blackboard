@@ -422,6 +422,23 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
+		/// Gets value type of a property with the property name <paramref name="propertyName"/>.
+		/// </summary>
+		/// <param name="propertyName"></param>
+		/// <returns>Type of a property with the property name <paramref name="propertyName"/>
+		/// or null if such a property is not found.</returns>
+		public Type GetValueType(BlackboardPropertyName propertyName)
+		{
+			Profiler.BeginSample("Blackboard.GetValueType");
+
+			m_propertyTypes.TryGetValue(propertyName, out Type answer);
+
+			Profiler.EndSample();
+
+			return answer;
+		}
+
+		/// <summary>
 		/// Gets all value types contained in the <see cref="Blackboard"/>
 		/// and adds them to <paramref name="valueTypes"/>.
 		/// </summary>
@@ -432,6 +449,20 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.BeginSample("Blackboard.GetValueTypes");
 
 			valueTypes.AddRange(m_tables.Keys);
+
+			Profiler.EndSample();
+		}
+
+		/// <summary>
+		/// Gets all property names contained in the <see cref="Blackboard"/>
+		/// and adds them to <paramref name="propertyNames"/>.
+		/// </summary>
+		/// <param name="propertyNames">Found property names are added to this.</param>
+		public void GetPropertyNames([NotNull] List<BlackboardPropertyName> propertyNames)
+		{
+			Profiler.BeginSample("Blackboard.GetPropertyNames");
+
+			propertyNames.AddRange(m_propertyTypes.Keys);
 
 			Profiler.EndSample();
 		}
