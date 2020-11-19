@@ -608,12 +608,44 @@ namespace Zor.SimpleBlackboard.Tests
 				new GameObject(), new GameObject(),
 				new List<object>(), new List<int>(),
 				new GameObject().AddComponent<Rigidbody>(), new GameObject().transform,
+				1, 230f
 			});
 			blackboard.Clear();
 			PropertiesCountTest(blackboard, new object[]
 			{
 				new int[1], new float[1],
-				new Dictionary<int, int>(), new List()
+				new Dictionary<int, int>(), new List(),
+				12, 230.87f
+			});
+		}
+
+		[Test]
+		public static void CopyToTests()
+		{
+			var fromBlackboard = new Blackboard();
+			var toBlackboard = new Blackboard();
+
+			CopyToTest(fromBlackboard, toBlackboard, new object[]
+			{
+				new GameObject(), new GameObject(),
+				new List<object>(), new List<int>(),
+				new GameObject().AddComponent<Rigidbody>(), new GameObject().transform,
+				1, 230f
+			});
+
+			CopyToTest(fromBlackboard, toBlackboard, new object[]
+			{
+				new int[1], new float[1],
+				new Dictionary<int, int>(), new List(),
+				12, 230.87f
+			});
+
+			CopyToTest(fromBlackboard, toBlackboard, new object[]
+			{
+				new GameObject(), new GameObject(),
+				new List<object>(), new List<int>(),
+				new GameObject().AddComponent<Rigidbody>(), new GameObject().transform,
+				1, 230f
 			});
 		}
 
@@ -1286,6 +1318,33 @@ namespace Zor.SimpleBlackboard.Tests
 
 			Assert.AreEqual(propertyNames.Length, blackboard.propertiesCount,
 				"Blackboard has wrong number of properties");
+		}
+
+		private static void CopyToTest([NotNull] Blackboard fromBlackboard, [NotNull] Blackboard toBlackboard,
+			[NotNull] object[] values)
+		{
+			int count = values.Length;
+			var propertyNames = new BlackboardPropertyName[count];
+
+			for (int i = 0; i < count; ++i)
+			{
+				propertyNames[i] = new BlackboardPropertyName(values[i].GetType().FullName + " " + i.ToString());
+			}
+
+			for (int i = 0; i < count; ++i)
+			{
+				fromBlackboard.SetClassValue(propertyNames[i], values[i]);
+			}
+
+			fromBlackboard.CopyTo(toBlackboard);
+
+			for (int i = 0; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+				Assert.IsTrue(toBlackboard.TryGetObjectValue(propertyName, out object value)
+					&& value.Equals(values[i]),
+					$"Blackboard has a wrong property of name {propertyName.ToString()}");
+			}
 		}
 	}
 }

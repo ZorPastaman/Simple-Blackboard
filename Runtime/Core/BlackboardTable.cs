@@ -125,6 +125,20 @@ namespace Zor.SimpleBlackboard.Core
 			m_table.Clear();
 		}
 
+		/// <inheritdoc/>
+		public void CopyTo(IBlackboardTable table)
+		{
+			var typedTable = (BlackboardTable<T>)table;
+
+			Dictionary<BlackboardPropertyName, T>.Enumerator enumerator = m_table.GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
+				typedTable.SetValue(current.Key, current.Value);
+			}
+			enumerator.Dispose();
+		}
+
 		public override string ToString()
 		{
 			var builder = new StringBuilder();

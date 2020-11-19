@@ -60,5 +60,11 @@ namespace Zor.SimpleBlackboard.Core
 		/// Clears of all properties.
 		/// </summary>
 		void Clear();
+
+		/// <summary>
+		/// Copies its properties to <paramref name="table"/>.
+		/// </summary>
+		/// <param name="table">Destination. Must be the same type.</param>
+		void CopyTo([NotNull] IBlackboardTable table);
 	}
 }

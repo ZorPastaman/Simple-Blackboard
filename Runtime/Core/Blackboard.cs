@@ -948,6 +948,43 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.EndSample();
 		}
 
+		/// <summary>
+		/// Copies its properties to <paramref name="blackboard"/>.
+		/// </summary>
+		/// <param name="blackboard">Destination.</param>
+		public void CopyTo([NotNull] Blackboard blackboard)
+		{
+			Profiler.BeginSample("Blackboard.CopyTo");
+
+			BlackboardDebug.LogDetails($"[Blackboard] CopyTo");
+
+			Dictionary<Type, IBlackboardTable>.Enumerator tableEnumerator = m_tables.GetEnumerator();
+			while (tableEnumerator.MoveNext())
+			{
+				KeyValuePair<Type, IBlackboardTable> current = tableEnumerator.Current;
+				IBlackboardTable tableToCopy = current.Value;
+
+				if (tableToCopy.count == 0)
+				{
+					continue;
+				}
+
+				IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(current.Key);
+				tableToCopy.CopyTo(tableToCopyTo);
+			}
+			tableEnumerator.Dispose();
+
+			Dictionary<BlackboardPropertyName, Type>.Enumerator propertyEnumerator = m_propertyTypes.GetEnumerator();
+			while (propertyEnumerator.MoveNext())
+			{
+				KeyValuePair<BlackboardPropertyName, Type> current = propertyEnumerator.Current;
+				blackboard.m_propertyTypes[current.Key] = current.Value;
+			}
+			propertyEnumerator.Dispose();
+
+			Profiler.EndSample();
+		}
+
 		[Pure]
 		public override string ToString()
 		{
