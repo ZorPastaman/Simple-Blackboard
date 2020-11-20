@@ -647,6 +647,10 @@ namespace Zor.SimpleBlackboard.Tests
 				new GameObject().AddComponent<Rigidbody>(), new GameObject().transform,
 				1, 230f
 			});
+
+			CopyToTest(fromBlackboard, toBlackboard, new GameObject());
+			CopyToTest(fromBlackboard, toBlackboard, 1);
+			CopyToTest(fromBlackboard, toBlackboard, new List<object>());
 		}
 
 		private static void SetObjectTryGetObjectTest([NotNull] Blackboard blackboard, [NotNull] object[] values)
@@ -1345,6 +1349,40 @@ namespace Zor.SimpleBlackboard.Tests
 					&& value.Equals(values[i]),
 					$"Blackboard has a wrong property of name {propertyName.ToString()}");
 			}
+
+			toBlackboard.Clear();
+			fromBlackboard.CopyTo(toBlackboard, propertyNames);
+
+			for (int i = 0; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+				Assert.IsTrue(toBlackboard.TryGetObjectValue(propertyName, out object value)
+					&& value.Equals(values[i]),
+					$"Blackboard has a wrong property of name {propertyName.ToString()}");
+			}
+
+			toBlackboard.Clear();
+			var list = new List<BlackboardPropertyName>(propertyNames);
+			fromBlackboard.CopyTo(toBlackboard, list);
+
+			for (int i = 0; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+				Assert.IsTrue(toBlackboard.TryGetObjectValue(propertyName, out object value)
+					&& value.Equals(values[i]),
+					$"Blackboard has a wrong property of name {propertyName.ToString()}");
+			}
+		}
+
+		private static void CopyToTest([NotNull] Blackboard fromBlackboard, [NotNull] Blackboard toBlackboard,
+			[NotNull] object value)
+		{
+			var propertyName = new BlackboardPropertyName(value.GetType().FullName + "");
+			fromBlackboard.SetClassValue(propertyName, value);
+			fromBlackboard.CopyTo(toBlackboard, propertyName);
+			Assert.IsTrue(toBlackboard.TryGetClassValue(propertyName, out object containedValue)
+				&& value.Equals(containedValue),
+				$"Blackboard has a wrong property of name {propertyName.ToString()}");
 		}
 	}
 }

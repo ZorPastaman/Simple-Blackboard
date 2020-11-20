@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Serialization of local components in Blackboard Container.
 - Blackboard.GetValueType() method that returns a type of a property by its property name.
 - Blackboard.GetPropertyNames() method that returns all property names of properties contained in Blackboard.
+- Blackboard.CopyTo() methods that copy properties to another blackboard.
 
 ## [1.1.0] - 2020-09-28
 

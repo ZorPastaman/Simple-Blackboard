@@ -954,9 +954,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// <param name="blackboard">Destination.</param>
 		public void CopyTo([NotNull] Blackboard blackboard)
 		{
-			Profiler.BeginSample("Blackboard.CopyTo");
+			Profiler.BeginSample("Blackboard.CopyTo(Blackboard)");
 
-			BlackboardDebug.LogDetails($"[Blackboard] CopyTo");
+			BlackboardDebug.LogDetails($"[Blackboard] CopyTo(Blackboard)");
 
 			Dictionary<Type, IBlackboardTable>.Enumerator tableEnumerator = m_tables.GetEnumerator();
 			while (tableEnumerator.MoveNext())
@@ -981,6 +981,82 @@ namespace Zor.SimpleBlackboard.Core
 				blackboard.m_propertyTypes[current.Key] = current.Value;
 			}
 			propertyEnumerator.Dispose();
+
+			Profiler.EndSample();
+		}
+
+		/// <summary>
+		/// Copies a property of the property name <paramref name="propertyName"/> to <paramref name="blackboard"/>.
+		/// </summary>
+		/// <param name="blackboard">Destination.</param>
+		/// <param name="propertyName">Property to copy.</param>
+		public void CopyTo([NotNull] Blackboard blackboard, BlackboardPropertyName propertyName)
+		{
+			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName)");
+
+			BlackboardDebug.LogDetails($"[Blackboard] CopyTo(Blackboard, BlackboardPropertyName)");
+
+			if (m_propertyTypes.TryGetValue(propertyName, out Type propertyType))
+			{
+				IBlackboardTable tableToCopy = m_tables[propertyType];
+				IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(propertyType);
+				tableToCopy.CopyTo(tableToCopyTo);
+				blackboard.m_propertyTypes[propertyName] = propertyType;
+			}
+
+			Profiler.EndSample();
+		}
+
+		/// <summary>
+		/// Copies properties of the property names <paramref name="propertyNames"/> to <paramref name="blackboard"/>.
+		/// </summary>
+		/// <param name="blackboard">Destination.</param>
+		/// <param name="propertyNames">Properties to copy.</param>
+		public void CopyTo([NotNull] Blackboard blackboard, BlackboardPropertyName[] propertyNames)
+		{
+			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName[])");
+
+			BlackboardDebug.LogDetails($"[Blackboard] CopyTo(Blackboard, BlackboardPropertyName[])");
+
+			for (int i = 0, count = propertyNames.Length; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+
+				if (m_propertyTypes.TryGetValue(propertyName, out Type propertyType))
+				{
+					IBlackboardTable tableToCopy = m_tables[propertyType];
+					IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(propertyType);
+					tableToCopy.CopyTo(tableToCopyTo);
+					blackboard.m_propertyTypes[propertyName] = propertyType;
+				}
+			}
+
+			Profiler.EndSample();
+		}
+
+		/// <summary>
+		/// Copies properties of the property names <paramref name="propertyNames"/> to <paramref name="blackboard"/>.
+		/// </summary>
+		/// <param name="blackboard">Destination.</param>
+		/// <param name="propertyNames">Properties to copy.</param>
+		public void CopyTo<T>([NotNull] Blackboard blackboard, T propertyNames) where T : IList<BlackboardPropertyName>
+		{
+			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName[])");
+
+			BlackboardDebug.LogDetails($"[Blackboard] CopyTo(Blackboard, BlackboardPropertyName[])");
+
+			for (int i = 0, count = propertyNames.Count; i < count; ++i)
+			{
+				BlackboardPropertyName propertyName = propertyNames[i];
+
+				if (m_propertyTypes.TryGetValue(propertyName, out Type propertyType))
+				{
+					IBlackboardTable tableToCopy = m_tables[propertyType];
+					IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(propertyType);
+					tableToCopy.CopyTo(tableToCopyTo);
+					blackboard.m_propertyTypes[propertyName] = propertyType;
+				}
+			}
 
 			Profiler.EndSample();
 		}
