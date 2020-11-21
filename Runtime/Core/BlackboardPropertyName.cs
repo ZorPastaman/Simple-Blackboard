@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using JetBrains.Annotations;
 
 namespace Zor.SimpleBlackboard.Core
@@ -27,6 +28,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		private static readonly List<string> s_names = new List<string>(InitialCapacity);
 
+		private static object s_syncRoot;
+
 		/// <summary>
 		/// Unique per string id.
 		/// </summary>
@@ -36,6 +39,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// Creates a <see cref="BlackboardPropertyName"/> with unique <see cref="id"/> per <paramref name="name"/>.
 		/// </summary>
 		/// <param name="name">For this, unique <see cref="id"/> is set.</param>
+		/// <remarks>
+		/// If your application is multithreaded, you have to use this method in a lock with <see cref="syncRoot"/>.
+		/// </remarks>
 		public BlackboardPropertyName([NotNull] string name)
 		{
 			if (!s_nameIds.TryGetValue(name, out id))
@@ -57,6 +63,22 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
+		/// Gets an object that can be used to synchronize access.
+		/// </summary>
+		public static object syncRoot
+		{
+			get
+			{
+				if (s_syncRoot == null)
+				{
+					Interlocked.CompareExchange<object>(ref s_syncRoot, new object(), null);
+				}
+
+				return s_syncRoot;
+			}
+		}
+
+		/// <summary>
 		/// Name of the property.
 		/// </summary>
 		/// <returns>
@@ -70,6 +92,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// was created with <see cref="BlackboardPropertyName(string)"/> and got the same <see cref="id"/>.
 		/// </para>
 		/// </returns>
+		/// <remarks>
+		/// If your application is multithreaded, you have to use this property in a lock with <see cref="syncRoot"/>.
+		/// </remarks>
 		[NotNull]
 		public string name
 		{
@@ -95,6 +120,10 @@ namespace Zor.SimpleBlackboard.Core
 			return id;
 		}
 
+		/// <inheritdoc/>
+		/// <remarks>
+		/// If your application is multithreaded, you have to use this method in a lock with <see cref="syncRoot"/>.
+		/// </remarks>
 		[Pure]
 		public override string ToString()
 		{
