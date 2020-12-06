@@ -662,23 +662,9 @@ namespace Zor.SimpleBlackboard.Tests
 
 			void ThreadOperation()
 			{
-				BlackboardPropertyName structProperty;
-				BlackboardPropertyName classProperty;
-				BlackboardPropertyName objectProperty;
-
-				lock (BlackboardPropertyName.syncRoot)
-				{
-					structProperty = new BlackboardPropertyName("struct");
-				}
-				lock (BlackboardPropertyName.syncRoot)
-				{
-					classProperty = new BlackboardPropertyName("class");
-				}
-
-				lock (BlackboardPropertyName.syncRoot)
-				{
-					objectProperty = new BlackboardPropertyName("object");
-				}
+				var structProperty = new BlackboardPropertyName("struct");
+				var classProperty = new BlackboardPropertyName("class");
+				var objectProperty = new BlackboardPropertyName("object");
 
 				lock (blackboard)
 				{

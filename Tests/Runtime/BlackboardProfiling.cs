@@ -1,7 +1,9 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Profiling;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.Tests
@@ -47,6 +49,20 @@ namespace Zor.SimpleBlackboard.Tests
 			SetStructValues(m_floats);
 			SetStructValues(m_shorts);
 			SetClassValues(m_meshes);
+
+			var thread = new Thread(() =>
+			{
+				Profiler.BeginThreadProfiling("Blackboard", "Blackboard Thread Profiler");
+
+				SetStructValues(m_ints);
+				SetStructValues(m_doubles);
+				SetStructValues(m_floats);
+				SetStructValues(m_shorts);
+
+				Profiler.EndThreadProfiling();
+			});
+			thread.Start();
+			thread.Join();
 
 			m_step++;
 		}

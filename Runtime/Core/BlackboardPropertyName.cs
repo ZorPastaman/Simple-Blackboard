@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using JetBrains.Annotations;
 
 namespace Zor.SimpleBlackboard.Core
@@ -16,7 +15,7 @@ namespace Zor.SimpleBlackboard.Core
 	/// </remarks>
 	public readonly struct BlackboardPropertyName : IEquatable<BlackboardPropertyName>
 	{
-		private const int InitialCapacity = 100;
+		private const int InitialCapacity = 1000;
 
 		/// <summary>
 		/// Dictionary of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>
@@ -28,7 +27,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		private static readonly List<string> s_names = new List<string>(InitialCapacity);
 
-		private static object s_syncRoot;
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+		private static readonly object s_syncRoot = new object();
+#endif
 
 		/// <summary>
 		/// Unique per string id.
@@ -39,16 +40,18 @@ namespace Zor.SimpleBlackboard.Core
 		/// Creates a <see cref="BlackboardPropertyName"/> with unique <see cref="id"/> per <paramref name="name"/>.
 		/// </summary>
 		/// <param name="name">For this, unique <see cref="id"/> is set.</param>
-		/// <remarks>
-		/// If your application is multithreaded, you have to use this method in a lock with <see cref="syncRoot"/>.
-		/// </remarks>
 		public BlackboardPropertyName([NotNull] string name)
 		{
-			if (!s_nameIds.TryGetValue(name, out id))
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+			lock (s_syncRoot)
+#endif
 			{
-				id = s_names.Count;
-				s_nameIds.Add(name, id);
-				s_names.Add(name);
+				if (!s_nameIds.TryGetValue(name, out id))
+				{
+					id = s_names.Count;
+					s_nameIds.Add(name, id);
+					s_names.Add(name);
+				}
 			}
 		}
 
@@ -60,22 +63,6 @@ namespace Zor.SimpleBlackboard.Core
 		public BlackboardPropertyName(int id)
 		{
 			this.id = id;
-		}
-
-		/// <summary>
-		/// Gets an object that can be used to synchronize access.
-		/// </summary>
-		public static object syncRoot
-		{
-			get
-			{
-				if (s_syncRoot == null)
-				{
-					Interlocked.CompareExchange<object>(ref s_syncRoot, new object(), null);
-				}
-
-				return s_syncRoot;
-			}
 		}
 
 		/// <summary>
@@ -92,14 +79,19 @@ namespace Zor.SimpleBlackboard.Core
 		/// was created with <see cref="BlackboardPropertyName(string)"/> and got the same <see cref="id"/>.
 		/// </para>
 		/// </returns>
-		/// <remarks>
-		/// If your application is multithreaded, you have to use this property in a lock with <see cref="syncRoot"/>.
-		/// </remarks>
 		[NotNull]
 		public string name
 		{
 			[Pure]
-			get => id >= 0 & id < s_names.Count ? s_names[id] : string.Empty;
+			get
+			{
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+				lock (s_syncRoot)
+#endif
+				{
+					return id >= 0 & id < s_names.Count ? s_names[id] : string.Empty;
+				}
+			}
 		}
 
 		[Pure]
@@ -120,10 +112,6 @@ namespace Zor.SimpleBlackboard.Core
 			return id;
 		}
 
-		/// <inheritdoc/>
-		/// <remarks>
-		/// If your application is multithreaded, you have to use this method in a lock with <see cref="syncRoot"/>.
-		/// </remarks>
 		[Pure]
 		public override string ToString()
 		{
