@@ -29,19 +29,22 @@ namespace Zor.SimpleBlackboard.EditorTools
 				return;
 			}
 
-			try
+			lock (blackboard)
 			{
-				blackboard.GetValueTypes(s_tableTypes);
-				s_tableTypes.Sort((left, right) => string.CompareOrdinal(left.Name, right.Name));
-				DrawTables(blackboard);
-				s_tableTypes.Clear();
-				DrawNoEditor();
-				DrawAdd(blackboard);
-			}
-			finally
-			{
-				s_tableTypes.Clear();
-				s_noEditorTables.Clear();
+				try
+				{
+					blackboard.GetValueTypes(s_tableTypes);
+					s_tableTypes.Sort((left, right) => string.CompareOrdinal(left.Name, right.Name));
+					DrawTables(blackboard);
+					s_tableTypes.Clear();
+					DrawNoEditor();
+					DrawAdd(blackboard);
+				}
+				finally
+				{
+					s_tableTypes.Clear();
+					s_noEditorTables.Clear();
+				}
 			}
 		}
 
