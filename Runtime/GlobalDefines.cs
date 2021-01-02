@@ -4,6 +4,6 @@ namespace Zor.SimpleBlackboard
 {
 	public static class GlobalDefines
 	{
-		public const string Multithreading = "SIMPLE_BLACKBOARD_MULTITHREADING";
+		public const string MultithreadingDefine = "SIMPLE_BLACKBOARD_MULTITHREADING";
 	}
 }

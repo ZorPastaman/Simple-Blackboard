@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine.Events;
 using UnityEngine.Scripting;
+using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.Components.Accessors
 {
@@ -21,11 +22,28 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get
 			{
-				blackboardPropertyReference.blackboardContainer.blackboard.TryGetClassValue(propertyName, out T answer);
-				return answer;
+				Blackboard blackboard = blackboardPropertyReference.blackboardContainer.blackboard;
+
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+				lock (blackboard)
+#endif
+				{
+					blackboard.TryGetClassValue(propertyName, out T answer);
+					return answer;
+				}
 			}
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			set => blackboardPropertyReference.blackboardContainer.blackboard.SetClassValue(propertyName, value);
+			set
+			{
+				Blackboard blackboard = blackboardPropertyReference.blackboardContainer.blackboard;
+
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+				lock (blackboard)
+#endif
+				{
+					blackboard.SetClassValue(propertyName, value);
+				}
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Profiling;
+using Zor.SimpleBlackboard.Components;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.Tests
@@ -13,10 +14,11 @@ namespace Zor.SimpleBlackboard.Tests
 		private const int ArrayLength = 100;
 
 #pragma warning disable CS0649
+		[SerializeField] private BlackboardContainer m_BlackboardContainer;
 		[SerializeField] private bool m_NewPropertyNamePerValue;
 #pragma warning restore CS0649
 
-		private Blackboard m_blackboard = new Blackboard();
+		private Blackboard m_blackboard;
 
 		private BlackboardPropertyName[] m_propertyNames;
 
@@ -31,6 +33,8 @@ namespace Zor.SimpleBlackboard.Tests
 
 		private void Start()
 		{
+			m_blackboard = m_BlackboardContainer.blackboard;
+
 			m_propertyNames = CreateArray(new BlackboardPropertyName("0"),
 				(value, index) => new BlackboardPropertyName(index.ToString()));
 
