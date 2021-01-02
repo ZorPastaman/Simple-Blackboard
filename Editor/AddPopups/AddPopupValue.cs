@@ -36,7 +36,10 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 		/// <inheritdoc/>
 		public void Set(string key, Blackboard blackboard)
 		{
-			blackboard.SetObjectValue(typeof(T), new BlackboardPropertyName(key), m_value);
+			lock (blackboard)
+			{
+				blackboard.SetObjectValue(typeof(T), new BlackboardPropertyName(key), m_value);
+			}
 		}
 	}
 }

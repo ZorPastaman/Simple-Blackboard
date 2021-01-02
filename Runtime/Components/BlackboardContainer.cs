@@ -149,9 +149,16 @@ namespace Zor.SimpleBlackboard.Components
 
 		private void Awake()
 		{
-			m_blackboard = new Blackboard();
-			DeserializationHelper.Deserialize(m_SerializedContainers, m_blackboard);
-			DeserializationHelper.Deserialize(m_ComponentReferences, m_blackboard);
+			var newBlackboard = new Blackboard();
+
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+			lock (newBlackboard)
+#endif
+			{
+				m_blackboard = newBlackboard;
+				DeserializationHelper.Deserialize(m_SerializedContainers, m_blackboard);
+				DeserializationHelper.Deserialize(m_ComponentReferences, m_blackboard);
+			}
 		}
 
 		[ContextMenu("Log")]

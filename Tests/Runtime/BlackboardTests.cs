@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using JetBrains.Annotations;
 using NUnit.Framework;
 using UnityEngine;
@@ -651,6 +652,167 @@ namespace Zor.SimpleBlackboard.Tests
 			CopyToTest(fromBlackboard, toBlackboard, new GameObject());
 			CopyToTest(fromBlackboard, toBlackboard, 1);
 			CopyToTest(fromBlackboard, toBlackboard, new List<object>());
+		}
+
+		[Test]
+		public static void MultithreadingTests()
+		{
+			var blackboard = new Blackboard();
+			var copiedBlackboard = new Blackboard();
+
+			void ThreadOperation()
+			{
+				var structProperty = new BlackboardPropertyName("struct");
+				var classProperty = new BlackboardPropertyName("class");
+				var objectProperty = new BlackboardPropertyName("object");
+
+				lock (blackboard)
+				{
+					blackboard.SetStructValue(structProperty, 3);
+				}
+				lock (blackboard)
+				{
+					blackboard.SetClassValue(classProperty, new List<int>());
+				}
+				lock (blackboard)
+				{
+					blackboard.SetObjectValue(typeof(object), objectProperty, new object());
+				}
+
+				lock (blackboard)
+				{
+					blackboard.TryGetStructValue(structProperty, out int structValue);
+				}
+				lock (blackboard)
+				{
+					blackboard.TryGetClassValue(classProperty, out object classValue);
+				}
+				lock (blackboard)
+				{
+					blackboard.TryGetObjectValue(objectProperty, out object objectValue);
+				}
+
+				var structProperties = new List<KeyValuePair<BlackboardPropertyName, int>>();
+				lock (blackboard)
+				{
+					blackboard.GetStructProperties(structProperties);
+				}
+				var classProperties = new List<KeyValuePair<BlackboardPropertyName, List<int>>>();
+				lock (blackboard)
+				{
+					blackboard.GetClassProperties(classProperties);
+				}
+				var objectProperties = new List<KeyValuePair<BlackboardPropertyName, object>>();
+
+				lock (blackboard)
+				{
+					blackboard.GetObjectProperties(objectProperties);
+				}
+
+				lock (blackboard)
+				{
+					blackboard.GetValueType(structProperty);
+				}
+
+				var valueTypes = new List<Type>();
+				lock (blackboard)
+				{
+					blackboard.GetValueTypes(valueTypes);
+				}
+
+				var propertyNames = new List<BlackboardPropertyName>();
+				lock (blackboard)
+				{
+					blackboard.GetPropertyNames(propertyNames);
+				}
+
+				lock (blackboard)
+				{
+					blackboard.ContainsStructValue<int>(structProperty);
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsObjectValue<object>(objectProperty);
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsObjectValue(typeof(object), objectProperty);
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsObjectValue(classProperty);
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsType<List<int>>();
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsType(typeof(List<int>));
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsInheritingType<object>();
+				}
+				lock (blackboard)
+				{
+					blackboard.ContainsInheritingType(typeof(object));
+				}
+
+				lock (blackboard)
+				{
+					blackboard.GetCount<int>();
+				}
+				lock (blackboard)
+				{
+					blackboard.GetCount(typeof(int));
+				}
+				lock (blackboard)
+				{
+					blackboard.GetCountWithInheritors<object>();
+				}
+				lock (blackboard)
+				{
+					blackboard.GetCountWithInheritors(typeof(object));
+				}
+
+				lock (blackboard)
+				lock (copiedBlackboard)
+				{
+					blackboard.CopyTo(copiedBlackboard);
+				}
+
+				lock (blackboard)
+				{
+					blackboard.RemoveStruct<int>(structProperty);
+				}
+				lock (blackboard)
+				{
+					blackboard.RemoveObject<List<int>>(classProperty);
+				}
+				lock (blackboard)
+				{
+					blackboard.RemoveObject(objectProperty);
+				}
+
+				lock (copiedBlackboard)
+				{
+					copiedBlackboard.RemoveObject(typeof(object), objectProperty);
+				}
+
+				lock (copiedBlackboard)
+				{
+					copiedBlackboard.Clear();
+				}
+			}
+
+			var thread0 = new Thread(ThreadOperation);
+			var thread1 = new Thread(ThreadOperation);
+			thread0.Start();
+			thread1.Start();
+
+			thread0.Join();
+			thread1.Join();
 		}
 
 		private static void SetObjectTryGetObjectTest([NotNull] Blackboard blackboard, [NotNull] object[] values)

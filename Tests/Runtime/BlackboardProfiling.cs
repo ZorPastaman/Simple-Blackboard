@@ -1,7 +1,10 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
+using System.Threading;
 using UnityEngine;
+using UnityEngine.Profiling;
+using Zor.SimpleBlackboard.Components;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.Tests
@@ -11,10 +14,11 @@ namespace Zor.SimpleBlackboard.Tests
 		private const int ArrayLength = 100;
 
 #pragma warning disable CS0649
+		[SerializeField] private BlackboardContainer m_BlackboardContainer;
 		[SerializeField] private bool m_NewPropertyNamePerValue;
 #pragma warning restore CS0649
 
-		private Blackboard m_blackboard = new Blackboard();
+		private Blackboard m_blackboard;
 
 		private BlackboardPropertyName[] m_propertyNames;
 
@@ -29,6 +33,8 @@ namespace Zor.SimpleBlackboard.Tests
 
 		private void Start()
 		{
+			m_blackboard = m_BlackboardContainer.blackboard;
+
 			m_propertyNames = CreateArray(new BlackboardPropertyName("0"),
 				(value, index) => new BlackboardPropertyName(index.ToString()));
 
@@ -47,6 +53,20 @@ namespace Zor.SimpleBlackboard.Tests
 			SetStructValues(m_floats);
 			SetStructValues(m_shorts);
 			SetClassValues(m_meshes);
+
+			var thread = new Thread(() =>
+			{
+				Profiler.BeginThreadProfiling("Blackboard", "Blackboard Thread Profiler");
+
+				SetStructValues(m_ints);
+				SetStructValues(m_doubles);
+				SetStructValues(m_floats);
+				SetStructValues(m_shorts);
+
+				Profiler.EndThreadProfiling();
+			});
+			thread.Start();
+			thread.Join();
 
 			m_step++;
 		}

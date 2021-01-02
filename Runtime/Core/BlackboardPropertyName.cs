@@ -15,7 +15,7 @@ namespace Zor.SimpleBlackboard.Core
 	/// </remarks>
 	public readonly struct BlackboardPropertyName : IEquatable<BlackboardPropertyName>
 	{
-		private const int InitialCapacity = 100;
+		private const int InitialCapacity = 1000;
 
 		/// <summary>
 		/// Dictionary of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>
@@ -26,6 +26,13 @@ namespace Zor.SimpleBlackboard.Core
 		/// List of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>.
 		/// </summary>
 		private static readonly List<string> s_names = new List<string>(InitialCapacity);
+
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+		/// <summary>
+		/// Empty object that is used in locks.
+		/// </summary>
+		private static readonly object s_syncRoot = new object();
+#endif
 
 		/// <summary>
 		/// Unique per string id.
@@ -38,11 +45,16 @@ namespace Zor.SimpleBlackboard.Core
 		/// <param name="name">For this, unique <see cref="id"/> is set.</param>
 		public BlackboardPropertyName([NotNull] string name)
 		{
-			if (!s_nameIds.TryGetValue(name, out id))
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+			lock (s_syncRoot)
+#endif
 			{
-				id = s_names.Count;
-				s_nameIds.Add(name, id);
-				s_names.Add(name);
+				if (!s_nameIds.TryGetValue(name, out id))
+				{
+					id = s_names.Count;
+					s_nameIds.Add(name, id);
+					s_names.Add(name);
+				}
 			}
 		}
 
@@ -74,7 +86,15 @@ namespace Zor.SimpleBlackboard.Core
 		public string name
 		{
 			[Pure]
-			get => id >= 0 & id < s_names.Count ? s_names[id] : string.Empty;
+			get
+			{
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+				lock (s_syncRoot)
+#endif
+				{
+					return id >= 0 & id < s_names.Count ? s_names[id] : string.Empty;
+				}
+			}
 		}
 
 		[Pure]

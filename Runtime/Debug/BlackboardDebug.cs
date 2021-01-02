@@ -40,12 +40,6 @@ namespace Zor.SimpleBlackboard.Debugging
 			UnityEngine.Debug.LogWarningFormat(Format, message);
 		}
 
-		[Conditional(WarningDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
-		internal static void LogWarning(string message, Object context)
-		{
-			UnityEngine.Debug.LogWarningFormat(context, Format, message);
-		}
-
 		[Conditional(ErrorDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
 		internal static void LogError(string message)
 		{
