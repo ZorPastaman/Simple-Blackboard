@@ -28,6 +28,9 @@ namespace Zor.SimpleBlackboard.Core
 		private static readonly List<string> s_names = new List<string>(InitialCapacity);
 
 #if SIMPLE_BLACKBOARD_MULTITHREADING
+		/// <summary>
+		/// Empty object that is used in locks.
+		/// </summary>
 		private static readonly object s_syncRoot = new object();
 #endif
 
