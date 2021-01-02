@@ -3,7 +3,7 @@
 namespace Zor.SimpleBlackboard
 {
 	/// <summary>
-	/// Here are defines that affect the work of the whole library.
+	/// Here are defines that affect the work of the whole package.
 	/// </summary>
 	public static class GlobalDefines
 	{

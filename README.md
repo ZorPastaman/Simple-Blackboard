@@ -82,6 +82,7 @@ Although there are many types that are drawn out of the box, you may need to dra
 [UnityObjectBlackboardValueView](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Editor/ValueViews/Implementations/UnityObjectBlackboardValueView.cs).
 
 ## Logs
+
 There is a special class for logging the whole Blackboard system:
 [BlackboardDebug](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Debug/BlackboardDebug.cs).
 It contains conditional methods for logging. You can control a compilation of those methods with define symbols:
@@ -92,6 +93,23 @@ It contains conditional methods for logging. You can control a compilation of th
 
 [BlackboardDebug](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Debug/BlackboardDebug.cs)
 has all of them as public const strings.
+
+## Multithreading
+
+The package has an optional multithreading support. You can activate it with the define SIMPLE_BLACKBOARD_MULTITHREADING.
+With that define, different locks are compiled. Those locks exist for internal usage only: access to 
+[Blackboard](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Core/Blackboard.cs)
+in different classes of this package and internal work of 
+[BlackboardPropertyName](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Core/BlackboardPropertyName.cs).
+[Blackboard](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Core/Blackboard.cs)
+doesn't have internal locks. So, you have to save your code from issues yourself.
+
+Also, you can use the package in a multithreading code without the define SIMPLE_BLACKBOARD_MULTITHREADING.
+In that case, you have to guarantee that you don't access the same
+[Blackboard](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Core/Blackboard.cs)
+from different threads and that you access the constructor and the name property of
+[BlackboardPropertyName](https://github.com/ZorPastaman/Simple-Blackboard/blob/develop/Runtime/Core/BlackboardPropertyName.cs)
+only from one thread.
 
 ## Little features
 

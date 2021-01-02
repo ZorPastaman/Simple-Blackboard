@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Multithreading support: different locks are added. The feature is optional and controlled 
+   by the define SIMPLE_BLACKBOARD_MULTITHREADING.
+
+### Changed
+
+- Initial capacity of blackboard property names is changed from 100 to 1000.
+
 ## [1.2.0] - 2020-11-21
 
 ### Added
