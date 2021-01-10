@@ -1,6 +1,7 @@
 // Copyright (c) 2020 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Zor.SimpleBlackboard.Core
 	/// <summary>
 	/// The main class of the Blackboard system.
 	/// </summary>
-	public sealed class Blackboard
+	public sealed class Blackboard : ICollection
 	{
 		/// <summary>
 		/// Value type to table of that type dictionary.
@@ -42,6 +43,12 @@ namespace Zor.SimpleBlackboard.Core
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get => m_propertyTypes.Count;
 		}
+
+		int ICollection.Count => propertiesCount;
+
+		bool ICollection.IsSynchronized => false;
+
+		object ICollection.SyncRoot => this;
 
 		/// <summary>
 		/// Tries to get and return a value of the struct type <typeparamref name="T"/>
@@ -1012,7 +1019,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyNames">Properties to copy.</param>
-		public void CopyTo([NotNull] Blackboard blackboard, BlackboardPropertyName[] propertyNames)
+		public void CopyTo([NotNull] Blackboard blackboard, [NotNull] BlackboardPropertyName[] propertyNames)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName[])");
 
@@ -1039,7 +1046,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyNames">Properties to copy.</param>
-		public void CopyTo<T>([NotNull] Blackboard blackboard, T propertyNames) where T : IList<BlackboardPropertyName>
+		public void CopyTo<T>([NotNull] Blackboard blackboard, [NotNull] T propertyNames)
+			where T : IList<BlackboardPropertyName>
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName[])");
 
@@ -1059,6 +1067,81 @@ namespace Zor.SimpleBlackboard.Core
 			}
 
 			Profiler.EndSample();
+		}
+
+		public void CopyTo([NotNull] KeyValuePair<BlackboardPropertyName, object>[] array, int index)
+		{
+			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				KeyValuePair<BlackboardPropertyName, Type> current = enumerator.Current;
+				BlackboardPropertyName propertyName = current.Key;
+				array[index++] = new KeyValuePair<BlackboardPropertyName, object>(
+					propertyName,
+					m_tables[current.Value].GetObjectValue(propertyName));
+			}
+			enumerator.Dispose();
+		}
+
+		public void CopyTo([NotNull] DictionaryEntry[] array, int index)
+		{
+			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				KeyValuePair<BlackboardPropertyName, Type> current = enumerator.Current;
+				BlackboardPropertyName propertyName = current.Key;
+				array[index++] = new DictionaryEntry(
+					propertyName,
+					m_tables[current.Value].GetObjectValue(propertyName));
+			}
+			enumerator.Dispose();
+		}
+
+		public void CopyTo([NotNull] object[] array, int index)
+		{
+			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
+			while (enumerator.MoveNext())
+			{
+				KeyValuePair<BlackboardPropertyName, Type> current = enumerator.Current;
+				BlackboardPropertyName propertyName = current.Key;
+				array[index++] = new KeyValuePair<BlackboardPropertyName, object>(
+					propertyName,
+					m_tables[current.Value].GetObjectValue(propertyName));
+			}
+			enumerator.Dispose();
+		}
+
+		public void CopyTo(Array array, int index)
+		{
+			switch (array)
+			{
+				case KeyValuePair<BlackboardPropertyName, object>[] pairs:
+				{
+					CopyTo(pairs, index);
+					break;
+				}
+				case DictionaryEntry[] entries:
+				{
+					CopyTo(entries, index);
+					break;
+				}
+				case object[] objects:
+				{
+					CopyTo(objects, index);
+					break;
+				}
+			}
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		public Enumerator GetEnumerator()
+		{
+			return new Enumerator(this, Enumerator.ReturnType.KeyValuePair);
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return new Enumerator(this, Enumerator.ReturnType.KeyValuePair);
 		}
 
 		[Pure]
@@ -1171,6 +1254,97 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.EndSample();
 
 			return table;
+		}
+
+		public struct Enumerator : IEnumerator<KeyValuePair<BlackboardPropertyName, object>>, IDictionaryEnumerator
+		{
+			[NotNull] private readonly Blackboard m_blackboard;
+			private Dictionary<BlackboardPropertyName, Type>.Enumerator m_enumerator;
+			private KeyValuePair<BlackboardPropertyName, object> m_current;
+			private readonly ReturnType m_returnType;
+
+			internal Enumerator([NotNull] Blackboard blackboard, ReturnType returnType)
+			{
+				m_blackboard = blackboard;
+				m_enumerator = m_blackboard.m_propertyTypes.GetEnumerator();
+				m_current = new KeyValuePair<BlackboardPropertyName, object>();
+				m_returnType = returnType;
+			}
+
+			public KeyValuePair<BlackboardPropertyName, object> Current
+			{
+				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+				get => m_current;
+			}
+
+			object IEnumerator.Current
+			{
+				get
+				{
+					switch (m_returnType)
+					{
+						case ReturnType.DictionaryEntry:
+							return new DictionaryEntry(m_current.Key, m_current.Value);
+						case ReturnType.KeyValuePair:
+							return new KeyValuePair<BlackboardPropertyName, object>(m_current.Key, m_current.Value);
+						default:
+							throw new ArgumentOutOfRangeException();
+					}
+				}
+			}
+
+			DictionaryEntry IDictionaryEnumerator.Entry
+			{
+				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+				get => new DictionaryEntry(m_current.Key, m_current.Value);
+			}
+
+			object IDictionaryEnumerator.Key
+			{
+				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+				get => m_current.Key;
+			}
+
+			object IDictionaryEnumerator.Value
+			{
+				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+				get => m_current.Value;
+			}
+
+			public bool MoveNext()
+			{
+				if (!m_enumerator.MoveNext())
+				{
+					return false;
+				}
+
+				KeyValuePair<BlackboardPropertyName, Type> current = m_enumerator.Current;
+				BlackboardPropertyName propertyName = current.Key;
+				m_current = new KeyValuePair<BlackboardPropertyName, object>(
+					propertyName,
+					m_blackboard.m_tables[current.Value].GetObjectValue(propertyName));
+
+				return true;
+			}
+
+			void IEnumerator.Reset()
+			{
+				m_enumerator.Dispose();
+				m_enumerator = m_blackboard.m_propertyTypes.GetEnumerator();
+				m_current = new KeyValuePair<BlackboardPropertyName, object>();
+			}
+
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			public void Dispose()
+			{
+				m_enumerator.Dispose();
+			}
+
+			internal enum ReturnType
+			{
+				DictionaryEntry,
+				KeyValuePair
+			}
 		}
 	}
 }
