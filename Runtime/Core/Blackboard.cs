@@ -1115,20 +1115,6 @@ namespace Zor.SimpleBlackboard.Core
 			enumerator.Dispose();
 		}
 
-		public void CopyTo([NotNull] DictionaryEntry[] array, int index)
-		{
-			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				KeyValuePair<BlackboardPropertyName, Type> current = enumerator.Current;
-				BlackboardPropertyName propertyName = current.Key;
-				array[index++] = new DictionaryEntry(
-					propertyName,
-					m_tables[current.Value].GetObjectValue(propertyName));
-			}
-			enumerator.Dispose();
-		}
-
 		public void CopyTo([NotNull] object[] array, int index)
 		{
 			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
@@ -1152,11 +1138,6 @@ namespace Zor.SimpleBlackboard.Core
 					CopyTo(pairs, index);
 					break;
 				}
-				case DictionaryEntry[] entries:
-				{
-					CopyTo(entries, index);
-					break;
-				}
 				case object[] objects:
 				{
 					CopyTo(objects, index);
@@ -1168,12 +1149,12 @@ namespace Zor.SimpleBlackboard.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public Enumerator GetEnumerator()
 		{
-			return new Enumerator(this, Enumerator.ReturnType.KeyValuePair);
+			return new Enumerator(this);
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return new Enumerator(this, Enumerator.ReturnType.KeyValuePair);
+			return new Enumerator(this);
 		}
 
 		IEnumerator<KeyValuePair<BlackboardPropertyName, object>> IEnumerable<KeyValuePair<BlackboardPropertyName, object>>.GetEnumerator()
@@ -1293,19 +1274,17 @@ namespace Zor.SimpleBlackboard.Core
 			return table;
 		}
 
-		public struct Enumerator : IEnumerator<KeyValuePair<BlackboardPropertyName, object>>, IDictionaryEnumerator
+		public struct Enumerator : IEnumerator<KeyValuePair<BlackboardPropertyName, object>>
 		{
 			[NotNull] private readonly Blackboard m_blackboard;
 			private Dictionary<BlackboardPropertyName, Type>.Enumerator m_enumerator;
 			private KeyValuePair<BlackboardPropertyName, object> m_current;
-			private readonly ReturnType m_returnType;
 
-			internal Enumerator([NotNull] Blackboard blackboard, ReturnType returnType)
+			internal Enumerator([NotNull] Blackboard blackboard)
 			{
 				m_blackboard = blackboard;
 				m_enumerator = m_blackboard.m_propertyTypes.GetEnumerator();
 				m_current = new KeyValuePair<BlackboardPropertyName, object>();
-				m_returnType = returnType;
 			}
 
 			public KeyValuePair<BlackboardPropertyName, object> Current
@@ -1314,39 +1293,8 @@ namespace Zor.SimpleBlackboard.Core
 				get => m_current;
 			}
 
-			object IEnumerator.Current
-			{
-				get
-				{
-					switch (m_returnType)
-					{
-						case ReturnType.DictionaryEntry:
-							return new DictionaryEntry(m_current.Key, m_current.Value);
-						case ReturnType.KeyValuePair:
-							return new KeyValuePair<BlackboardPropertyName, object>(m_current.Key, m_current.Value);
-						default:
-							throw new ArgumentOutOfRangeException();
-					}
-				}
-			}
-
-			DictionaryEntry IDictionaryEnumerator.Entry
-			{
-				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-				get => new DictionaryEntry(m_current.Key, m_current.Value);
-			}
-
-			object IDictionaryEnumerator.Key
-			{
-				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-				get => m_current.Key;
-			}
-
-			object IDictionaryEnumerator.Value
-			{
-				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-				get => m_current.Value;
-			}
+			object IEnumerator.Current =>
+				new KeyValuePair<BlackboardPropertyName, object>(m_current.Key, m_current.Value);
 
 			public bool MoveNext()
 			{
@@ -1375,12 +1323,6 @@ namespace Zor.SimpleBlackboard.Core
 			public void Dispose()
 			{
 				m_enumerator.Dispose();
-			}
-
-			internal enum ReturnType
-			{
-				DictionaryEntry,
-				KeyValuePair
 			}
 		}
 	}
