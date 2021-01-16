@@ -14,7 +14,7 @@ namespace Zor.SimpleBlackboard.Core
 	/// <summary>
 	/// The main class of the Blackboard system.
 	/// </summary>
-	public sealed class Blackboard : ICollection
+	public sealed class Blackboard : ICollection<KeyValuePair<BlackboardPropertyName, object>>, ICollection
 	{
 		/// <summary>
 		/// Value type to table of that type dictionary.
@@ -43,6 +43,10 @@ namespace Zor.SimpleBlackboard.Core
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get => m_propertyTypes.Count;
 		}
+
+		int ICollection<KeyValuePair<BlackboardPropertyName, object>>.Count => propertiesCount;
+
+		bool ICollection<KeyValuePair<BlackboardPropertyName, object>>.IsReadOnly => false;
 
 		int ICollection.Count => propertiesCount;
 
@@ -322,6 +326,12 @@ namespace Zor.SimpleBlackboard.Core
 			table.SetObjectValue(propertyName, value);
 
 			Profiler.EndSample();
+		}
+
+		void ICollection<KeyValuePair<BlackboardPropertyName, object>>.Add(KeyValuePair<BlackboardPropertyName, object> item)
+		{
+			object value = item.Value;
+			SetObjectValue(value.GetType(), item.Key, value);
 		}
 
 		/// <summary>
@@ -676,6 +686,11 @@ namespace Zor.SimpleBlackboard.Core
 			return answer;
 		}
 
+		bool ICollection<KeyValuePair<BlackboardPropertyName, object>>.Contains(KeyValuePair<BlackboardPropertyName, object> item)
+		{
+			return TryGetObjectValue(item.Key, out object currentValue) && item.Value.Equals(currentValue);
+		}
+
 		/// <summary>
 		/// Gets how many properties of the type <typeparamref name="T"/> are contained in the <see cref="Blackboard"/>.
 		/// </summary>
@@ -934,6 +949,20 @@ namespace Zor.SimpleBlackboard.Core
 			return true;
 		}
 
+		bool ICollection<KeyValuePair<BlackboardPropertyName, object>>.Remove(KeyValuePair<BlackboardPropertyName, object> item)
+		{
+			BlackboardPropertyName propertyName = item.Key;
+
+			if (TryGetObjectValue(propertyName, out object currentValue) && item.Value.Equals(currentValue))
+			{
+				RemoveObject(propertyName);
+
+				return true;
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Clears of all properties.
 		/// </summary>
@@ -1142,6 +1171,11 @@ namespace Zor.SimpleBlackboard.Core
 		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return new Enumerator(this, Enumerator.ReturnType.KeyValuePair);
+		}
+
+		IEnumerator<KeyValuePair<BlackboardPropertyName, object>> IEnumerable<KeyValuePair<BlackboardPropertyName, object>>.GetEnumerator()
+		{
+			return GetEnumerator();
 		}
 
 		[Pure]
