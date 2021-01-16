@@ -14,7 +14,8 @@ namespace Zor.SimpleBlackboard.Core
 	/// <summary>
 	/// The main class of the Blackboard system.
 	/// </summary>
-	public sealed class Blackboard : ICollection<KeyValuePair<BlackboardPropertyName, object>>, ICollection
+	public sealed class Blackboard : ICollection<KeyValuePair<BlackboardPropertyName, object>>, ICollection,
+		IReadOnlyCollection<KeyValuePair<BlackboardPropertyName, object>>
 	{
 		/// <summary>
 		/// Value type to table of that type dictionary.
@@ -46,9 +47,11 @@ namespace Zor.SimpleBlackboard.Core
 
 		int ICollection<KeyValuePair<BlackboardPropertyName, object>>.Count => propertiesCount;
 
-		bool ICollection<KeyValuePair<BlackboardPropertyName, object>>.IsReadOnly => false;
-
 		int ICollection.Count => propertiesCount;
+
+		int IReadOnlyCollection<KeyValuePair<BlackboardPropertyName, object>>.Count => propertiesCount;
+
+		bool ICollection<KeyValuePair<BlackboardPropertyName, object>>.IsReadOnly => false;
 
 		bool ICollection.IsSynchronized => false;
 
@@ -1098,7 +1101,7 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.EndSample();
 		}
 
-		public void CopyTo([NotNull] KeyValuePair<BlackboardPropertyName, object>[] array, int index)
+		public void CopyTo(KeyValuePair<BlackboardPropertyName, object>[] array, int index)
 		{
 			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
 			while (enumerator.MoveNext())
