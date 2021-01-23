@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Multithreading support: different locks are added. The feature is optional and controlled 
    by the define SIMPLE_BLACKBOARD_MULTITHREADING.
+- Blackboard now inherits ICollection interfaces.
 
 ### Changed
 

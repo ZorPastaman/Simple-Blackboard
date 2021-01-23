@@ -988,7 +988,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Copies its properties to <paramref name="blackboard"/>.
+		/// Copies its properties into <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		public void CopyTo([NotNull] Blackboard blackboard)
@@ -1025,7 +1025,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Copies a property of the property name <paramref name="propertyName"/> to <paramref name="blackboard"/>.
+		/// Copies a property of the property name <paramref name="propertyName"/> into <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyName">Property to copy.</param>
@@ -1047,7 +1047,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Copies properties of the property names <paramref name="propertyNames"/> to <paramref name="blackboard"/>.
+		/// Copies properties of the property names <paramref name="propertyNames"/> into <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyNames">Properties to copy.</param>
@@ -1074,7 +1074,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Copies properties of the property names <paramref name="propertyNames"/> to <paramref name="blackboard"/>.
+		/// Copies properties of the property names <paramref name="propertyNames"/> into <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyNames">Properties to copy.</param>
@@ -1101,8 +1101,15 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.EndSample();
 		}
 
+		/// <summary>
+		/// Copies its properties into the <paramref name="array"/> starting at the <paramref name="index"/>.
+		/// </summary>
+		/// <param name="array">Destination.</param>
+		/// <param name="index">Starting index.</param>
 		public void CopyTo(KeyValuePair<BlackboardPropertyName, object>[] array, int index)
 		{
+			Profiler.BeginSample("Blackboard.CopyTo(KeyValuePair[], int)");
+
 			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
 			while (enumerator.MoveNext())
 			{
@@ -1113,10 +1120,19 @@ namespace Zor.SimpleBlackboard.Core
 					m_tables[current.Value].GetObjectValue(propertyName));
 			}
 			enumerator.Dispose();
+
+			Profiler.EndSample();
 		}
 
+		/// <summary>
+		/// Copies its properties into the <paramref name="array"/> starting at the <paramref name="index"/>.
+		/// </summary>
+		/// <param name="array">Destination.</param>
+		/// <param name="index">Starting index.</param>
 		public void CopyTo([NotNull] object[] array, int index)
 		{
+			Profiler.BeginSample("Blackboard.CopyTo(object[], int)");
+
 			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
 			while (enumerator.MoveNext())
 			{
@@ -1127,10 +1143,23 @@ namespace Zor.SimpleBlackboard.Core
 					m_tables[current.Value].GetObjectValue(propertyName));
 			}
 			enumerator.Dispose();
+
+			Profiler.EndSample();
 		}
 
+		/// <summary>
+		/// Copies its properties into the <paramref name="array"/> starting at the <paramref name="index"/>.
+		/// </summary>
+		/// <param name="array">Destination.</param>
+		/// <param name="index">Starting index.</param>
+		/// <remarks>
+		/// Arrays of types <see cref="KeyValuePair{BlackboardPropertyName,Object}"/> and <see cref="object"/>
+		/// are supported only.
+		/// </remarks>
 		public void CopyTo(Array array, int index)
 		{
+			Profiler.BeginSample("Blackboard.CopyTo(Array, int)");
+
 			switch (array)
 			{
 				case KeyValuePair<BlackboardPropertyName, object>[] pairs:
@@ -1143,9 +1172,20 @@ namespace Zor.SimpleBlackboard.Core
 					CopyTo(objects, index);
 					break;
 				}
+				default:
+					BlackboardDebug.LogWarning($"[Blackboard] Can't copy to the array because its type is not '{typeof(KeyValuePair<BlackboardPropertyName, object>).FullName}' or '{typeof(object).FullName}'");
+					break;
 			}
+
+			Profiler.EndSample();
 		}
 
+		/// <summary>
+		/// Gets an enumerator of all properties of <see cref="Blackboard"/>.
+		/// </summary>
+		/// <returns>
+		/// Enumerator of all properties of <see cref="Blackboard"/>.
+		/// </returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public Enumerator GetEnumerator()
 		{
@@ -1274,6 +1314,9 @@ namespace Zor.SimpleBlackboard.Core
 			return table;
 		}
 
+		/// <summary>
+		/// Enumerator of all properties of a <see cref="Blackboard"/>.
+		/// </summary>
 		public struct Enumerator : IEnumerator<KeyValuePair<BlackboardPropertyName, object>>
 		{
 			[NotNull] private readonly Blackboard m_blackboard;
@@ -1287,19 +1330,26 @@ namespace Zor.SimpleBlackboard.Core
 				m_current = new KeyValuePair<BlackboardPropertyName, object>();
 			}
 
+			/// <inheritdoc/>
 			public KeyValuePair<BlackboardPropertyName, object> Current
 			{
 				[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 				get => m_current;
 			}
 
+			/// <inheritdoc/>
 			object IEnumerator.Current =>
 				new KeyValuePair<BlackboardPropertyName, object>(m_current.Key, m_current.Value);
 
+			/// <inheritdoc/>
 			public bool MoveNext()
 			{
+				Profiler.BeginSample("Blackboard.Enumerator.MoveNext");
+
 				if (!m_enumerator.MoveNext())
 				{
+					Profiler.EndSample();
+
 					return false;
 				}
 
@@ -1309,9 +1359,12 @@ namespace Zor.SimpleBlackboard.Core
 					propertyName,
 					m_blackboard.m_tables[current.Value].GetObjectValue(propertyName));
 
+				Profiler.EndSample();
+
 				return true;
 			}
 
+			/// <inheritdoc/>
 			void IEnumerator.Reset()
 			{
 				m_enumerator.Dispose();
@@ -1319,6 +1372,7 @@ namespace Zor.SimpleBlackboard.Core
 				m_current = new KeyValuePair<BlackboardPropertyName, object>();
 			}
 
+			/// <inheritdoc/>
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			public void Dispose()
 			{

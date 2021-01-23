@@ -621,7 +621,7 @@ namespace Zor.SimpleBlackboard.Tests
 		}
 
 		[Test]
-		public static void CopyToTests()
+		public static void CopyToBlackboardTests()
 		{
 			var fromBlackboard = new Blackboard();
 			var toBlackboard = new Blackboard();
@@ -652,6 +652,26 @@ namespace Zor.SimpleBlackboard.Tests
 			CopyToTest(fromBlackboard, toBlackboard, new GameObject());
 			CopyToTest(fromBlackboard, toBlackboard, 1);
 			CopyToTest(fromBlackboard, toBlackboard, new List<object>());
+		}
+
+		[Test]
+		public static void CopyToArraysTests()
+		{
+			var blackboard = new Blackboard();
+			var array = new KeyValuePair<BlackboardPropertyName, object>[0];
+
+			CopyToTest(blackboard, new object[]
+			{
+				3, 5, 5f, 6.08f,
+				new GameObject(), new GameObject().AddComponent<Rigidbody>(),
+				new List<object>(), new Dictionary<object, object>()
+			}, array);
+			CopyToTest(blackboard, new object[]
+			{
+				new List<int>(), new Dictionary<int, int>(),
+				-10, 50, -55f, -102.2f, 555f,
+				new GameObject(), new GameObject().AddComponent<Rigidbody>()
+			});
 		}
 
 		[Test]
@@ -1545,6 +1565,49 @@ namespace Zor.SimpleBlackboard.Tests
 			Assert.IsTrue(toBlackboard.TryGetClassValue(propertyName, out object containedValue)
 				&& value.Equals(containedValue),
 				$"Blackboard has a wrong property of name {propertyName.ToString()}");
+		}
+
+		private static void CopyToTest([NotNull] Blackboard blackboard, [NotNull] object[] values,
+			[NotNull] KeyValuePair<BlackboardPropertyName, object>[] array, int index = 0)
+		{
+			int valuesCount = values.Length;
+			var propertyNames = new BlackboardPropertyName[valuesCount];
+
+			for (int i = 0; i < valuesCount; ++i)
+			{
+				propertyNames[i] = new BlackboardPropertyName(values[i].GetType().FullName + " " + i.ToString());
+			}
+
+			for (int i = 0; i < valuesCount; ++i)
+			{
+				blackboard.SetClassValue(propertyNames[i], values[i]);
+			}
+
+			Array.Resize(ref array, blackboard.propertiesCount + index);
+			blackboard.CopyTo(array, index);
+
+			for (int i = index, count = array.Length; i < count; ++i)
+			{
+				KeyValuePair<BlackboardPropertyName, object> property = array[i];
+				Assert.IsTrue(blackboard.TryGetObjectValue(property.Key, out object value)
+					&& value.Equals(property.Value),
+					$"Blackboard doesn't have a property {property.ToString()} existing in the copy array.");
+			}
+		}
+
+		private static void CopyToTest([NotNull] Blackboard blackboard,
+			[NotNull] object[] array, int index = 0)
+		{
+			Array.Resize(ref array, blackboard.propertiesCount + index);
+			blackboard.CopyTo(array, index);
+
+			for (int i = index, count = array.Length; i < count; ++i)
+			{
+				var property = (KeyValuePair<BlackboardPropertyName, object>)array[i];
+				Assert.IsTrue(blackboard.TryGetObjectValue(property.Key, out object value)
+					&& value.Equals(property.Value),
+					$"Blackboard doesn't have a property {property.ToString()} existing in the copy array.");
+			}
 		}
 	}
 }
