@@ -10,7 +10,7 @@ namespace Zor.SimpleBlackboard.Components
 {
 	/// <summary>
 	/// Pair of a property name and a <see cref="Component"/> reference.
-	/// It's used in <see cref="BlackboardContainer"/> to save references to a local component.
+	/// It's used in <see cref="SimpleBlackboardContainer"/> to save references to a local component.
 	/// </summary>
 	[Serializable]
 	public struct ComponentReference : IEquatable<ComponentReference>

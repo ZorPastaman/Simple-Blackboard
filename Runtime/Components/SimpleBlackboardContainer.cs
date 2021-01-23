@@ -13,13 +13,13 @@ namespace Zor.SimpleBlackboard.Components
 	/// Container of <see cref="Zor.SimpleBlackboard.Core.Blackboard"/> for using that as
 	/// <see cref="UnityEngine.Component"/>.
 	/// </summary>
-	[AddComponentMenu(AddComponentConstants.SimpleBlackboardFolder + "Blackboard Container")]
-	public sealed class BlackboardContainer : MonoBehaviour
+	[AddComponentMenu(AddComponentConstants.SimpleBlackboardFolder + "Simple Blackboard Container")]
+	public sealed class SimpleBlackboardContainer : MonoBehaviour
 	{
 #pragma warning disable CS0649
 		[SerializeField,
 		Tooltip("Array of serialized properties for Blackboard.\nIt is automatically applied to Blackboard on Awake.")]
-		private SerializedContainer[] m_SerializedContainers;
+		private SimpleSerializedContainer[] m_SerializedContainers;
 		[SerializeField,
 		Tooltip("Array of serialized references to local components for Blackboard.\nIt is automatically applied to Blackboard on Awake.")]
 		private ComponentReference[] m_ComponentReferences;
@@ -41,7 +41,7 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// How many serialized containers this <see cref="BlackboardContainer"/> depends on.
+		/// How many serialized containers this <see cref="SimpleBlackboardContainer"/> depends on.
 		/// </summary>
 		public int serializedContainersCount
 		{
@@ -50,7 +50,7 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// How many component references this <see cref="BlackboardContainer"/> depends on.
+		/// How many component references this <see cref="SimpleBlackboardContainer"/> depends on.
 		/// </summary>
 		public int componentReferencesCount
 		{
@@ -59,16 +59,16 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// Gets a <see cref="SerializedContainer"/> at the index <paramref name="index"/>.
+		/// Gets a <see cref="SimpleSerializedContainer"/> at the index <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns><see cref="SerializedContainer"/> at the index <paramref name="index"/>.</returns>
+		/// <returns><see cref="SimpleSerializedContainer"/> at the index <paramref name="index"/>.</returns>
 		/// <remarks>
 		/// If you change a gotten <see cref="SetSerializedContainer"/>,
 		/// you need to call <see cref="RecreateBlackboard"/> to apply changes.
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
-		public SerializedContainer GetSerializedContainer(int index)
+		public SimpleSerializedContainer GetSerializedContainer(int index)
 		{
 			return m_SerializedContainers[index];
 		}
@@ -82,7 +82,7 @@ namespace Zor.SimpleBlackboard.Components
 		/// You need to call <see cref="RecreateBlackboard"/> to apply changes.
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetSerializedContainer([NotNull] SerializedContainer serializedContainer, int index)
+		public void SetSerializedContainer([NotNull] SimpleSerializedContainer serializedContainer, int index)
 		{
 			m_SerializedContainers[index] = serializedContainer;
 		}
@@ -95,7 +95,7 @@ namespace Zor.SimpleBlackboard.Components
 		/// You need to call <see cref="RecreateBlackboard"/> to apply changes.
 		/// </remarks>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetSerializedContainers([NotNull] SerializedContainer[] serializedContainers)
+		public void SetSerializedContainers([NotNull] SimpleSerializedContainer[] serializedContainers)
 		{
 			m_SerializedContainers = serializedContainers;
 		}

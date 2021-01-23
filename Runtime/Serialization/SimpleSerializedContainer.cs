@@ -15,7 +15,7 @@ namespace Zor.SimpleBlackboard.Serialization
 	/// <see cref="StructSerializedValueSerializedTable{T}"/>, <see cref="ClassGeneratedValueSerializedTable{T}"/>
 	/// or <see cref="ClassSerializedValueSerializedTable{T}"/>.</para>
 	/// </summary>
-	public abstract class SerializedContainer : ScriptableObject
+	public abstract class SimpleSerializedContainer : ScriptableObject
 	{
 		/// <summary>
 		/// Applies its properties to <paramref name="blackboard"/>.

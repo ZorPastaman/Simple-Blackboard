@@ -99,7 +99,7 @@ namespace Zor.SimpleBlackboard.Components
 			for (int i = 0, count = serializedContainersProperty.arraySize; i < count; ++i)
 			{
 				SerializedProperty serializedContainerProperty = serializedContainersProperty.GetArrayElementAtIndex(i);
-				var serializedContainer = serializedContainerProperty.objectReferenceValue as SerializedContainer;
+				var serializedContainer = serializedContainerProperty.objectReferenceValue as SimpleSerializedContainer;
 
 				if (serializedContainer == null)
 				{

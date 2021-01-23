@@ -10,7 +10,7 @@ using Zor.SimpleBlackboard.Serialization;
 namespace Zor.SimpleBlackboard.Helpers
 {
 	/// <summary>
-	/// A collection of static methods that allow to easily apply a <see cref="SerializedContainer"/>
+	/// A collection of static methods that allow to easily apply a <see cref="SimpleSerializedContainer"/>
 	/// to a <see cref="Blackboard"/>.
 	/// </summary>
 	public static class DeserializationHelper
@@ -21,7 +21,7 @@ namespace Zor.SimpleBlackboard.Helpers
 		/// </summary>
 		/// <param name="serializedContainer"></param>
 		/// <returns>New <see cref="Blackboard"/> with applied <paramref name="serializedContainer"/>.</returns>
-		public static Blackboard Deserialize([NotNull] SerializedContainer serializedContainer)
+		public static Blackboard Deserialize([NotNull] SimpleSerializedContainer serializedContainer)
 		{
 			return Deserialize(serializedContainer, new Blackboard());
 		}
@@ -33,7 +33,7 @@ namespace Zor.SimpleBlackboard.Helpers
 		/// <param name="blackboard"></param>
 		/// <returns><paramref name="blackboard"/> after applying <paramref name="serializedContainer"/>.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Blackboard Deserialize([NotNull] SerializedContainer serializedContainer,
+		public static Blackboard Deserialize([NotNull] SimpleSerializedContainer serializedContainer,
 			[NotNull] Blackboard blackboard)
 		{
 			serializedContainer.Apply(blackboard);
@@ -46,7 +46,7 @@ namespace Zor.SimpleBlackboard.Helpers
 		/// </summary>
 		/// <param name="serializedContainers"></param>
 		/// <returns>New <see cref="Blackboard"/> with applied <paramref name="serializedContainers"/>.</returns>
-		public static Blackboard Deserialize([NotNull] SerializedContainer[] serializedContainers)
+		public static Blackboard Deserialize([NotNull] SimpleSerializedContainer[] serializedContainers)
 		{
 			return Deserialize(serializedContainers, new Blackboard());
 		}
@@ -57,12 +57,12 @@ namespace Zor.SimpleBlackboard.Helpers
 		/// <param name="serializedContainers"></param>
 		/// <param name="blackboard"></param>
 		/// <returns><paramref name="blackboard"/> after applying <paramref name="serializedContainers"/>.</returns>
-		public static Blackboard Deserialize([NotNull] SerializedContainer[] serializedContainers,
+		public static Blackboard Deserialize([NotNull] SimpleSerializedContainer[] serializedContainers,
 			[NotNull] Blackboard blackboard)
 		{
 			for (int i = 0, count = serializedContainers.Length; i < count; ++i)
 			{
-				SerializedContainer container = serializedContainers[i];
+				SimpleSerializedContainer container = serializedContainers[i];
 
 				if (container == null)
 				{

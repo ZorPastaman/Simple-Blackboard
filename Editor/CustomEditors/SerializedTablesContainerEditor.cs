@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace Zor.SimpleBlackboard.Serialization
 {
-	[CustomEditor(typeof(SerializedTablesContainer))]
+	[CustomEditor(typeof(SimpleSerializedTablesContainer))]
 	public sealed class SerializedTablesContainerEditor : Editor
 	{
 		private const string SerializedTablesPropertyName = "m_SerializedTables";

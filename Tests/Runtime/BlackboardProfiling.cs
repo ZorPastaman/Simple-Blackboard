@@ -14,7 +14,7 @@ namespace Zor.SimpleBlackboard.Tests
 		private const int ArrayLength = 100;
 
 #pragma warning disable CS0649
-		[SerializeField] private BlackboardContainer m_BlackboardContainer;
+		[SerializeField] private SimpleBlackboardContainer m_BlackboardContainer;
 		[SerializeField] private bool m_NewPropertyNamePerValue;
 #pragma warning restore CS0649
 

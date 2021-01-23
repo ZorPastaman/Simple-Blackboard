@@ -9,7 +9,7 @@ namespace Zor.SimpleBlackboard.Components
 {
 	/// <summary>
 	/// Useful serializable struct for referencing a property in <see cref="Zor.SimpleBlackboard.Core.Blackboard"/>
-	/// in <see cref="Zor.SimpleBlackboard.Components.BlackboardContainer"/>. It has a special editor.
+	/// in <see cref="SimpleBlackboardContainer"/>. It has a special editor.
 	/// </summary>
 	/// <remarks>
 	/// Usually it's used in <see cref="UnityEngine.Component"/>.
@@ -18,12 +18,12 @@ namespace Zor.SimpleBlackboard.Components
 	public struct BlackboardPropertyReference : IEquatable<BlackboardPropertyReference>
 	{
 #pragma warning disable CS0649
-		[SerializeField, NotNull] private BlackboardContainer m_BlackboardContainer;
+		[SerializeField, NotNull] private SimpleBlackboardContainer m_BlackboardContainer;
 		[SerializeField, NotNull] private string m_PropertyName;
 #pragma warning restore CS0649
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public BlackboardPropertyReference([NotNull] BlackboardContainer blackboardContainer,
+		public BlackboardPropertyReference([NotNull] SimpleBlackboardContainer blackboardContainer,
 			[NotNull] string propertyName)
 		{
 			m_BlackboardContainer = blackboardContainer;
@@ -31,7 +31,7 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		[NotNull]
-		public BlackboardContainer blackboardContainer
+		public SimpleBlackboardContainer blackboardContainer
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 			get => m_BlackboardContainer;

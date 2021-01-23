@@ -13,8 +13,12 @@ namespace Zor.SimpleBlackboard.Serialization
 	/// <summary>
 	/// Container of serialized properties for a <see cref="Zor.SimpleBlackboard.Core.Blackboard"/>.
 	/// </summary>
-	[CreateAssetMenu(menuName = "Simple Blackboard/Serialized Tables Container", fileName = "SerializedTablesContainer", order = 445)]
-	public sealed class SerializedTablesContainer : SerializedContainer
+	[CreateAssetMenu(
+		menuName = "Simple Blackboard/Simple Serialized Tables Container",
+		fileName = "SimpleSerializedTablesContainer",
+		order = 445
+	)]
+	public sealed class SimpleSerializedTablesContainer : SimpleSerializedContainer
 	{
 #pragma warning disable CS0649
 		[SerializeField, HideInInspector] private SerializedTable_Base[] m_SerializedTables;

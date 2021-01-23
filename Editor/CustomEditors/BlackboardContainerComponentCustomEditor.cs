@@ -5,7 +5,7 @@ using Zor.SimpleBlackboard.EditorTools;
 
 namespace Zor.SimpleBlackboard.Components
 {
-	[CustomEditor(typeof(BlackboardContainer))]
+	[CustomEditor(typeof(SimpleBlackboardContainer))]
 	public sealed class BlackboardContainerComponentCustomEditor : Editor
 	{
 		private bool m_constantRepaint;
@@ -22,7 +22,7 @@ namespace Zor.SimpleBlackboard.Components
 			EditorGUILayout.Separator();
 			m_constantRepaint = EditorGUILayout.Toggle("Require Constant Repaint", m_constantRepaint);
 
-			var blackboardContainer = (BlackboardContainer)target;
+			var blackboardContainer = (SimpleBlackboardContainer)target;
 			BlackboardEditor.DrawBlackboard(blackboardContainer.blackboard);
 		}
 
