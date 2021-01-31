@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using Zor.SimpleBlackboard.Debugging;
+using Zor.SimpleBlackboard.Helpers;
 
 namespace Zor.SimpleBlackboard.Serialization
 {

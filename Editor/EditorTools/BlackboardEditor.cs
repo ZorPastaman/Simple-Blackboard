@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using Zor.SimpleBlackboard.Core;
@@ -22,7 +23,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// Draws an editor for <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">An editor is drawn for this.</param>
-		public static void DrawBlackboard(Blackboard blackboard)
+		public static void DrawBlackboard([CanBeNull] Blackboard blackboard)
 		{
 			if (blackboard == null)
 			{

@@ -3,7 +3,7 @@
 using JetBrains.Annotations;
 using UnityEditor;
 
-namespace Zor.SimpleBlackboard
+namespace Zor.SimpleBlackboard.Helpers
 {
 	internal static class SerializedPropertyHelper
 	{

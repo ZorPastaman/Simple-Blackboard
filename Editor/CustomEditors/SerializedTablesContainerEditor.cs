@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using Zor.SimpleBlackboard.EditorTools;
+using Zor.SimpleBlackboard.Helpers;
 using Object = UnityEngine.Object;
 
 namespace Zor.SimpleBlackboard.Serialization
