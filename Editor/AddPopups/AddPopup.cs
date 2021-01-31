@@ -40,7 +40,7 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 
 		private void OnEnable()
 		{
-			m_closeButtonIcon = EditorGUIUtility.IconContent("LookDevClose");
+			m_closeButtonIcon = EditorGUIUtility.IconContent("d_winbtn_win_close");
 			m_closeButtonOptions = new[] { GUILayout.Width(32f) };
 		}
 
