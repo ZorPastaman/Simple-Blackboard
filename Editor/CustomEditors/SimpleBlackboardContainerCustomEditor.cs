@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using System;
 using UnityEditor;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.EditorTools;
@@ -10,9 +11,8 @@ namespace Zor.SimpleBlackboard.Components
 	[CustomEditor(typeof(SimpleBlackboardContainer))]
 	public sealed class SimpleBlackboardContainerCustomEditor : Editor
 	{
-		private const string ConstantRepaintPropertyName = "constantRepaint";
-
 		private Toggle m_requiresConstantRepaint;
+		private Action<PlayModeStateChange> m_onPlayerModeStateChanged;
 
 		public override VisualElement CreateInspectorGUI()
 		{
@@ -24,15 +24,26 @@ namespace Zor.SimpleBlackboard.Components
 			var imguiContainer = new IMGUIContainer(DrawBlackboard);
 			root.Add(imguiContainer);
 
+			EditorApplication.playModeStateChanged -= m_onPlayerModeStateChanged;
+			EditorApplication.playModeStateChanged += m_onPlayerModeStateChanged;
+			OnPlaymodeChanged(EditorApplication.isPlaying);
+
 			return root;
 		}
 
 		public override bool RequiresConstantRepaint()
 		{
-			bool playing = EditorApplication.isPlaying;
-			m_requiresConstantRepaint.style.display = playing ? DisplayStyle.Flex : DisplayStyle.None;
+			return m_requiresConstantRepaint != null && m_requiresConstantRepaint.value;
+		}
 
-			return playing & m_requiresConstantRepaint.value;
+		private void Awake()
+		{
+			m_onPlayerModeStateChanged = OnPlaymodeStateChanged;
+		}
+
+		private void OnDestroy()
+		{
+			EditorApplication.playModeStateChanged -= m_onPlayerModeStateChanged;
 		}
 
 		private void DrawBlackboard()
@@ -44,6 +55,18 @@ namespace Zor.SimpleBlackboard.Components
 
 			var blackboardContainer = (SimpleBlackboardContainer)target;
 			BlackboardEditor.DrawBlackboard(blackboardContainer.blackboard);
+		}
+
+		private void OnPlaymodeStateChanged(PlayModeStateChange playModeStateChange)
+		{
+			OnPlaymodeChanged(playModeStateChange == PlayModeStateChange.EnteredPlayMode);
+		}
+
+		private void OnPlaymodeChanged(bool isPlaying)
+		{
+			m_requiresConstantRepaint.style.display = isPlaying
+				? DisplayStyle.Flex
+				: DisplayStyle.None;
 		}
 	}
 }

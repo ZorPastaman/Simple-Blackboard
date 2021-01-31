@@ -20,7 +20,7 @@ namespace Zor.SimpleBlackboard.Helpers
 				do
 				{
 					var propertyField = new PropertyField(iterator) {name = iterator.propertyPath};
-					propertyField.SetEnabled(iterator.editable);
+					propertyField.SetEnabled(iterator.editable & iterator.name != "m_Script");
 					root.Add(propertyField);
 				} while (iterator.NextVisible(false));
 			}
