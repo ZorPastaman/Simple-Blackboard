@@ -26,6 +26,6 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// Draws an editor for <see cref="BlackboardTable{T}"/> in <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">For its <see cref="BlackboardTable{T}"/> the editor is drawn.</param>
-		public abstract void Draw(Blackboard blackboard);
+		public abstract void Draw([NotNull] Blackboard blackboard);
 	}
 }

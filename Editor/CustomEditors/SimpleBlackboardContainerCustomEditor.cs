@@ -11,18 +11,22 @@ namespace Zor.SimpleBlackboard.Components
 	[CustomEditor(typeof(SimpleBlackboardContainer))]
 	public sealed class SimpleBlackboardContainerCustomEditor : Editor
 	{
-		private Toggle m_requiresConstantRepaint;
+		private Toggle m_requiresConstantRepaintToggle;
+		private Foldout m_blackboardFoldout;
 		private Action<PlayModeStateChange> m_onPlayerModeStateChanged;
 
 		public override VisualElement CreateInspectorGUI()
 		{
 			VisualElement root = UIElementsHelper.CreateDefaultObjectGUI(serializedObject);
 
-			m_requiresConstantRepaint = new Toggle("Require Constant Repaint");
-			root.Add(m_requiresConstantRepaint);
+			m_requiresConstantRepaintToggle = new Toggle("Require Constant Repaint");
+			root.Add(m_requiresConstantRepaintToggle);
+
+			m_blackboardFoldout = new Foldout {text = "Blackboard"};
+			root.Add(m_blackboardFoldout);
 
 			var imguiContainer = new IMGUIContainer(DrawBlackboard);
-			root.Add(imguiContainer);
+			m_blackboardFoldout.Add(imguiContainer);
 
 			EditorApplication.playModeStateChanged -= m_onPlayerModeStateChanged;
 			EditorApplication.playModeStateChanged += m_onPlayerModeStateChanged;
@@ -33,7 +37,7 @@ namespace Zor.SimpleBlackboard.Components
 
 		public override bool RequiresConstantRepaint()
 		{
-			return m_requiresConstantRepaint != null && m_requiresConstantRepaint.value;
+			return m_requiresConstantRepaintToggle != null && m_requiresConstantRepaintToggle.value;
 		}
 
 		private void Awake()
@@ -48,11 +52,6 @@ namespace Zor.SimpleBlackboard.Components
 
 		private void DrawBlackboard()
 		{
-			if (!EditorApplication.isPlaying)
-			{
-				return;
-			}
-
 			var blackboardContainer = (SimpleBlackboardContainer)target;
 			BlackboardEditor.DrawBlackboard(blackboardContainer.blackboard);
 		}
@@ -64,9 +63,12 @@ namespace Zor.SimpleBlackboard.Components
 
 		private void OnPlaymodeChanged(bool isPlaying)
 		{
-			m_requiresConstantRepaint.style.display = isPlaying
+			StyleEnum<DisplayStyle> displayStyle = isPlaying
 				? DisplayStyle.Flex
 				: DisplayStyle.None;
+
+			m_requiresConstantRepaintToggle.style.display = displayStyle;
+			m_blackboardFoldout.style.display = displayStyle;
 		}
 	}
 }

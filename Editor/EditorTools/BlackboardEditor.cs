@@ -49,7 +49,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		}
 
-		private static void DrawTables(Blackboard blackboard)
+		private static void DrawTables([NotNull] Blackboard blackboard)
 		{
 			EditorGUI.BeginChangeCheck();
 
@@ -94,7 +94,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			EditorGUILayout.EndHorizontal();
 		}
 
-		private static void DrawAdd(Blackboard blackboard)
+		private static void DrawAdd([NotNull] Blackboard blackboard)
 		{
 			EditorGUILayout.Separator();
 
