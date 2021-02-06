@@ -11,6 +11,11 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	{
 		public override Gradient DrawValue(string label, Gradient value)
 		{
+			if (value == null)
+			{
+				value = new Gradient();
+			}
+
 			return EditorGUILayout.GradientField(label, value);
 		}
 	}

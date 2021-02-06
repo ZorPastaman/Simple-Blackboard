@@ -1,7 +1,9 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardTableEditors
@@ -11,14 +13,7 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 	/// </summary>
 	internal sealed class AddPopup : EditorWindow
 	{
-		private GUIContent m_closeButtonIcon;
-		private GUILayoutOption[] m_closeButtonOptions;
-
-		private Blackboard m_blackboard;
-		private string m_key;
-		private IAddPopupValue m_addPopupValue;
-
-		private Vector2 m_scrollPos;
+		private TextField m_keyTextField;
 
 		/// <summary>
 		/// Sets necessary parameters to <see cref="AddPopup"/>. Call this before first <see cref="OnGUI"/>.
@@ -29,48 +24,58 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 		/// <param name="popupPosition">Position of the popup in the editor space.</param>
 		public void Setup(Blackboard blackboard, string key, IAddPopupValue addPopupValue, Vector2 popupPosition)
 		{
-			m_blackboard = blackboard;
-			m_key = key;
-			m_addPopupValue = addPopupValue;
 			var size = new Vector2(450f, EditorGUIUtility.singleLineHeight * 8f
 				+ EditorGUIUtility.standardVerticalSpacing * 6f);
 
 			ShowAsDropDown(new Rect(popupPosition, size), size);
-		}
 
-		private void OnEnable()
-		{
-			m_closeButtonIcon = EditorGUIUtility.IconContent("d_winbtn_win_close");
-			m_closeButtonOptions = new[] { GUILayout.Width(32f) };
-		}
+			VisualElement root = rootVisualElement;
 
-		private void OnGUI()
-		{
-			EditorGUILayout.BeginHorizontal();
+			var toolbar = new Toolbar();
+			toolbar.style.justifyContent = Justify.SpaceBetween;
+			root.Add(toolbar);
 
-			EditorGUILayout.LabelField(m_addPopupValue.valueType.Name, EditorStyles.toolbarButton);
+			var titleLabel = new Label(addPopupValue.valueType.Name);
+			IStyle titleLabelStyle = titleLabel.style;
+			titleLabelStyle.unityFontStyleAndWeight = FontStyle.Bold;
+			titleLabelStyle.unityTextAlign = TextAnchor.MiddleLeft;
+			toolbar.Add(titleLabel);
 
-			if (GUILayout.Button(m_closeButtonIcon, EditorStyles.toolbarButton, m_closeButtonOptions))
+			var closeButton = new ToolbarButton(Close);
+			IStyle closeButtonStyle = closeButton.style;
+			closeButtonStyle.width = 32f;
+			closeButtonStyle.alignItems = Align.Center;
+			toolbar.Add(closeButton);
+
+			GUIContent closeButtonIcon = EditorGUIUtility.IconContent("d_winbtn_win_close");
+			if (closeButtonIcon != null && closeButtonIcon.image != null)
 			{
-				Close();
-				return;
+				Texture image = closeButtonIcon.image;
+				var closeButtonImage = new Image {image = image};
+				IStyle closeButtonImageStyle = closeButtonImage.style;
+				closeButtonImageStyle.height = image.height;
+				closeButtonImageStyle.width = image.width;
+				closeButton.Add(closeButtonImage);
+			}
+			else
+			{
+				closeButton.text = "x";
+				closeButtonStyle.unityTextAlign = TextAnchor.MiddleCenter;
+				closeButtonStyle.fontSize = 18;
 			}
 
-			EditorGUILayout.EndHorizontal();
+			m_keyTextField = new TextField("Key") {value = key};
+			root.Add(m_keyTextField);
 
-			m_key = EditorGUILayout.TextField("Key", m_key);
+			var addPopupValueContainer = new IMGUIContainer(() => addPopupValue.DrawValue("Value"));
+			root.Add(addPopupValueContainer);
 
-			m_scrollPos = EditorGUILayout.BeginScrollView(m_scrollPos);
-
-			m_addPopupValue.DrawValue("Value");
-
-			EditorGUILayout.EndScrollView();
-
-			if (GUILayout.Button("OK"))
+			var okButton = new Button(() =>
 			{
-				m_addPopupValue.Set(m_key, m_blackboard);
+				addPopupValue.Set(m_keyTextField.value, blackboard);
 				Close();
-			}
+			}) {text = "OK"};
+			root.Add(okButton);
 		}
 	}
 }
