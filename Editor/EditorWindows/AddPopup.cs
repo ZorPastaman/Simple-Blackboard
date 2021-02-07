@@ -4,9 +4,10 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zor.SimpleBlackboard.BlackboardValueViews;
 using Zor.SimpleBlackboard.Core;
 
-namespace Zor.SimpleBlackboard.BlackboardTableEditors
+namespace Zor.SimpleBlackboard.EditorWindows
 {
 	/// <summary>
 	/// Popup used for adding new properties to <see cref="Zor.SimpleBlackboard.Core.Blackboard"/> in the editor.
@@ -14,19 +15,19 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 	internal sealed class AddPopup : EditorWindow
 	{
 		private TextField m_keyTextField;
+		private VisualElement m_valueField;
 
 		/// <summary>
-		/// Sets necessary parameters to <see cref="AddPopup"/>. Call this before first <see cref="OnGUI"/>.
+		/// Sets necessary parameters to <see cref="AddPopup"/>.
 		/// </summary>
 		/// <param name="blackboard">New property is added to this.</param>
-		/// <param name="key">Initial key. It can be changed in <see cref="OnGUI"/>.</param>
-		/// <param name="addPopupValue">Value wrapper.</param>
+		/// <param name="key">Initial key. It can be changed in GUI.</param>
+		/// <param name="valueView">Value view wrapper.</param>
 		/// <param name="popupPosition">Position of the popup in the editor space.</param>
-		public void Setup(Blackboard blackboard, string key, IAddPopupValue addPopupValue, Vector2 popupPosition)
+		public void Setup(Blackboard blackboard, string key, IBlackboardValueView valueView, Vector2 popupPosition)
 		{
 			var size = new Vector2(450f, EditorGUIUtility.singleLineHeight * 8f
 				+ EditorGUIUtility.standardVerticalSpacing * 6f);
-
 			ShowAsDropDown(new Rect(popupPosition, size), size);
 
 			VisualElement root = rootVisualElement;
@@ -35,7 +36,7 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 			toolbar.style.justifyContent = Justify.SpaceBetween;
 			root.Add(toolbar);
 
-			var titleLabel = new Label(addPopupValue.valueType.Name);
+			var titleLabel = new Label(valueView.valueType.Name);
 			IStyle titleLabelStyle = titleLabel.style;
 			titleLabelStyle.unityFontStyleAndWeight = FontStyle.Bold;
 			titleLabelStyle.unityTextAlign = TextAnchor.MiddleLeft;
@@ -64,15 +65,18 @@ namespace Zor.SimpleBlackboard.BlackboardTableEditors
 				closeButtonStyle.fontSize = 18;
 			}
 
-			m_keyTextField = new TextField("Key") {value = key};
-			root.Add(m_keyTextField);
+			var scrollView = new ScrollView();
+			root.Add(scrollView);
 
-			var addPopupValueContainer = new IMGUIContainer(() => addPopupValue.DrawValue("Value"));
-			root.Add(addPopupValueContainer);
+			m_keyTextField = new TextField("Key") {value = key};
+			scrollView.Add(m_keyTextField);
+
+			m_valueField = valueView.CreateVisualElement("Value");
+			scrollView.Add(m_valueField);
 
 			var okButton = new Button(() =>
 			{
-				addPopupValue.Set(m_keyTextField.value, blackboard);
+				valueView.SetValue(m_keyTextField.value, m_valueField, blackboard);
 				Close();
 			}) {text = "OK"};
 			root.Add(okButton);

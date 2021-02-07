@@ -2,6 +2,8 @@
 
 using System;
 using JetBrains.Annotations;
+using UnityEngine.UIElements;
+using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -15,5 +17,10 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// </summary>
 		[NotNull]
 		Type valueType { get; }
+
+		[NotNull]
+		VisualElement CreateVisualElement([NotNull] string label);
+
+		void SetValue([NotNull] string key, [NotNull] VisualElement visualElement, [NotNull] Blackboard blackboard);
 	}
 }

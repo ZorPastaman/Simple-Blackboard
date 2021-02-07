@@ -6,7 +6,7 @@ using System.Linq;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
-using Zor.SimpleBlackboard.BlackboardTableEditors;
+using Zor.SimpleBlackboard.EditorWindows;
 using Zor.SimpleBlackboard.BlackboardValueViews;
 using Zor.SimpleBlackboard.Core;
 
@@ -90,15 +90,13 @@ namespace Zor.SimpleBlackboard.EditorTools
 				return null;
 			}
 
-			Type addPopupValueType = typeof(AddPopupValue<>).MakeGenericType(valueType);
-			var addPopupValue = (IAddPopupValue)Activator.CreateInstance(addPopupValueType, valueView);
 			AddPopup[] addPopups = Resources.FindObjectsOfTypeAll<AddPopup>();
 			for (int i = 0, count = addPopups.Length; i < count; ++i)
 			{
 				addPopups[i].Close();
 			}
 			var addPopup = ScriptableObject.CreateInstance<AddPopup>();
-			addPopup.Setup(blackboard, key, addPopupValue, position);
+			addPopup.Setup(blackboard, key, valueView, position);
 
 			return addPopup;
 		}

@@ -2,12 +2,31 @@
 
 using JetBrains.Annotations;
 using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
+using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
 	public sealed class UlongBlackboardValueView : BlackboardValueView<ulong>
 	{
+		private static readonly EventCallback<ChangeEvent<long>> s_onValueChanged = OnValueChanged;
+
+		public override VisualElement CreateVisualElement(string label)
+		{
+			var longField = new LongField(label);
+			longField.RegisterValueChangedCallback(s_onValueChanged);
+
+			return longField;
+		}
+
+		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
+		{
+			var longField = (LongField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), (ulong)longField.value);
+		}
+
 		public override ulong DrawValue(string label, ulong value)
 		{
 			long result = EditorGUILayout.LongField(label, (long)value);
@@ -18,6 +37,16 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 			}
 
 			return (ulong)result;
+		}
+
+		private static void OnValueChanged([NotNull] ChangeEvent<long> changeEvent)
+		{
+			var longField = (LongField)changeEvent.target;
+
+			if (longField.value < (long)ulong.MinValue)
+			{
+				longField.value = (long)ulong.MinValue;
+			}
 		}
 	}
 }

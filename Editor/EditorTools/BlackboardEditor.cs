@@ -106,6 +106,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 				Vector2 screenPoint = GUIUtility.GUIToScreenPoint(new Vector2(position.x, position.y));
 
 				BlackboardEditorToolsCollection.GetValueViewTypes(s_tableTypes);
+				s_tableTypes.Sort((left, right) => string.CompareOrdinal(left.Name, right.Name));
 
 				for (int i = 0, count = s_tableTypes.Count; i < count; ++i)
 				{

@@ -1,17 +1,42 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using System;
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEngine;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
+using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
 	public sealed class UintBlackboardValueView : BlackboardValueView<uint>
 	{
+		private static readonly EventCallback<ChangeEvent<long>> s_onValueChanged = OnValueChanged;
+
+		public override VisualElement CreateVisualElement(string label)
+		{
+			var longField = new LongField(label);
+			longField.RegisterValueChangedCallback(s_onValueChanged);
+
+			return longField;
+		}
+
+		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
+		{
+			var longField = (LongField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), (uint)longField.value);
+		}
+
 		public override uint DrawValue(string label, uint value)
 		{
-			return (uint)Mathf.Clamp(EditorGUILayout.IntField(label, (int)value), uint.MinValue, uint.MaxValue);
+			return (uint)Math.Max(Math.Min(EditorGUILayout.LongField(label, value), uint.MaxValue), uint.MinValue);
+		}
+
+		private static void OnValueChanged([NotNull] ChangeEvent<long> changeEvent)
+		{
+			var longField = (LongField)changeEvent.target;
+			longField.value = Math.Max(Math.Min(longField.value, uint.MaxValue), uint.MinValue);
 		}
 	}
 }
