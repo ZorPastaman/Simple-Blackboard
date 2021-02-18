@@ -22,7 +22,9 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// <inheritdoc/>
 		public Type valueType => typeof(T);
 
-		public abstract VisualElement CreateVisualElement(string label);
+		public abstract VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null);
+
+		public abstract void UpdateValue([NotNull] VisualElement visualElement, [CanBeNull] T value);
 
 		public abstract void SetValue(string key, VisualElement visualElement, Blackboard blackboard);
 

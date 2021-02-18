@@ -11,9 +11,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class IntBlackboardValueView : BlackboardValueView<int>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new IntegerField(label);
+			var intField = new IntegerField(label);
+
+			if (blackboardRoot != null)
+			{
+				intField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), intField.value);
+					}
+				});
+			}
+
+			return intField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, int value)
+		{
+			var intField = (IntegerField)visualElement;
+			intField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

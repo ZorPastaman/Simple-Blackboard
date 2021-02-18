@@ -12,9 +12,31 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class QuaternionBlackboardValueView : BlackboardValueView<Quaternion>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new Vector4Field(label);
+			var vector4Field = new Vector4Field(label);
+
+			if (blackboardRoot != null)
+			{
+				vector4Field.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						Vector4 vector = vector4Field.value;
+
+						blackboard.SetStructValue(new BlackboardPropertyName(label),
+							new Quaternion(vector.x, vector.y, vector.z, vector.w));
+					}
+				});
+			}
+
+			return vector4Field;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, Quaternion value)
+		{
+			var vector4Field = (Vector4Field)visualElement;
+			vector4Field.value = new Vector4(value.x, value.y, value.z, value.w);
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

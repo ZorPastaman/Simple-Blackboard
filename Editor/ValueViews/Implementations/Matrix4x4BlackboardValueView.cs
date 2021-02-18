@@ -12,7 +12,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
 			var matrixField = new VisualElement();
 			IStyle matrixFieldStyle = matrixField.style;
@@ -32,7 +32,27 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 				valueElement.Add(row);
 			}
 
+			if (blackboardRoot != null)
+			{
+				matrixField.RegisterCallback<ChangeEvent<Vector4>>(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						SetValue(label, matrixField, blackboard);
+					}
+				});
+			}
+
 			return matrixField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, Matrix4x4 value)
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				var vector4Field = visualElement.Q<Vector4Field>($"row {i.ToString()}");
+				vector4Field.value = value.GetRow(i);
+			}
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

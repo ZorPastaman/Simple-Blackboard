@@ -12,9 +12,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class GradientBlackboardValueView : BlackboardValueView<Gradient>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new GradientField(label);
+			var gradientField = new GradientField(label);
+
+			if (blackboardRoot != null)
+			{
+				gradientField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetClassValue(new BlackboardPropertyName(label), gradientField.value);
+					}
+				});
+			}
+
+			return gradientField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, Gradient value)
+		{
+			var gradientField = (GradientField)visualElement;
+			gradientField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

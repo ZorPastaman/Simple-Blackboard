@@ -11,9 +11,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class FloatBlackboardValueView : BlackboardValueView<float>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new FloatField(label);
+			var floatField = new FloatField(label);
+
+			if (blackboardRoot != null)
+			{
+				floatField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), floatField.value);
+					}
+				});
+			}
+
+			return floatField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, float value)
+		{
+			var floatField = (FloatField)visualElement;
+			floatField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

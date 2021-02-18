@@ -12,9 +12,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class Vector4BlackboardValueView : BlackboardValueView<Vector4>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new Vector4Field(label);
+			var vector4Field = new Vector4Field(label);
+
+			if (blackboardRoot != null)
+			{
+				vector4Field.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), vector4Field.value);
+					}
+				});
+			}
+
+			return vector4Field;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, Vector4 value)
+		{
+			var vector4Field = (Vector4Field)visualElement;
+			vector4Field.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

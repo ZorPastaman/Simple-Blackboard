@@ -19,7 +19,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		Type valueType { get; }
 
 		[NotNull]
-		VisualElement CreateVisualElement([NotNull] string label);
+		VisualElement CreateVisualElement([NotNull] string label, VisualElement blackboardRoot = null);
 
 		void SetValue([NotNull] string key, [NotNull] VisualElement visualElement, [NotNull] Blackboard blackboard);
 	}

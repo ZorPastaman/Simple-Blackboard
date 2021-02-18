@@ -10,9 +10,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class StringBlackboardValueView : BlackboardValueView<string>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new TextField(label);
+			var textField = new TextField(label);
+
+			if (blackboardRoot != null)
+			{
+				textField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetClassValue(new BlackboardPropertyName(label), textField.value);
+					}
+				});
+			}
+
+			return textField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, string value)
+		{
+			var textField = (TextField)visualElement;
+			textField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

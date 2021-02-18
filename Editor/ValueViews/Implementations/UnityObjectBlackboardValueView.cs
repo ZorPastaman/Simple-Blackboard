@@ -14,9 +14,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	/// <typeparam name="T">Value type.</typeparam>
 	public abstract class UnityObjectBlackboardValueView<T> : BlackboardValueView<T> where T : Object
 	{
-		public sealed override VisualElement CreateVisualElement(string label)
+		public sealed override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new ObjectField(label) {objectType = typeof(T), allowSceneObjects = true};
+			var objectField = new ObjectField(label) {objectType = typeof(T), allowSceneObjects = true};
+
+			if (blackboardRoot != null)
+			{
+				objectField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetClassValue(new BlackboardPropertyName(label), objectField.value);
+					}
+				});
+			}
+
+			return objectField;
+		}
+
+		public sealed override void UpdateValue(VisualElement visualElement, T value)
+		{
+			var objectField = (ObjectField)visualElement;
+			objectField.value = value;
 		}
 
 		public sealed override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

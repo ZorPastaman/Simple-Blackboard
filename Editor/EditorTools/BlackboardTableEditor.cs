@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.BlackboardValueViews;
 using Zor.SimpleBlackboard.Core;
 
@@ -16,6 +17,9 @@ namespace Zor.SimpleBlackboard.EditorTools
 	/// <typeparam name="T">Value type.</typeparam>
 	internal abstract class BlackboardTableEditor<T> : BlackboardTableEditor_Base
 	{
+		private const string ContainerElementName = "Container";
+		private const string ChangePropertyElementName = "ChangedProperty";
+
 		private static readonly List<KeyValuePair<BlackboardPropertyName, T>> s_properties =
 			new List<KeyValuePair<BlackboardPropertyName, T>>();
 
@@ -65,12 +69,61 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 					EditorGUILayout.EndVertical();
 
-					if (GUILayout.Button(s_RemoveButtonIcon, s_RemoveButtonOptions))
+					if (GUILayout.Button(EditorGUIUtility.IconContent(RemoveButtonIconContentName),
+						s_RemoveButtonOptions))
 					{
 						blackboard.RemoveObject<T>(key);
 					}
 
 					EditorGUILayout.EndHorizontal();
+				}
+			}
+			finally
+			{
+				s_properties.Clear();
+			}
+		}
+
+		public override VisualElement CreateTable()
+		{
+			var root = new Box();
+
+			var label = new Label(valueType.Name);
+			label.style.unityFontStyleAndWeight = FontStyle.Bold;
+			root.Add(label);
+
+			var container = new VisualElement {name = ContainerElementName};
+			root.Add(container);
+
+			return root;
+		}
+
+		public override void UpdateTable(VisualElement root, VisualElement blackboardRoot,
+			Blackboard blackboard)
+		{
+			try
+			{
+				VisualElement container = root.Q(ContainerElementName);
+				GetProperties(blackboard, s_properties);
+
+				for (int i = container.childCount - 1; i >= 0; --i)
+				{
+					VisualElement propertyElement = container[i];
+
+					if (!ContainsPropertyOfName(propertyElement.name))
+					{
+						container.RemoveAt(i);
+					}
+				}
+
+				for (int i = 0, count = s_properties.Count; i < count; ++i)
+				{
+					KeyValuePair<BlackboardPropertyName, T> property = s_properties[i];
+					BlackboardPropertyName key = property.Key;
+
+					VisualElement propertyElement = container.Q(key.name)
+						?? CreatePropertyElement(container, blackboardRoot, key);
+					m_blackboardValueView.UpdateValue(propertyElement.Q(ChangePropertyElementName), property.Value);
 				}
 			}
 			finally
@@ -96,5 +149,74 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="value">Property value.</param>
 		protected abstract void SetValue([NotNull] Blackboard blackboard,
 			BlackboardPropertyName key, T value);
+
+		private static bool ContainsPropertyOfName([NotNull] string name)
+		{
+			for (int i = 0, count = s_properties.Count; i < count; ++i)
+			{
+				if (s_properties[i].Key.name == name)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		[NotNull]
+		private VisualElement CreatePropertyElement([NotNull] VisualElement container,
+			[NotNull] VisualElement blackboardRoot, BlackboardPropertyName propertyName)
+		{
+			string keyName = propertyName.name;
+
+			var propertyElement = new VisualElement {name = keyName};
+			propertyElement.style.flexDirection = FlexDirection.Row;
+			container.Add(propertyElement);
+
+			VisualElement changePropertyElement = m_blackboardValueView.CreateVisualElement(keyName, blackboardRoot);
+			changePropertyElement.name = ChangePropertyElementName;
+			changePropertyElement.style.flexGrow = 1f;
+			propertyElement.Add(changePropertyElement);
+
+			Button removeButton = CreateRemoveButton(blackboardRoot, propertyName);
+			propertyElement.Add(removeButton);
+
+			return propertyElement;
+		}
+
+		private static Button CreateRemoveButton([NotNull] VisualElement blackboardRoot,
+			BlackboardPropertyName propertyName)
+		{
+			var removeButton = new Button(() =>
+			{
+				if (blackboardRoot.userData is Blackboard blackboard)
+				{
+					blackboard.RemoveObject<T>(propertyName);
+				}
+			});
+
+			IStyle removeButtonStyle = removeButton.style;
+			removeButtonStyle.width = RemoveButtonWidth;
+			removeButtonStyle.justifyContent = Justify.Center;
+
+			GUIContent removeButtonIcon = EditorGUIUtility.IconContent(RemoveButtonIconContentName);
+			if (removeButtonIcon != null && removeButtonIcon.image != null)
+			{
+				Texture image = removeButtonIcon.image;
+				var removeButtonImage = new Image {image = image};
+				IStyle removeButtonImageStyle = removeButtonImage.style;
+				removeButtonImageStyle.height = image.height;
+				removeButtonImageStyle.width = image.width;
+				removeButton.Add(removeButtonImage);
+			}
+			else
+			{
+				removeButton.text = "x";
+				removeButtonStyle.unityTextAlign = TextAnchor.MiddleCenter;
+				removeButtonStyle.fontSize = 18;
+			}
+
+			return removeButton;
+		}
 	}
 }

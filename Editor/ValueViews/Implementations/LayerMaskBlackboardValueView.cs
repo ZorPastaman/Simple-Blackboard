@@ -13,9 +13,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class LayerMaskBlackboardValueView : BlackboardValueView<LayerMask>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new LayerMaskField(label);
+			var layerMaskField = new LayerMaskField(label);
+
+			if (blackboardRoot != null)
+			{
+				layerMaskField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), (LayerMask)layerMaskField.value);
+					}
+				});
+			}
+
+			return layerMaskField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, LayerMask value)
+		{
+			var layerMaskField = (LayerMaskField)visualElement;
+			layerMaskField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

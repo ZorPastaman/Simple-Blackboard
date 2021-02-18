@@ -12,9 +12,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class BoundsIntBlackboardValueView : BlackboardValueView<BoundsInt>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new BoundsIntField(label);
+			var boundsIntField = new BoundsIntField(label);
+
+			if (blackboardRoot != null)
+			{
+				boundsIntField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), boundsIntField.value);
+					}
+				});
+			}
+
+			return boundsIntField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, BoundsInt value)
+		{
+			var boundsIntField = (BoundsIntField)visualElement;
+			boundsIntField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

@@ -11,9 +11,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class LongBlackboardValueView : BlackboardValueView<long>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new LongField(label);
+			var longField = new LongField(label);
+
+			if (blackboardRoot != null)
+			{
+				longField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), longField.value);
+					}
+				});
+			}
+
+			return longField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, long value)
+		{
+			var longField = (LongField)visualElement;
+			longField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

@@ -2,8 +2,8 @@
 
 using System;
 using JetBrains.Annotations;
-using UnityEditor;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.EditorTools
@@ -13,8 +13,9 @@ namespace Zor.SimpleBlackboard.EditorTools
 	/// </summary>
 	internal abstract class BlackboardTableEditor_Base
 	{
-		protected static readonly GUIContent s_RemoveButtonIcon = EditorGUIUtility.IconContent("TreeEditor.Trash");
-		protected static readonly GUILayoutOption[] s_RemoveButtonOptions = { GUILayout.Width(32f) };
+		protected const string RemoveButtonIconContentName = "TreeEditor.Trash";
+		protected const float RemoveButtonWidth = 32f;
+		protected static readonly GUILayoutOption[] s_RemoveButtonOptions = { GUILayout.Width(RemoveButtonWidth) };
 
 		/// <summary>
 		/// Value type of the drawn property.
@@ -27,5 +28,10 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// </summary>
 		/// <param name="blackboard">For its <see cref="BlackboardTable{T}"/> the editor is drawn.</param>
 		public abstract void Draw([NotNull] Blackboard blackboard);
+
+		public abstract VisualElement CreateTable();
+
+		public abstract void UpdateTable([NotNull] VisualElement root, [NotNull] VisualElement blackboardRoot,
+			[NotNull] Blackboard blackboard);
 	}
 }

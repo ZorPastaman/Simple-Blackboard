@@ -12,9 +12,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class RectIntBlackboardValueView : BlackboardValueView<RectInt>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new RectIntField(label);
+			var rectIntField = new RectIntField(label);
+
+			if (blackboardRoot != null)
+			{
+				rectIntField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), rectIntField.value);
+					}
+				});
+			}
+
+			return rectIntField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, RectInt value)
+		{
+			var rectIntField = (RectIntField)visualElement;
+			rectIntField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

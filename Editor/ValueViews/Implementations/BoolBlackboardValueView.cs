@@ -10,9 +10,28 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	[UsedImplicitly]
 	public sealed class BoolBlackboardValueView : BlackboardValueView<bool>
 	{
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			return new Toggle(label);
+			var toggle = new Toggle(label);
+
+			if (blackboardRoot != null)
+			{
+				toggle.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), toggle.value);
+					}
+				});
+			}
+
+			return toggle;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, bool value)
+		{
+			var toggle = (Toggle)visualElement;
+			toggle.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

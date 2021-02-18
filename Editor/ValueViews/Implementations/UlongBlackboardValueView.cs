@@ -13,12 +13,29 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	{
 		private static readonly EventCallback<ChangeEvent<long>> s_onValueChanged = OnValueChanged;
 
-		public override VisualElement CreateVisualElement(string label)
+		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
 			var longField = new LongField(label);
 			longField.RegisterValueChangedCallback(s_onValueChanged);
 
+			if (blackboardRoot != null)
+			{
+				longField.RegisterValueChangedCallback(c =>
+				{
+					if (blackboardRoot.userData is Blackboard blackboard)
+					{
+						blackboard.SetStructValue(new BlackboardPropertyName(label), (ulong)longField.value);
+					}
+				});
+			}
+
 			return longField;
+		}
+
+		public override void UpdateValue(VisualElement visualElement, ulong value)
+		{
+			var longField = (LongField)visualElement;
+			longField.value = (long)value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)

@@ -13,7 +13,10 @@ namespace Zor.SimpleBlackboard.Components
 	{
 		private Toggle m_requiresConstantRepaintToggle;
 		private Foldout m_blackboardFoldout;
+		private VisualElement m_blackboardVisualElement;
+
 		private Action<PlayModeStateChange> m_onPlayerModeStateChanged;
+		private EditorApplication.CallbackFunction m_onUpdate;
 
 		public override VisualElement CreateInspectorGUI()
 		{
@@ -25,8 +28,11 @@ namespace Zor.SimpleBlackboard.Components
 			m_blackboardFoldout = new Foldout {text = "Blackboard"};
 			root.Add(m_blackboardFoldout);
 
-			var imguiContainer = new IMGUIContainer(DrawBlackboard);
-			m_blackboardFoldout.Add(imguiContainer);
+			m_blackboardVisualElement = BlackboardEditor.CreateBlackboardVisualElement();
+			root.Add(m_blackboardVisualElement);
+
+			EditorApplication.update -= m_onUpdate;
+			EditorApplication.update += m_onUpdate;
 
 			EditorApplication.playModeStateChanged -= m_onPlayerModeStateChanged;
 			EditorApplication.playModeStateChanged += m_onPlayerModeStateChanged;
@@ -43,17 +49,19 @@ namespace Zor.SimpleBlackboard.Components
 		private void Awake()
 		{
 			m_onPlayerModeStateChanged = OnPlaymodeStateChanged;
+			m_onUpdate = OnUpdate;
 		}
 
 		private void OnDestroy()
 		{
 			EditorApplication.playModeStateChanged -= m_onPlayerModeStateChanged;
+			EditorApplication.update -= m_onUpdate;
 		}
 
-		private void DrawBlackboard()
+		private void OnUpdate()
 		{
-			var blackboardContainer = (SimpleBlackboardContainer)target;
-			BlackboardEditor.DrawBlackboard(blackboardContainer.blackboard);
+			BlackboardEditor.UpdateBlackboardVisualElement(m_blackboardVisualElement,
+				((SimpleBlackboardContainer)target).blackboard);
 		}
 
 		private void OnPlaymodeStateChanged(PlayModeStateChange playModeStateChange)
