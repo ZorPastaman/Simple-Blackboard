@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
@@ -91,39 +92,35 @@ namespace Zor.SimpleBlackboard.EditorTools
 			noEditor.Add(noEditorContainer);
 			root.Add(noEditor);
 
-			var addButton = new Button(() =>
+			var toolbar = new Toolbar();
+			root.Add(toolbar);
+
+			try
 			{
-				if (!(root.userData is Blackboard blackboard))
-				{
-					return;
-				}
-
-				var menu = new GenericMenu();
-
-				Vector2 position = Event.current.mousePosition;
-				Vector2 screenPoint = GUIUtility.GUIToScreenPoint(new Vector2(position.x, position.y));
-
 				BlackboardEditorToolsCollection.GetValueViewTypes(s_tableTypes);
 				s_tableTypes.Sort(s_typeByNameComparison);
+
+				var toolbarMenu = new ToolbarMenu {name = AddElementName, text = AddButtonLabel};
+				DropdownMenu menu = toolbarMenu.menu;
 
 				for (int i = 0, count = s_tableTypes.Count; i < count; ++i)
 				{
 					Type type = s_tableTypes[i];
-
-					var popupInfo = new PopupInfo
+					menu.AppendAction(type.Name, a =>
 					{
-						type = type,
-						blackboard = blackboard,
-						screenPoint = screenPoint,
-					};
-
-					menu.AddItem(new GUIContent(type.Name), false, s_onCreatePopup, popupInfo);
+						if (root.userData is Blackboard blackboard)
+						{
+							BlackboardEditorToolsCollection.CreateAddPopup(type, blackboard, type.Name, toolbarMenu.worldBound.center);
+						}
+					});
 				}
 
+				toolbar.Add(toolbarMenu);
+			}
+			finally
+			{
 				s_tableTypes.Clear();
-				menu.ShowAsContext();
-			}) {name = AddElementName, text = AddButtonLabel};
-			root.Add(addButton);
+			}
 
 			return root;
 		}
