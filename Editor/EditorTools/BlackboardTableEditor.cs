@@ -72,7 +72,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					if (GUILayout.Button(EditorGUIUtility.IconContent(RemoveButtonIconContentName),
 						s_RemoveButtonOptions))
 					{
-						blackboard.RemoveObject<T>(key);
+						blackboard.RemoveObject(key);
 					}
 
 					EditorGUILayout.EndHorizontal();
@@ -125,6 +125,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 						?? CreatePropertyElement(container, blackboardRoot, key);
 					m_blackboardValueView.UpdateValue(propertyElement.Q(ChangePropertyElementName), property.Value);
 				}
+
+				container.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
 			}
 			finally
 			{
@@ -191,7 +193,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			{
 				if (blackboardRoot.userData is Blackboard blackboard)
 				{
-					blackboard.RemoveObject<T>(propertyName);
+					blackboard.RemoveObject(propertyName);
 				}
 			});
 

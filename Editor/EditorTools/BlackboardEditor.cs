@@ -17,6 +17,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 	public static class BlackboardEditor
 	{
 		private const string TablesElementName = "Tables";
+		private const string NoEditorElementName = "NoEditor";
 		private const string NoEditorContainerElementName = "NoEditorContainer";
 		private const string AddElementName = "Add";
 
@@ -84,9 +85,12 @@ namespace Zor.SimpleBlackboard.EditorTools
 			var tables = new VisualElement {name = TablesElementName};
 			root.Add(tables);
 
-			var noEditor = new VisualElement();
+			var noEditor = new VisualElement {name = NoEditorElementName};
 			noEditor.style.flexDirection = FlexDirection.Row;
 			var noEditorLabel = new Label(OtherTypesLabel);
+			IStyle noEditorLabelStyle = noEditorLabel.style;
+			noEditorLabelStyle.width = EditorGUIUtility.labelWidth;
+			noEditorLabelStyle.unityFontStyleAndWeight = FontStyle.Bold;
 			var noEditorContainer = new VisualElement {name = NoEditorContainerElementName};
 			noEditor.Add(noEditorLabel);
 			noEditor.Add(noEditorContainer);
@@ -101,6 +105,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 				s_tableTypes.Sort(s_typeByNameComparison);
 
 				var toolbarMenu = new ToolbarMenu {name = AddElementName, text = AddButtonLabel};
+				toolbarMenu.RegisterCallback<PointerDownEvent>(c => toolbarMenu.userData = GUIUtility.GUIToScreenPoint(c.originalMousePosition));
 				DropdownMenu menu = toolbarMenu.menu;
 
 				for (int i = 0, count = s_tableTypes.Count; i < count; ++i)
@@ -108,9 +113,9 @@ namespace Zor.SimpleBlackboard.EditorTools
 					Type type = s_tableTypes[i];
 					menu.AppendAction(type.Name, a =>
 					{
-						if (root.userData is Blackboard blackboard)
+						if (root.userData is Blackboard blackboard && toolbarMenu.userData is Vector2 position)
 						{
-							BlackboardEditorToolsCollection.CreateAddPopup(type, blackboard, type.Name, toolbarMenu.worldBound.center);
+							BlackboardEditorToolsCollection.CreateAddPopup(type, blackboard, type.Name, position);
 						}
 					});
 				}
@@ -146,7 +151,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					VisualElement tables = blackboardVisualElement.Q(TablesElementName);
 					UpdateTables(tables, blackboardVisualElement, blackboard);
 					VisualElement noEditor =
-						blackboardVisualElement.Q(NoEditorContainerElementName);
+						blackboardVisualElement.Q(NoEditorElementName);
 					UpdateNoEditor(noEditor);
 				}
 				finally
@@ -284,13 +289,15 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 			root.style.display = DisplayStyle.Flex;
 
-			for (int i = root.childCount - 1; i >= 0; --i)
+			VisualElement container = root.Q(NoEditorContainerElementName);
+
+			for (int i = container.childCount - 1; i >= 0; --i)
 			{
-				VisualElement element = root[i];
+				VisualElement element = container[i];
 
 				if (element.userData is Type type && !s_noEditorTables.Contains(type))
 				{
-					root.ElementAt(i);
+					container.ElementAt(i);
 				}
 			}
 
@@ -298,14 +305,14 @@ namespace Zor.SimpleBlackboard.EditorTools
 			{
 				Type type = s_noEditorTables[i];
 
-				if (FindElementWithType(root, type) == null)
+				if (FindElementWithType(container, type) == null)
 				{
 					var element = new Label(type.Name) {userData = type};
-					root.Add(element);
+					container.Add(element);
 				}
 			}
 
-			root.Sort(s_visualElementByTypeNameComparison);
+			container.Sort(s_visualElementByTypeNameComparison);
 		}
 
 		[CanBeNull]

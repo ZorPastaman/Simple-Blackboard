@@ -29,7 +29,7 @@ namespace Zor.SimpleBlackboard.Components
 			root.Add(m_blackboardFoldout);
 
 			m_blackboardVisualElement = BlackboardEditor.CreateBlackboardVisualElement();
-			root.Add(m_blackboardVisualElement);
+			m_blackboardFoldout.Add(m_blackboardVisualElement);
 
 			EditorApplication.update -= m_onUpdate;
 			EditorApplication.update += m_onUpdate;
