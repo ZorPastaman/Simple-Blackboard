@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -24,7 +25,8 @@ namespace Zor.SimpleBlackboard.EditorWindows
 		/// <param name="key">Initial key. It can be changed in GUI.</param>
 		/// <param name="valueView">Value view wrapper.</param>
 		/// <param name="popupPosition">Position of the popup in the editor space.</param>
-		public void Setup(Blackboard blackboard, string key, IBlackboardValueView valueView, Vector2 popupPosition)
+		public void Setup([NotNull] Blackboard blackboard, [NotNull] string key,
+			[NotNull] IBlackboardValueView valueView, Vector2 popupPosition)
 		{
 			var size = new Vector2(450f, EditorGUIUtility.singleLineHeight * 8f
 				+ EditorGUIUtility.standardVerticalSpacing * 6f);

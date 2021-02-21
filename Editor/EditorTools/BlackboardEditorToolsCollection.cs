@@ -82,8 +82,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="key">Initial key of the property.</param>
 		/// <param name="position">Position of the popup.</param>
 		/// <returns>Created <see cref="AddPopup"/>.</returns>
-		public static AddPopup CreateAddPopup([NotNull] Type valueType, Blackboard blackboard, string key,
-			Vector2 position)
+		public static AddPopup CreateAddPopup([NotNull] Type valueType, [NotNull] Blackboard blackboard,
+			[NotNull] string key, Vector2 position)
 		{
 			if (!s_valueViews.TryGetValue(valueType, out IBlackboardValueView valueView))
 			{

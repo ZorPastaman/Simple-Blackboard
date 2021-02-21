@@ -44,6 +44,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 		{
 			try
 			{
+				EditorGUILayout.BeginVertical(GUI.skin.box);
+
 				EditorGUILayout.LabelField(valueType.Name, EditorStyles.boldLabel);
 
 				GetProperties(blackboard, s_properties);
@@ -77,6 +79,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 					EditorGUILayout.EndHorizontal();
 				}
+
+				EditorGUILayout.EndVertical();
 			}
 			finally
 			{

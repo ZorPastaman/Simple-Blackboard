@@ -41,10 +41,27 @@ namespace Zor.SimpleBlackboard.EditorTools
 			return left.userData is Type ? 1 : -1;
 		};
 
-		private static readonly List<Type> s_tableTypes = new List<Type>();
-		private static readonly List<Type> s_noEditorTables = new List<Type>();
+		private static readonly EventCallback<PointerDownEvent, ToolbarMenu> s_onToolbarPointerDown = (c, menu) =>
+		{
+			menu.userData = GUIUtility.GUIToScreenPoint(c.originalMousePosition);
+		};
+		private static readonly Action<DropdownMenuAction> s_onDropdownAction = a =>
+		{
+			var popupInfo = (UIElementsPopupInfo)a.userData;
+			if (popupInfo.root.userData is Blackboard blackboard)
+			{
+				Vector2 position = popupInfo.menuButton.userData is Vector2 pos
+					? pos
+					: popupInfo.menuButton.LocalToWorld(Vector2.zero);
+				BlackboardEditorToolsCollection.CreateAddPopup(popupInfo.type, blackboard,
+					popupInfo.type.Name, position);
+			}
+		};
 
 		private static readonly GenericMenu.MenuFunction2 s_onCreatePopup = OnCreatePopup;
+
+		private static readonly List<Type> s_tableTypes = new List<Type>();
+		private static readonly List<Type> s_noEditorTables = new List<Type>();
 
 		/// <summary>
 		/// Draws an editor for <paramref name="blackboard"/>.
@@ -89,7 +106,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			noEditor.style.flexDirection = FlexDirection.Row;
 			var noEditorLabel = new Label(OtherTypesLabel);
 			IStyle noEditorLabelStyle = noEditorLabel.style;
-			noEditorLabelStyle.width = EditorGUIUtility.labelWidth;
+			noEditorLabelStyle.width = 140f;
 			noEditorLabelStyle.unityFontStyleAndWeight = FontStyle.Bold;
 			var noEditorContainer = new VisualElement {name = NoEditorContainerElementName};
 			noEditor.Add(noEditorLabel);
@@ -105,19 +122,14 @@ namespace Zor.SimpleBlackboard.EditorTools
 				s_tableTypes.Sort(s_typeByNameComparison);
 
 				var toolbarMenu = new ToolbarMenu {name = AddElementName, text = AddButtonLabel};
-				toolbarMenu.RegisterCallback<PointerDownEvent>(c => toolbarMenu.userData = GUIUtility.GUIToScreenPoint(c.originalMousePosition));
+				toolbarMenu.RegisterCallback(s_onToolbarPointerDown, toolbarMenu);
 				DropdownMenu menu = toolbarMenu.menu;
 
 				for (int i = 0, count = s_tableTypes.Count; i < count; ++i)
 				{
 					Type type = s_tableTypes[i];
-					menu.AppendAction(type.Name, a =>
-					{
-						if (root.userData is Blackboard blackboard && toolbarMenu.userData is Vector2 position)
-						{
-							BlackboardEditorToolsCollection.CreateAddPopup(type, blackboard, type.Name, position);
-						}
-					});
+					var popupInfo = new UIElementsPopupInfo {root = root, menuButton = toolbarMenu, type = type};
+					menu.AppendAction(type.Name, s_onDropdownAction, a => DropdownMenuAction.Status.Normal, popupInfo);
 				}
 
 				toolbar.Add(toolbarMenu);
@@ -150,8 +162,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					blackboard.GetValueTypes(s_tableTypes);
 					VisualElement tables = blackboardVisualElement.Q(TablesElementName);
 					UpdateTables(tables, blackboardVisualElement, blackboard);
-					VisualElement noEditor =
-						blackboardVisualElement.Q(NoEditorElementName);
+					VisualElement noEditor = blackboardVisualElement.Q(NoEditorElementName);
 					UpdateNoEditor(noEditor);
 				}
 				finally
@@ -176,9 +187,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					continue;
 				}
 
-				EditorGUILayout.BeginVertical(GUI.skin.box);
 				editor.Draw(blackboard);
-				EditorGUILayout.EndVertical();
 			}
 		}
 
@@ -339,11 +348,18 @@ namespace Zor.SimpleBlackboard.EditorTools
 				popupInfo.screenPoint);
 		}
 
-		private class PopupInfo
+		private sealed class PopupInfo
 		{
 			public Type type;
 			public Blackboard blackboard;
 			public Vector2 screenPoint;
+		}
+
+		private sealed class UIElementsPopupInfo
+		{
+			public VisualElement root;
+			public VisualElement menuButton;
+			public Type type;
 		}
 	}
 }
