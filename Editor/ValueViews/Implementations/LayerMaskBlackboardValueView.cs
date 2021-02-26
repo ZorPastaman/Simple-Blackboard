@@ -7,40 +7,41 @@ using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class LayerMaskBlackboardValueView : BlackboardValueView<LayerMask>
+	public sealed class LayerMaskBlackboardValueView : BlackboardValueView<LayerMask, LayerMask, LayerMaskWrapper>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override LayerMaskWrapper CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
-			var layerMaskField = new LayerMaskField(label);
+			var layerMaskWrapper = new LayerMaskWrapper(label);
 
 			if (blackboardRoot != null)
 			{
-				layerMaskField.RegisterValueChangedCallback(c =>
+				layerMaskWrapper.RegisterValueChangedCallback(c =>
 				{
 					if (blackboardRoot.userData is Blackboard blackboard)
 					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), (LayerMask)layerMaskField.value);
+						blackboard.SetStructValue(new BlackboardPropertyName(label), layerMaskWrapper.value);
 					}
 				});
 			}
 
-			return layerMaskField;
+			return layerMaskWrapper;
 		}
 
 		public override void UpdateValue(VisualElement visualElement, LayerMask value)
 		{
-			var layerMaskField = (LayerMaskField)visualElement;
-			layerMaskField.value = value;
+			var layerMaskWrapper = (LayerMaskWrapper)visualElement;
+			layerMaskWrapper.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var layerMaskField = (LayerMaskField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), (LayerMask)layerMaskField.value);
+			var layerMaskWrapper = (LayerMaskWrapper)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), layerMaskWrapper.value);
 		}
 
 		public override LayerMask DrawValue(string label, LayerMask value)

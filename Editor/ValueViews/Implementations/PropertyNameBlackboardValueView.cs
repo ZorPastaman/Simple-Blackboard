@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class PropertyNameBlackboardValueView : BlackboardValueView<PropertyName>
+	public sealed class PropertyNameBlackboardValueView : BlackboardValueView<PropertyName, PropertyName, PropertyNameField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override PropertyNameField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var propertyNameField = new PropertyNameField(label);
 

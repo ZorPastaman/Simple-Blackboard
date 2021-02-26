@@ -11,9 +11,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class QuaternionBlackboardValueView : BlackboardValueView<Quaternion>
+	public sealed class QuaternionBlackboardValueView : BlackboardValueView<Quaternion, Quaternion, QuaternionField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override QuaternionField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var quaternionField = new QuaternionField(label);
 

@@ -18,6 +18,10 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		[NotNull]
 		Type valueType { get; }
 
+		Type baseType { get; }
+
+		Type baseFieldType { get; }
+
 		[NotNull]
 		VisualElement CreateVisualElement([NotNull] string label, VisualElement blackboardRoot = null);
 

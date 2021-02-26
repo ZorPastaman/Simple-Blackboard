@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4>
+	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4, Matrix4x4, Matrix4x4Field>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override Matrix4x4Field CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var matrixField = new Matrix4x4Field(label);
 

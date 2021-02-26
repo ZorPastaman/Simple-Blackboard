@@ -9,9 +9,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class IntBlackboardValueView : BlackboardValueView<int>
+	public sealed class IntBlackboardValueView : BlackboardValueView<int, int, IntegerField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override IntegerField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var intField = new IntegerField(label);
 

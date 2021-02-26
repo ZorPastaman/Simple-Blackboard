@@ -15,15 +15,17 @@ namespace Zor.SimpleBlackboard.EditorTools
 	/// Draws an editor for <see cref="BlackboardTable{T}"/>.
 	/// </summary>
 	/// <typeparam name="T">Value type.</typeparam>
-	internal abstract class BlackboardTableEditor<T> : BlackboardTableEditor_Base
+	internal abstract class BlackboardTableEditor<TValue, TBaseValue, TBaseField> : BlackboardTableEditor_Base
+		where TValue : TBaseValue
+		where TBaseField : BaseField<TBaseValue>
 	{
 		private const string ContainerElementName = "Container";
 		private const string ChangePropertyElementName = "ChangedProperty";
 
-		private static readonly List<KeyValuePair<BlackboardPropertyName, T>> s_properties =
-			new List<KeyValuePair<BlackboardPropertyName, T>>();
+		private static readonly List<KeyValuePair<BlackboardPropertyName, TValue>> s_properties =
+			new List<KeyValuePair<BlackboardPropertyName, TValue>>();
 
-		private readonly BlackboardValueView<T> m_blackboardValueView;
+		private readonly BlackboardValueView<TValue, TBaseValue, TBaseField> m_blackboardValueView;
 
 		/// <summary>
 		/// Creates a <see cref="BlackboardTableEditor{T}"/> using <paramref name="blackboardValueView"/> for drawing.
@@ -31,13 +33,13 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="blackboardValueView">
 		/// This is used for drawing a property in <see cref="BlackboardTable{T}"/>
 		/// </param>
-		protected BlackboardTableEditor(BlackboardValueView<T> blackboardValueView)
+		protected BlackboardTableEditor(BlackboardValueView<TValue, TBaseValue, TBaseField> blackboardValueView)
 		{
 			m_blackboardValueView = blackboardValueView;
 		}
 
 		/// <inheritdoc/>
-		public override Type valueType => typeof(T);
+		public override Type valueType => typeof(TValue);
 
 		/// <inheritdoc/>
 		public override void Draw(Blackboard blackboard)
@@ -54,7 +56,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 				for (int i = 0, count = s_properties.Count; i < count; ++i)
 				{
-					KeyValuePair<BlackboardPropertyName, T> property = s_properties[i];
+					KeyValuePair<BlackboardPropertyName, TValue> property = s_properties[i];
 
 					EditorGUILayout.BeginHorizontal();
 					EditorGUILayout.BeginVertical();
@@ -62,7 +64,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					EditorGUI.BeginChangeCheck();
 
 					BlackboardPropertyName key = property.Key;
-					T newValue = m_blackboardValueView.DrawValue(key.name, property.Value);
+					TValue newValue = m_blackboardValueView.DrawValue(key.name, property.Value);
 
 					if (EditorGUI.EndChangeCheck())
 					{
@@ -122,7 +124,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 				for (int i = 0, count = s_properties.Count; i < count; ++i)
 				{
-					KeyValuePair<BlackboardPropertyName, T> property = s_properties[i];
+					KeyValuePair<BlackboardPropertyName, TValue> property = s_properties[i];
 					BlackboardPropertyName key = property.Key;
 
 					VisualElement propertyElement = container.Q(key.name)
@@ -144,7 +146,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="blackboard">Blackboard source.</param>
 		/// <param name="properties">Properties output.</param>
 		protected abstract void GetProperties([NotNull] Blackboard blackboard,
-			[NotNull] List<KeyValuePair<BlackboardPropertyName, T>> properties);
+			[NotNull] List<KeyValuePair<BlackboardPropertyName, TValue>> properties);
 
 		/// <summary>
 		/// Sets <paramref name="value"/> into <paramref name="blackboard"/>
@@ -154,7 +156,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="key">Property name.</param>
 		/// <param name="value">Property value.</param>
 		protected abstract void SetValue([NotNull] Blackboard blackboard,
-			BlackboardPropertyName key, T value);
+			BlackboardPropertyName key, TValue value);
 
 		private static bool ContainsPropertyOfName([NotNull] string name)
 		{
@@ -179,7 +181,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			propertyElement.style.flexDirection = FlexDirection.Row;
 			container.Add(propertyElement);
 
-			VisualElement changePropertyElement = m_blackboardValueView.CreateVisualElement(keyName, blackboardRoot);
+			VisualElement changePropertyElement = m_blackboardValueView.CreateBaseField(keyName, blackboardRoot);
 			changePropertyElement.name = ChangePropertyElementName;
 			changePropertyElement.style.flexGrow = 1f;
 			propertyElement.Add(changePropertyElement);

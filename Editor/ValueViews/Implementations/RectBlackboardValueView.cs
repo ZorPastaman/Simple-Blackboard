@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class RectBlackboardValueView : BlackboardValueView<Rect>
+	public sealed class RectBlackboardValueView : BlackboardValueView<Rect, Rect, RectField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override RectField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var rectField = new RectField(label);
 

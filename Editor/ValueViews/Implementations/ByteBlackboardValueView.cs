@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class ByteBlackboardValueView : BlackboardValueView<byte>
+	public sealed class ByteBlackboardValueView : BlackboardValueView<byte, byte, ByteField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override ByteField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var byteField = new ByteField(label);
 

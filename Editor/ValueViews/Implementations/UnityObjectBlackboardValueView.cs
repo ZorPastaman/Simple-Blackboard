@@ -12,9 +12,9 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	/// Inherit this if you need to draw <see cref="Object"/> with EditorGUILayout.ObjectField.
 	/// </summary>
 	/// <typeparam name="T">Value type.</typeparam>
-	public abstract class UnityObjectBlackboardValueView<T> : BlackboardValueView<T> where T : Object
+	public abstract class UnityObjectBlackboardValueView<T> : BlackboardValueView<T, Object, ObjectField> where T : Object
 	{
-		public sealed override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public sealed override ObjectField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var objectField = new ObjectField(label) {objectType = typeof(T), allowSceneObjects = true};
 

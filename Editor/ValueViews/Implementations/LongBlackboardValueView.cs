@@ -9,9 +9,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class LongBlackboardValueView : BlackboardValueView<long>
+	public sealed class LongBlackboardValueView : BlackboardValueView<long, long, LongField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override LongField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var longField = new LongField(label);
 

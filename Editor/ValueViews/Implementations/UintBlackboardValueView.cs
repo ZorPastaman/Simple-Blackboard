@@ -11,9 +11,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class UintBlackboardValueView : BlackboardValueView<uint>
+	public sealed class UintBlackboardValueView : BlackboardValueView<uint, uint, UintField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override UintField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var uintField = new UintField(label);
 

@@ -9,9 +9,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class UlongBlackboardValueView : BlackboardValueView<ulong>
+	public sealed class UlongBlackboardValueView : BlackboardValueView<ulong, ulong, UlongField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override UlongField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var ulongField = new UlongField(label);
 

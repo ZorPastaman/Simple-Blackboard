@@ -45,9 +45,9 @@ namespace Zor.SimpleBlackboard.EditorTools
 				s_valueViews[valueViewType] = valueView;
 
 				Type tableEditorType = valueViewType.IsValueType
-					? typeof(StructBlackboardTableEditor<>)
-					: typeof(ClassBlackboardTableEditor<>);
-				Type editorViewType = tableEditorType.MakeGenericType(valueViewType);
+					? typeof(StructBlackboardTableEditor<,,>)
+					: typeof(ClassBlackboardTableEditor<,,>);
+				Type editorViewType = tableEditorType.MakeGenericType(valueViewType, valueView.baseType, valueView.baseFieldType);
 				var editorView = (BlackboardTableEditor_Base)Activator.CreateInstance(editorViewType, valueView);
 				s_tableEditors[editorView.valueType] = editorView;
 			}

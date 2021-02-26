@@ -11,9 +11,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte>
+	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte, sbyte, SbyteField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override SbyteField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var sbyteField = new SbyteField(label);
 

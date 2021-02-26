@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class GradientBlackboardValueView : BlackboardValueView<Gradient>
+	public sealed class GradientBlackboardValueView : BlackboardValueView<Gradient, Gradient, GradientField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override GradientField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var gradientField = new GradientField(label);
 

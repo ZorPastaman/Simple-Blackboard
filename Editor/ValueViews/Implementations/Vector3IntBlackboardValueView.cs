@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class Vector3IntBlackboardValueView : BlackboardValueView<Vector3Int>
+	public sealed class Vector3IntBlackboardValueView : BlackboardValueView<Vector3Int, Vector3Int, Vector3IntField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override Vector3IntField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var vector3IntField = new Vector3IntField(label);
 

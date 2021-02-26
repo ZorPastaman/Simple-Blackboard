@@ -9,9 +9,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class DoubleBlackboardValueView : BlackboardValueView<double>
+	public sealed class DoubleBlackboardValueView : BlackboardValueView<double, double, DoubleField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override DoubleField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var doubleField = new DoubleField(label);
 

@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class BoundsBlackboardValueView : BlackboardValueView<Bounds>
+	public sealed class BoundsBlackboardValueView : BlackboardValueView<Bounds, Bounds, BoundsField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override BoundsField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var boundsField = new BoundsField(label);
 

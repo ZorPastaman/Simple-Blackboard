@@ -8,9 +8,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class BoolBlackboardValueView : BlackboardValueView<bool>
+	public sealed class BoolBlackboardValueView : BlackboardValueView<bool, bool, Toggle>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override Toggle CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var toggle = new Toggle(label);
 

@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class ColorBlackboardValueView : BlackboardValueView<Color>
+	public sealed class ColorBlackboardValueView : BlackboardValueView<Color, Color, ColorField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override ColorField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var colorField = new ColorField(label);
 

@@ -11,9 +11,9 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class UshortBlackboardValueView : BlackboardValueView<ushort>
+	public sealed class UshortBlackboardValueView : BlackboardValueView<ushort, ushort, UshortField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override UshortField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var ushortField = new UshortField(label);
 

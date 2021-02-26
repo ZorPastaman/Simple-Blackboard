@@ -10,9 +10,9 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class AnimationCurveBlackboardValueView : BlackboardValueView<AnimationCurve>
+	public sealed class AnimationCurveBlackboardValueView : BlackboardValueView<AnimationCurve, AnimationCurve, CurveField>
 	{
-		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public override CurveField CreateBaseField(string label, VisualElement blackboardRoot = null)
 		{
 			var curveField = new CurveField(label);
 
