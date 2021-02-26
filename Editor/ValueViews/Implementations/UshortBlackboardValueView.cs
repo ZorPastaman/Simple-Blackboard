@@ -6,54 +6,46 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
 	public sealed class UshortBlackboardValueView : BlackboardValueView<ushort>
 	{
-		private static readonly EventCallback<ChangeEvent<int>> s_onValueChanged = OnValueChanged;
-
 		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			var intField = new IntegerField(label);
-			intField.RegisterValueChangedCallback(s_onValueChanged);
+			var ushortField = new UshortField(label);
 
 			if (blackboardRoot != null)
 			{
-				intField.RegisterValueChangedCallback(c =>
+				ushortField.RegisterValueChangedCallback(c =>
 				{
 					if (blackboardRoot.userData is Blackboard blackboard)
 					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), (ushort)intField.value);
+						blackboard.SetStructValue(new BlackboardPropertyName(label), ushortField.value);
 					}
 				});
 			}
 
-			return intField;
+			return ushortField;
 		}
 
 		public override void UpdateValue(VisualElement visualElement, ushort value)
 		{
-			var intField = (IntegerField)visualElement;
-			intField.value = value;
+			var ushortField = (UshortField)visualElement;
+			ushortField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var intField = (IntegerField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), (ushort)intField.value);
+			var ushortField = (UshortField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), ushortField.value);
 		}
 
 		public override ushort DrawValue(string label, ushort value)
 		{
 			return (ushort)Mathf.Clamp(EditorGUILayout.IntField(label, value), ushort.MinValue, ushort.MaxValue);
-		}
-
-		private static void OnValueChanged([NotNull] ChangeEvent<int> changeEvent)
-		{
-			var intField = (IntegerField)changeEvent.target;
-			intField.value = Mathf.Clamp(intField.value, ushort.MinValue, ushort.MaxValue);
 		}
 	}
 }

@@ -2,10 +2,10 @@
 
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -14,31 +14,15 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	{
 		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			var matrixField = new VisualElement();
-			IStyle matrixFieldStyle = matrixField.style;
-			matrixFieldStyle.flexDirection = FlexDirection.Row;
-			matrixFieldStyle.justifyContent = Justify.SpaceBetween;
-
-			var labelElement = new Label(label);
-			labelElement.style.marginLeft = 3f;
-			matrixField.Add(labelElement);
-			var valueElement = new VisualElement();
-			valueElement.style.flexGrow = 0.73f;
-			matrixField.Add(valueElement);
-
-			for (int i = 0; i < 4; ++i)
-			{
-				var row = new Vector4Field {name = $"row {i.ToString()}"};
-				valueElement.Add(row);
-			}
+			var matrixField = new Matrix4x4Field(label);
 
 			if (blackboardRoot != null)
 			{
-				matrixField.RegisterCallback<ChangeEvent<Vector4>>(c =>
+				matrixField.RegisterValueChangedCallback(c =>
 				{
 					if (blackboardRoot.userData is Blackboard blackboard)
 					{
-						SetValue(label, matrixField, blackboard);
+						blackboard.SetStructValue(new BlackboardPropertyName(label), matrixField.value);
 					}
 				});
 			}
@@ -48,23 +32,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 
 		public override void UpdateValue(VisualElement visualElement, Matrix4x4 value)
 		{
-			for (int i = 0; i < 4; ++i)
-			{
-				var vector4Field = visualElement.Q<Vector4Field>($"row {i.ToString()}");
-				vector4Field.value = value.GetRow(i);
-			}
+			var matrixField = (Matrix4x4Field)visualElement;
+			matrixField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var matrix = new Matrix4x4();
-
-			for (int i = 0; i < 4; ++i)
-			{
-				matrix.SetRow(i, visualElement.Q<Vector4Field>($"row {i.ToString()}").value);
-			}
-
-			blackboard.SetStructValue(new BlackboardPropertyName(key), matrix);
+			var matrixField = (Matrix4x4Field)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), matrixField.value);
 		}
 
 		public override Matrix4x4 DrawValue(string label, Matrix4x4 value)

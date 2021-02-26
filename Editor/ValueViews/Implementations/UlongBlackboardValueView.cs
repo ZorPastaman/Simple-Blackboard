@@ -2,46 +2,43 @@
 
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
 	public sealed class UlongBlackboardValueView : BlackboardValueView<ulong>
 	{
-		private static readonly EventCallback<ChangeEvent<long>> s_onValueChanged = OnValueChanged;
-
 		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			var longField = new LongField(label);
-			longField.RegisterValueChangedCallback(s_onValueChanged);
+			var ulongField = new UlongField(label);
 
 			if (blackboardRoot != null)
 			{
-				longField.RegisterValueChangedCallback(c =>
+				ulongField.RegisterValueChangedCallback(c =>
 				{
 					if (blackboardRoot.userData is Blackboard blackboard)
 					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), (ulong)longField.value);
+						blackboard.SetStructValue(new BlackboardPropertyName(label), ulongField.value);
 					}
 				});
 			}
 
-			return longField;
+			return ulongField;
 		}
 
 		public override void UpdateValue(VisualElement visualElement, ulong value)
 		{
-			var longField = (LongField)visualElement;
-			longField.value = (long)value;
+			var longField = (UlongField)visualElement;
+			longField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var longField = (LongField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), (ulong)longField.value);
+			var longField = (UlongField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), longField.value);
 		}
 
 		public override ulong DrawValue(string label, ulong value)
@@ -54,16 +51,6 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 			}
 
 			return (ulong)result;
-		}
-
-		private static void OnValueChanged([NotNull] ChangeEvent<long> changeEvent)
-		{
-			var longField = (LongField)changeEvent.target;
-
-			if (longField.value < (long)ulong.MinValue)
-			{
-				longField.value = (long)ulong.MinValue;
-			}
 		}
 	}
 }

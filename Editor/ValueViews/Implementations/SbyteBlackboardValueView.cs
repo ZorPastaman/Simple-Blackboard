@@ -6,54 +6,46 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
 	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte>
 	{
-		private static readonly EventCallback<ChangeEvent<int>> s_onValueChanged = OnValueChanged;
-
 		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			var intField = new IntegerField(label);
-			intField.RegisterValueChangedCallback(s_onValueChanged);
+			var sbyteField = new SbyteField(label);
 
 			if (blackboardRoot != null)
 			{
-				intField.RegisterValueChangedCallback(c =>
+				sbyteField.RegisterValueChangedCallback(c =>
 				{
-					if (intField.userData is Blackboard blackboard)
+					if (sbyteField.userData is Blackboard blackboard)
 					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), (sbyte)intField.value);
+						blackboard.SetStructValue(new BlackboardPropertyName(label), sbyteField.value);
 					}
 				});
 			}
 
-			return intField;
+			return sbyteField;
 		}
 
 		public override void UpdateValue(VisualElement visualElement, sbyte value)
 		{
-			var intField = (IntegerField)visualElement;
-			intField.value = value;
+			var sbyteField = (SbyteField)visualElement;
+			sbyteField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var intField = (IntegerField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), (sbyte)intField.value);
+			var sbyteField = (SbyteField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), sbyteField.value);
 		}
 
 		public override sbyte DrawValue(string label, sbyte value)
 		{
 			return (sbyte)Mathf.Clamp(EditorGUILayout.IntField(label, value), sbyte.MinValue, sbyte.MaxValue);
-		}
-
-		private static void OnValueChanged([NotNull] ChangeEvent<int> changeEvent)
-		{
-			var intField = (IntegerField)changeEvent.target;
-			intField.value = Mathf.Clamp(intField.value, sbyte.MinValue, sbyte.MaxValue);
 		}
 	}
 }

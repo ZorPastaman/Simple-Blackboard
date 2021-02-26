@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -14,44 +15,37 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	{
 		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			var vector4Field = new Vector4Field(label);
+			var quaternionField = new QuaternionField(label);
 
 			if (blackboardRoot != null)
 			{
-				vector4Field.RegisterValueChangedCallback(c =>
+				quaternionField.RegisterValueChangedCallback(c =>
 				{
 					if (blackboardRoot.userData is Blackboard blackboard)
 					{
-						Vector4 vector = vector4Field.value;
-
-						blackboard.SetStructValue(new BlackboardPropertyName(label),
-							new Quaternion(vector.x, vector.y, vector.z, vector.w));
+						blackboard.SetStructValue(new BlackboardPropertyName(label), quaternionField.value);
 					}
 				});
 			}
 
-			return vector4Field;
+			return quaternionField;
 		}
 
 		public override void UpdateValue(VisualElement visualElement, Quaternion value)
 		{
-			var vector4Field = (Vector4Field)visualElement;
-			vector4Field.value = new Vector4(value.x, value.y, value.z, value.w);
+			var quaternionField = (QuaternionField)visualElement;
+			quaternionField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var vectorField = (Vector4Field)visualElement;
-			Vector4 value = vectorField.value;
-			var quaternion = new Quaternion(value.x, value.y, value.z, value.w);
-			blackboard.SetStructValue(new BlackboardPropertyName(key), quaternion);
+			var quaternionField = (QuaternionField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), quaternionField.value);
 		}
 
 		public override Quaternion DrawValue(string label, Quaternion value)
 		{
-			Vector4 vector =
-				EditorGUILayout.Vector4Field(label, new Vector4(value.x, value.y, value.z, value.w));
-
+			Vector4 vector = EditorGUILayout.Vector4Field(label, new Vector4(value.x, value.y, value.z, value.w));
 			return new Quaternion(vector.x, vector.y, vector.z, vector.w);
 		}
 	}

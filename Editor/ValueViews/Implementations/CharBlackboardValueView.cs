@@ -4,6 +4,7 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine.UIElements;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -12,37 +13,32 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	{
 		public override VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
 		{
-			var textField = new TextField(label, 1, false, false, '*');
+			var charField = new CharField(label);
 
 			if (blackboardRoot != null)
 			{
-				textField.RegisterValueChangedCallback(c =>
+				charField.RegisterValueChangedCallback(c =>
 				{
 					if (blackboardRoot.userData is Blackboard blackboard)
 					{
-						string result = textField.value;
-						blackboard.SetStructValue(new BlackboardPropertyName(label), !string.IsNullOrEmpty(result)
-							? result[0]
-							: default);
+						blackboard.SetStructValue(new BlackboardPropertyName(label), charField.value);
 					}
 				});
 			}
 
-			return textField;
+			return charField;
 		}
 
 		public override void UpdateValue(VisualElement visualElement, char value)
 		{
-			var textField = (TextField)visualElement;
-			textField.value = value.ToString();
+			var charField = (CharField)visualElement;
+			charField.value = value;
 		}
 
 		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
 		{
-			var textField = (TextField)visualElement;
-			string value = textField.value;
-			blackboard.SetStructValue(new BlackboardPropertyName(key),
-				!string.IsNullOrEmpty(value) ? textField.value[0] : default);
+			var charField = (CharField)visualElement;
+			blackboard.SetStructValue(new BlackboardPropertyName(key), charField.value);
 		}
 
 		public override char DrawValue(string label, char value)
