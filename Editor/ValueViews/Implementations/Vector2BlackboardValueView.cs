@@ -10,36 +10,11 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class Vector2BlackboardValueView : BlackboardValueView<Vector2, Vector2, Vector2Field>
+	public sealed class Vector2BlackboardValueView : BlackboardValueView<Vector2>
 	{
-		public override Vector2Field CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<Vector2> CreateBaseField(string label)
 		{
-			var vector2Field = new Vector2Field(label);
-
-			if (blackboardRoot != null)
-			{
-				vector2Field.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), vector2Field.value);
-					}
-				});
-			}
-
-			return vector2Field;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, Vector2 value)
-		{
-			var vector2Field = (Vector2Field)visualElement;
-			vector2Field.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var vector2Field = (Vector2Field)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), vector2Field.value);
+			return new Vector2Field(label);
 		}
 
 		public override Vector2 DrawValue(string label, Vector2 value)

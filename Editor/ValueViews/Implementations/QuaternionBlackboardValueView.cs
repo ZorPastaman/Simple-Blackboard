@@ -11,36 +11,11 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class QuaternionBlackboardValueView : BlackboardValueView<Quaternion, Quaternion, QuaternionField>
+	public sealed class QuaternionBlackboardValueView : BlackboardValueView<Quaternion>
 	{
-		public override QuaternionField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<Quaternion> CreateBaseField(string label)
 		{
-			var quaternionField = new QuaternionField(label);
-
-			if (blackboardRoot != null)
-			{
-				quaternionField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), quaternionField.value);
-					}
-				});
-			}
-
-			return quaternionField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, Quaternion value)
-		{
-			var quaternionField = (QuaternionField)visualElement;
-			quaternionField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var quaternionField = (QuaternionField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), quaternionField.value);
+			return new QuaternionField(label);
 		}
 
 		public override Quaternion DrawValue(string label, Quaternion value)

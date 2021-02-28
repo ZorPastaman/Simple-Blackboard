@@ -12,40 +12,32 @@ namespace Zor.SimpleBlackboard.VisualElements
 		{
 			if (string.IsNullOrEmpty(c.newValue))
 			{
-				field.m_subField.value = s_defaultCharString;
+				field.m_input.value = s_defaultCharString;
 			}
 
-			field.value = field.m_subField.value[0];
+			field.value = field.m_input.value[0];
 		};
 
-		private readonly TextField m_subField;
+		private readonly TextField m_input;
 
 		public CharField() : this(null)
 		{
 		}
 
-		public CharField(string label)
-			: this(new TextField(label, 1, false, false, '*'), new VisualElement())
+		public CharField(string label) : this(label, new TextField(1, false, false, '*'))
 		{
 		}
 
-		private CharField(TextField subField, VisualElement visualInput) : base(null, visualInput)
+		private CharField(string label, TextField visualInput) : base(label, visualInput)
 		{
-			m_subField = subField;
-			IStyle subFieldStyle = subField.style;
-			subFieldStyle.flexGrow = 1f;
-			subFieldStyle.marginLeft = subFieldStyle.marginRight =
-				subFieldStyle.marginTop = subFieldStyle.marginBottom = 0f;
-			subField.RegisterCallback(s_onInputChanged, this);
-			Add(subField);
-
-			visualInput.style.flexGrow = 0f;
+			visualInput.RegisterCallback(s_onInputChanged, this);
+			m_input = visualInput;
 		}
 
 		public override void SetValueWithoutNotify(char newValue)
 		{
 			base.SetValueWithoutNotify(newValue);
-			m_subField.SetValueWithoutNotify(newValue.ToString());
+			m_input.SetValueWithoutNotify(newValue.ToString());
 		}
 	}
 }

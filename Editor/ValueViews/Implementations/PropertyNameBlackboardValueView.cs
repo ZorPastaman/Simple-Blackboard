@@ -10,36 +10,11 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class PropertyNameBlackboardValueView : BlackboardValueView<PropertyName, PropertyName, PropertyNameField>
+	public sealed class PropertyNameBlackboardValueView : BlackboardValueView<PropertyName>
 	{
-		public override PropertyNameField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<PropertyName> CreateBaseField(string label)
 		{
-			var propertyNameField = new PropertyNameField(label);
-
-			if (blackboardRoot != null)
-			{
-				propertyNameField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), propertyNameField.value);
-					}
-				});
-			}
-
-			return propertyNameField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, PropertyName value)
-		{
-			var propertyNameField = (PropertyNameField)visualElement;
-			propertyNameField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var propertyNameField = (PropertyNameField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), propertyNameField.value);
+			return new PropertyNameField(label);
 		}
 
 		public override PropertyName DrawValue(string label, PropertyName value)

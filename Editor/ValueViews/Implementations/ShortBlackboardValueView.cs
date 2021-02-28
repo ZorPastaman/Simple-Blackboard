@@ -11,36 +11,11 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class ShortBlackboardValueView : BlackboardValueView<short, short, ShortField>
+	public sealed class ShortBlackboardValueView : BlackboardValueView<short>
 	{
-		public override ShortField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<short> CreateBaseField(string label)
 		{
-			var shortField = new ShortField(label);
-
-			if (blackboardRoot != null)
-			{
-				shortField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), shortField.value);
-					}
-				});
-			}
-
-			return shortField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, short value)
-		{
-			var shortField = (ShortField)visualElement;
-			shortField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var shortField = (ShortField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), shortField.value);
+			return new ShortField(label);
 		}
 
 		public override short DrawValue(string label, short value)

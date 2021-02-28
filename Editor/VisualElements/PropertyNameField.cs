@@ -12,7 +12,7 @@ namespace Zor.SimpleBlackboard.VisualElements
 			field.value = c.newValue;
 		};
 
-		private readonly TextField m_subField;
+		private readonly TextField m_input;
 
 		public PropertyNameField() : this(-1)
 		{
@@ -23,21 +23,14 @@ namespace Zor.SimpleBlackboard.VisualElements
 		}
 
 		public PropertyNameField(string label, int maxLength = -1)
-			: this(new TextField(label, maxLength, false, false, '*'), new VisualElement())
+			: this(label, new TextField(maxLength, false, false, '*'))
 		{
 		}
 
-		private PropertyNameField(TextField subField, VisualElement visualInput) : base(null, visualInput)
+		private PropertyNameField(string label, TextField visualInput) : base(label, visualInput)
 		{
-			m_subField = subField;
-			IStyle subFieldStyle = subField.style;
-			subFieldStyle.flexGrow = 1f;
-			subFieldStyle.marginLeft = subFieldStyle.marginRight =
-				subFieldStyle.marginTop = subFieldStyle.marginBottom = 0f;
-			subField.RegisterCallback(s_onInputChanged, this);
-			Add(subField);
-
-			visualInput.style.flexGrow = 0f;
+			visualInput.RegisterCallback(s_onInputChanged, this);
+			m_input = visualInput;
 		}
 
 		public override void SetValueWithoutNotify(PropertyName newValue)
@@ -45,7 +38,7 @@ namespace Zor.SimpleBlackboard.VisualElements
 			string val = newValue.ToString();
 			val = val.Substring(0, val.IndexOf(':'));
 			base.SetValueWithoutNotify(val);
-			m_subField.SetValueWithoutNotify(val);
+			m_input.SetValueWithoutNotify(val);
 		}
 	}
 }

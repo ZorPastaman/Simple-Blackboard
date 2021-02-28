@@ -3,7 +3,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -17,27 +16,18 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	/// Blackboard values are drawn by this class because Unity draws properties by itself only if the property is
 	/// serialized by Unity which is not true for the Blackboard system.
 	/// </remarks>
-	public abstract class BlackboardValueView<TValue, TBaseValue, TBaseField> : IBlackboardValueView
-		where TValue : TBaseValue
-		where TBaseField : BaseField<TBaseValue>
+	public abstract class BlackboardValueView<T> : IBlackboardValueView
 	{
 		/// <inheritdoc/>
-		public Type valueType => typeof(TValue);
+		public Type valueType => typeof(T);
 
-		public Type baseType => typeof(TBaseValue);
-
-		public Type baseFieldType => typeof(TBaseField);
-
-		public VisualElement CreateVisualElement(string label, VisualElement blackboardRoot = null)
+		public VisualElement CreateVisualElement(string label)
 		{
-			return CreateBaseField(label, blackboardRoot);
+			return CreateBaseField(label);
 		}
 
-		public abstract TBaseField CreateBaseField(string label, VisualElement blackboardRoot = null);
-
-		public abstract void UpdateValue([NotNull] VisualElement visualElement, [CanBeNull] TValue value);
-
-		public abstract void SetValue(string key, VisualElement visualElement, Blackboard blackboard);
+		[NotNull]
+		public abstract BaseField<T> CreateBaseField([CanBeNull] string label);
 
 		/// <summary>
 		/// Draws <paramref name="value"/> in the editor and returns new value.
@@ -46,6 +36,6 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// <param name="value">Current value.</param>
 		/// <returns>New value.</returns>
 		[CanBeNull]
-		public abstract TValue DrawValue([NotNull] string label, [CanBeNull] TValue value);
+		public abstract T DrawValue([NotNull] string label, [CanBeNull] T value);
 	}
 }

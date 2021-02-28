@@ -11,36 +11,11 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte, sbyte, SbyteField>
+	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte>
 	{
-		public override SbyteField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<sbyte> CreateBaseField(string label)
 		{
-			var sbyteField = new SbyteField(label);
-
-			if (blackboardRoot != null)
-			{
-				sbyteField.RegisterValueChangedCallback(c =>
-				{
-					if (sbyteField.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), sbyteField.value);
-					}
-				});
-			}
-
-			return sbyteField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, sbyte value)
-		{
-			var sbyteField = (SbyteField)visualElement;
-			sbyteField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var sbyteField = (SbyteField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), sbyteField.value);
+			return new SbyteField(label);
 		}
 
 		public override sbyte DrawValue(string label, sbyte value)

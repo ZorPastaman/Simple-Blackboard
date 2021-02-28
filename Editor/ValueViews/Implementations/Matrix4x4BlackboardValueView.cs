@@ -10,36 +10,11 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4, Matrix4x4, Matrix4x4Field>
+	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4>
 	{
-		public override Matrix4x4Field CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<Matrix4x4> CreateBaseField(string label)
 		{
-			var matrixField = new Matrix4x4Field(label);
-
-			if (blackboardRoot != null)
-			{
-				matrixField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), matrixField.value);
-					}
-				});
-			}
-
-			return matrixField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, Matrix4x4 value)
-		{
-			var matrixField = (Matrix4x4Field)visualElement;
-			matrixField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var matrixField = (Matrix4x4Field)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), matrixField.value);
+			return new Matrix4x4Field(label);
 		}
 
 		public override Matrix4x4 DrawValue(string label, Matrix4x4 value)

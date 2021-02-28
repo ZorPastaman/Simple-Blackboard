@@ -15,33 +15,26 @@ namespace Zor.SimpleBlackboard.VisualElements
 			field.value = ToQuaternion(c.newValue);
 		};
 
-		private readonly Vector4Field m_subField;
+		private readonly Vector4Field m_input;
 
 		public QuaternionField() : this(null)
 		{
 		}
 
-		public QuaternionField(string label) : this(new Vector4Field(label), new VisualElement())
+		public QuaternionField(string label) : this(label, new Vector4Field())
 		{
 		}
 
-		private QuaternionField(Vector4Field subField, VisualElement visualInput) : base(null, visualInput)
+		private QuaternionField(string label, Vector4Field visualInput) : base(label, visualInput)
 		{
-			m_subField = subField;
-			IStyle subFieldStyle = subField.style;
-			subFieldStyle.flexGrow = 1f;
-			subFieldStyle.marginLeft = subFieldStyle.marginRight =
-				subFieldStyle.marginTop = subFieldStyle.marginBottom = 0f;
-			subField.RegisterCallback(s_onInputChanged, this);
-			Add(subField);
-
-			visualInput.style.flexGrow = 0f;
+			visualInput.RegisterCallback(s_onInputChanged, this);
+			m_input = visualInput;
 		}
 
 		public override void SetValueWithoutNotify(Quaternion newValue)
 		{
 			base.SetValueWithoutNotify(newValue);
-			m_subField.SetValueWithoutNotify(ToVector4(newValue));
+			m_input.SetValueWithoutNotify(ToVector4(newValue));
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]

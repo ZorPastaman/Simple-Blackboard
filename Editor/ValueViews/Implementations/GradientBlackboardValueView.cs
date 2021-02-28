@@ -10,36 +10,11 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class GradientBlackboardValueView : BlackboardValueView<Gradient, Gradient, GradientField>
+	public sealed class GradientBlackboardValueView : BlackboardValueView<Gradient>
 	{
-		public override GradientField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<Gradient> CreateBaseField(string label)
 		{
-			var gradientField = new GradientField(label);
-
-			if (blackboardRoot != null)
-			{
-				gradientField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetClassValue(new BlackboardPropertyName(label), gradientField.value);
-					}
-				});
-			}
-
-			return gradientField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, Gradient value)
-		{
-			var gradientField = (GradientField)visualElement;
-			gradientField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var gradientField = (GradientField)visualElement;
-			blackboard.SetClassValue(new BlackboardPropertyName(key), gradientField.value);
+			return new GradientField(label);
 		}
 
 		public override Gradient DrawValue(string label, Gradient value)

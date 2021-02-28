@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.BlackboardValueViews;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.EditorWindows
@@ -13,11 +12,8 @@ namespace Zor.SimpleBlackboard.EditorWindows
 	/// <summary>
 	/// Popup used for adding new properties to <see cref="Zor.SimpleBlackboard.Core.Blackboard"/> in the editor.
 	/// </summary>
-	internal sealed class AddPopup : EditorWindow
+	public sealed class AddPopup : EditorWindow
 	{
-		private TextField m_keyTextField;
-		private VisualElement m_valueField;
-
 		/// <summary>
 		/// Sets necessary parameters to <see cref="AddPopup"/>.
 		/// </summary>
@@ -25,8 +21,9 @@ namespace Zor.SimpleBlackboard.EditorWindows
 		/// <param name="key">Initial key. It can be changed in GUI.</param>
 		/// <param name="valueView">Value view wrapper.</param>
 		/// <param name="popupPosition">Position of the popup in the editor space.</param>
-		public void Setup([NotNull] Blackboard blackboard, [NotNull] string key,
-			[NotNull] IBlackboardValueView valueView, Vector2 popupPosition)
+		[UsedImplicitly]
+		public void Setup<T>([NotNull] Blackboard blackboard, [NotNull] string key,
+			[NotNull] BaseField<T> baseField, Vector2 popupPosition)
 		{
 			var size = new Vector2(450f, EditorGUIUtility.singleLineHeight * 8f
 				+ EditorGUIUtility.standardVerticalSpacing * 6f);
@@ -38,7 +35,7 @@ namespace Zor.SimpleBlackboard.EditorWindows
 			toolbar.style.justifyContent = Justify.SpaceBetween;
 			root.Add(toolbar);
 
-			var titleLabel = new Label(valueView.valueType.Name);
+			var titleLabel = new Label(typeof(T).Name);
 			IStyle titleLabelStyle = titleLabel.style;
 			titleLabelStyle.unityFontStyleAndWeight = FontStyle.Bold;
 			titleLabelStyle.unityTextAlign = TextAnchor.MiddleLeft;
@@ -70,15 +67,15 @@ namespace Zor.SimpleBlackboard.EditorWindows
 			var scrollView = new ScrollView();
 			root.Add(scrollView);
 
-			m_keyTextField = new TextField("Key") {value = key};
-			scrollView.Add(m_keyTextField);
+			var keyTextField = new TextField("Key") {value = key};
+			scrollView.Add(keyTextField);
 
-			m_valueField = valueView.CreateVisualElement("Value");
-			scrollView.Add(m_valueField);
+			baseField.label = "Value";
+			scrollView.Add(baseField);
 
 			var okButton = new Button(() =>
 			{
-				valueView.SetValue(m_keyTextField.value, m_valueField, blackboard);
+				blackboard.SetObjectValue(typeof(T), new BlackboardPropertyName(keyTextField.value), baseField.value);
 				Close();
 			}) {text = "OK"};
 			root.Add(okButton);

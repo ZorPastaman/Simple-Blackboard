@@ -10,36 +10,11 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class BoundsBlackboardValueView : BlackboardValueView<Bounds, Bounds, BoundsField>
+	public sealed class BoundsBlackboardValueView : BlackboardValueView<Bounds>
 	{
-		public override BoundsField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<Bounds> CreateBaseField(string label)
 		{
-			var boundsField = new BoundsField(label);
-
-			if (blackboardRoot != null)
-			{
-				boundsField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), boundsField.value);
-					}
-				});
-			}
-
-			return boundsField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, Bounds value)
-		{
-			var boundsField = (BoundsField)visualElement;
-			boundsField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var boundsField = (BoundsField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), boundsField.value);
+			return new BoundsField(label);
 		}
 
 		public override Bounds DrawValue(string label, Bounds value)

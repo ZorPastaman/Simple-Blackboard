@@ -9,36 +9,11 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class DoubleBlackboardValueView : BlackboardValueView<double, double, DoubleField>
+	public sealed class DoubleBlackboardValueView : BlackboardValueView<double>
 	{
-		public override DoubleField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<double> CreateBaseField(string label)
 		{
-			var doubleField = new DoubleField(label);
-
-			if (blackboardRoot != null)
-			{
-				doubleField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), doubleField.value);
-					}
-				});
-			}
-
-			return doubleField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, double value)
-		{
-			var doubleField = (DoubleField)visualElement;
-			doubleField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var doubleField = (DoubleField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), doubleField.value);
+			return new DoubleField(label);
 		}
 
 		public override double DrawValue(string label, double value)

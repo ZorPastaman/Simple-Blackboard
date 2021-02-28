@@ -1,10 +1,9 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -12,36 +11,11 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	/// Inherit this if you need to draw <see cref="Object"/> with EditorGUILayout.ObjectField.
 	/// </summary>
 	/// <typeparam name="T">Value type.</typeparam>
-	public abstract class UnityObjectBlackboardValueView<T> : BlackboardValueView<T, Object, ObjectField> where T : Object
+	public abstract class UnityObjectBlackboardValueView<T> : BlackboardValueView<T> where T : Object
 	{
-		public sealed override ObjectField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public sealed override BaseField<T> CreateBaseField(string label)
 		{
-			var objectField = new ObjectField(label) {objectType = typeof(T), allowSceneObjects = true};
-
-			if (blackboardRoot != null)
-			{
-				objectField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetClassValue(new BlackboardPropertyName(label), objectField.value);
-					}
-				});
-			}
-
-			return objectField;
-		}
-
-		public sealed override void UpdateValue(VisualElement visualElement, T value)
-		{
-			var objectField = (ObjectField)visualElement;
-			objectField.value = value;
-		}
-
-		public sealed override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var objectField = (ObjectField)visualElement;
-			blackboard.SetObjectValue(typeof(T), new BlackboardPropertyName(key), objectField.value as T);
+			return new UnityObjectBaseField<T>(label);
 		}
 
 		public sealed override T DrawValue(string label, T value)

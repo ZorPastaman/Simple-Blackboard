@@ -10,36 +10,11 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class ColorBlackboardValueView : BlackboardValueView<Color, Color, ColorField>
+	public sealed class ColorBlackboardValueView : BlackboardValueView<Color>
 	{
-		public override ColorField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<Color> CreateBaseField(string label)
 		{
-			var colorField = new ColorField(label);
-
-			if (blackboardRoot != null)
-			{
-				colorField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), colorField.value);
-					}
-				});
-			}
-
-			return colorField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, Color value)
-		{
-			var colorField = (ColorField)visualElement;
-			colorField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var colorField = (ColorField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), colorField.value);
+			return new ColorField(label);
 		}
 
 		public override Color DrawValue(string label, Color value)

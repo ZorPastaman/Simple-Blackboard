@@ -3,7 +3,6 @@
 using System;
 using JetBrains.Annotations;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -18,13 +17,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		[NotNull]
 		Type valueType { get; }
 
-		Type baseType { get; }
-
-		Type baseFieldType { get; }
-
 		[NotNull]
-		VisualElement CreateVisualElement([NotNull] string label, VisualElement blackboardRoot = null);
-
-		void SetValue([NotNull] string key, [NotNull] VisualElement visualElement, [NotNull] Blackboard blackboard);
+		VisualElement CreateVisualElement([CanBeNull] string label);
 	}
 }

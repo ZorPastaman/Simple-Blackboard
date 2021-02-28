@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
@@ -18,6 +19,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 	[InitializeOnLoad]
 	internal static class BlackboardEditorToolsCollection
 	{
+		private static readonly MethodInfo s_addPopupSetupInfo = typeof(AddPopup).GetMethod("Setup");
+
 		private static readonly Dictionary<Type, IBlackboardValueView> s_valueViews;
 		private static readonly Dictionary<Type, BlackboardTableEditor_Base> s_tableEditors;
 
@@ -45,9 +48,9 @@ namespace Zor.SimpleBlackboard.EditorTools
 				s_valueViews[valueViewType] = valueView;
 
 				Type tableEditorType = valueViewType.IsValueType
-					? typeof(StructBlackboardTableEditor<,,>)
-					: typeof(ClassBlackboardTableEditor<,,>);
-				Type editorViewType = tableEditorType.MakeGenericType(valueViewType, valueView.baseType, valueView.baseFieldType);
+					? typeof(StructBlackboardTableEditor<>)
+					: typeof(ClassBlackboardTableEditor<>);
+				Type editorViewType = tableEditorType.MakeGenericType(valueViewType);
 				var editorView = (BlackboardTableEditor_Base)Activator.CreateInstance(editorViewType, valueView);
 				s_tableEditors[editorView.valueType] = editorView;
 			}
@@ -90,13 +93,10 @@ namespace Zor.SimpleBlackboard.EditorTools
 				return null;
 			}
 
-			AddPopup[] addPopups = Resources.FindObjectsOfTypeAll<AddPopup>();
-			for (int i = 0, count = addPopups.Length; i < count; ++i)
-			{
-				addPopups[i].Close();
-			}
 			var addPopup = ScriptableObject.CreateInstance<AddPopup>();
-			addPopup.Setup(blackboard, key, valueView, position);
+			MethodInfo method = s_addPopupSetupInfo.MakeGenericMethod(valueView.valueType);
+			var parameters = new object[] {blackboard, key, valueView.CreateVisualElement(null), position};
+			method.Invoke(addPopup, parameters);
 
 			return addPopup;
 		}

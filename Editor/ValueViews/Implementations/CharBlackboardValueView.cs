@@ -9,36 +9,11 @@ using Zor.SimpleBlackboard.VisualElements;
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
 	[UsedImplicitly]
-	public sealed class CharBlackboardValueView : BlackboardValueView<char, char, CharField>
+	public sealed class CharBlackboardValueView : BlackboardValueView<char>
 	{
-		public override CharField CreateBaseField(string label, VisualElement blackboardRoot = null)
+		public override BaseField<char> CreateBaseField(string label)
 		{
-			var charField = new CharField(label);
-
-			if (blackboardRoot != null)
-			{
-				charField.RegisterValueChangedCallback(c =>
-				{
-					if (blackboardRoot.userData is Blackboard blackboard)
-					{
-						blackboard.SetStructValue(new BlackboardPropertyName(label), charField.value);
-					}
-				});
-			}
-
-			return charField;
-		}
-
-		public override void UpdateValue(VisualElement visualElement, char value)
-		{
-			var charField = (CharField)visualElement;
-			charField.value = value;
-		}
-
-		public override void SetValue(string key, VisualElement visualElement, Blackboard blackboard)
-		{
-			var charField = (CharField)visualElement;
-			blackboard.SetStructValue(new BlackboardPropertyName(key), charField.value);
+			return new CharField(label);
 		}
 
 		public override char DrawValue(string label, char value)
