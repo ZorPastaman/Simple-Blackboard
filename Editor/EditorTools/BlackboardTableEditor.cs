@@ -20,6 +20,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 		private const string ContainerElementName = "Container";
 		private const string BaseFieldElementName = "BaseField";
 
+		private static readonly EqualityComparer<T> s_equalityComparer = EqualityComparer<T>.Default;
+
 		private static readonly List<KeyValuePair<BlackboardPropertyName, T>> s_properties =
 			new List<KeyValuePair<BlackboardPropertyName, T>>();
 
@@ -109,6 +111,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			{
 				VisualElement container = root.Q(ContainerElementName);
 				GetProperties(blackboard, s_properties);
+				bool structureChanged = false;
 
 				for (int i = container.childCount - 1; i >= 0; --i)
 				{
@@ -117,6 +120,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					if (!ContainsPropertyOfName(propertyElement.name))
 					{
 						container.RemoveAt(i);
+						structureChanged = true;
 					}
 				}
 
@@ -125,13 +129,27 @@ namespace Zor.SimpleBlackboard.EditorTools
 					KeyValuePair<BlackboardPropertyName, T> property = s_properties[i];
 					BlackboardPropertyName key = property.Key;
 
-					VisualElement propertyElement = container.Q(key.name)
-						?? CreatePropertyElement(container, blackboardRoot, key);
+					VisualElement propertyElement = container.Q(key.name);
+					if (propertyElement == null)
+					{
+						propertyElement = CreatePropertyElement(blackboardRoot, key);
+						container.Add(propertyElement);
+						structureChanged = true;
+					}
+
 					var baseField = propertyElement.Q<BaseField<T>>(BaseFieldElementName);
-					baseField.value = property.Value;
+					if (!s_equalityComparer.Equals(baseField.value, property.Value))
+					{
+						// We need to call Equals() ourselves despite that that check is called in BaseField.value
+						// because TextValueField.value always allocates a new string.
+						baseField.value = property.Value;
+					}
 				}
 
-				container.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
+				if (structureChanged)
+				{
+					container.Sort((left, right) => string.CompareOrdinal(left.name, right.name));
+				}
 			}
 			finally
 			{
@@ -171,14 +189,13 @@ namespace Zor.SimpleBlackboard.EditorTools
 		}
 
 		[NotNull]
-		private VisualElement CreatePropertyElement([NotNull] VisualElement container,
-			[NotNull] VisualElement blackboardRoot, BlackboardPropertyName propertyName)
+		private VisualElement CreatePropertyElement([NotNull] VisualElement blackboardRoot,
+			BlackboardPropertyName propertyName)
 		{
 			string keyName = propertyName.name;
 
 			var propertyElement = new VisualElement {name = keyName};
 			propertyElement.style.flexDirection = FlexDirection.Row;
-			container.Add(propertyElement);
 
 			BaseField<T> baseField = m_blackboardValueView.CreateBaseField(keyName);
 			baseField.RegisterValueChangedCallback(c =>

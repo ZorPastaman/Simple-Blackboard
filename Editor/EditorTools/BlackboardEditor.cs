@@ -251,6 +251,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 		private static void UpdateTables([NotNull] VisualElement root, [NotNull] VisualElement blackboardRoot,
 			[NotNull] Blackboard blackboard)
 		{
+			bool structureChanged = false;
+
 			for (int i = root.childCount - 1; i >= 0; --i)
 			{
 				VisualElement element = root[i];
@@ -258,6 +260,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 				if (element.userData is Type type && !s_tableTypes.Contains(type))
 				{
 					root.RemoveAt(i);
+					structureChanged = true;
 				}
 			}
 
@@ -278,12 +281,16 @@ namespace Zor.SimpleBlackboard.EditorTools
 					table = editor.CreateTable();
 					table.userData = type;
 					root.Add(table);
+					structureChanged = true;
 				}
 
 				editor.UpdateTable(table, blackboardRoot, blackboard);
 			}
 
-			root.Sort(s_visualElementByTypeNameComparison);
+			if (structureChanged)
+			{
+				root.Sort(s_visualElementByTypeNameComparison);
+			}
 		}
 
 		private static void UpdateNoEditor([NotNull] VisualElement root)
@@ -299,6 +306,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			root.style.display = DisplayStyle.Flex;
 
 			VisualElement container = root.Q(NoEditorContainerElementName);
+			bool structureChanged = false;
 
 			for (int i = container.childCount - 1; i >= 0; --i)
 			{
@@ -306,7 +314,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 				if (element.userData is Type type && !s_noEditorTables.Contains(type))
 				{
-					container.ElementAt(i);
+					container.RemoveAt(i);
+					structureChanged = true;
 				}
 			}
 
@@ -318,10 +327,14 @@ namespace Zor.SimpleBlackboard.EditorTools
 				{
 					var element = new Label(type.Name) {userData = type};
 					container.Add(element);
+					structureChanged = true;
 				}
 			}
 
-			container.Sort(s_visualElementByTypeNameComparison);
+			if (structureChanged)
+			{
+				container.Sort(s_visualElementByTypeNameComparison);
+			}
 		}
 
 		[CanBeNull]
