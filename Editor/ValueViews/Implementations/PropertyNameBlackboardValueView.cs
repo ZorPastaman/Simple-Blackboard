@@ -4,19 +4,23 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="PropertyName"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class PropertyNameBlackboardValueView : BlackboardValueView<PropertyName>
 	{
+		/// <inheritdoc/>
 		public override BaseField<PropertyName> CreateBaseField(string label)
 		{
 			return new PropertyNameField(label);
 		}
 
+		/// <inheritdoc/>
 		public override PropertyName DrawValue(string label, PropertyName value)
 		{
 			string stringValue = value.ToString();

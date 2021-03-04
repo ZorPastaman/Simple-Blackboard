@@ -17,8 +17,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 	[InitializeOnLoad]
 	internal static class SerializedTableTypesCollection
 	{
-		private static readonly Type[] s_serializedTableTypes;
-		private static readonly Type[] s_valueTypes;
+		[NotNull] private static readonly Type[] s_serializedTableTypes;
+		[NotNull] private static readonly Type[] s_valueTypes;
 
 		static SerializedTableTypesCollection()
 		{
@@ -70,7 +70,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		}
 
-		private static bool Contains(SerializedProperty tables, Type type)
+		[Pure]
+		private static bool Contains([NotNull] SerializedProperty tables, [NotNull] Type type)
 		{
 			for (int i = 0, count = tables.arraySize; i < count; ++i)
 			{

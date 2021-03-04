@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="uint"/>.
+	/// </summary>
 	public sealed class UintField : BaseField<uint>
 	{
 		private static readonly EventCallback<ChangeEvent<long>, UintField> s_onInputChanged = (c, field) =>

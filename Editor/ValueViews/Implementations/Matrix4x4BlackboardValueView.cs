@@ -4,19 +4,23 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="Matrix4x4"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4>
 	{
+		/// <inheritdoc/>
 		public override BaseField<Matrix4x4> CreateBaseField(string label)
 		{
 			return new Matrix4x4Field(label);
 		}
 
+		/// <inheritdoc/>
 		public override Matrix4x4 DrawValue(string label, Matrix4x4 value)
 		{
 			EditorGUILayout.BeginHorizontal();

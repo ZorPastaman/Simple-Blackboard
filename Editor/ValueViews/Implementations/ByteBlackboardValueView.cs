@@ -4,19 +4,23 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="byte"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class ByteBlackboardValueView : BlackboardValueView<byte>
 	{
+		/// <inheritdoc/>
 		public override BaseField<byte> CreateBaseField(string label)
 		{
 			return new ByteField(label);
 		}
 
+		/// <inheritdoc/>
 		public override byte DrawValue(string label, byte value)
 		{
 			return (byte)Mathf.Clamp(EditorGUILayout.IntField(label, value), byte.MinValue, byte.MaxValue);

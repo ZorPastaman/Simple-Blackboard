@@ -5,6 +5,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="ulong"/>
+	/// </summary>
 	public sealed class UlongField : BaseField<ulong>
 	{
 		private static readonly EventCallback<ChangeEvent<long>, UlongField> s_onInputChanged = (c, field) =>

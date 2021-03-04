@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using Zor.SimpleBlackboard.Serialization;
@@ -12,14 +13,14 @@ namespace Zor.SimpleBlackboard.Components
 	[CustomPropertyDrawer(typeof(BlackboardPropertyReference))]
 	public sealed class BlackboardPropertyReferenceEditor : PropertyDrawer
 	{
-		private const string BlackboardContainerPropertyName = "m_BlackboardContainer";
-		private const string PropertyNamePropertyName = "m_PropertyName";
+		[NotNull] private const string BlackboardContainerPropertyName = "m_BlackboardContainer";
+		[NotNull] private const string PropertyNamePropertyName = "m_PropertyName";
 
-		private const string SerializedContainersPropertyName = "m_SerializedContainers";
+		[NotNull] private const string SerializedContainersPropertyName = "m_SerializedContainers";
 
-		private static readonly GenericMenu.MenuFunction2 s_onMenuItem = OnMenuItem;
+		[NotNull] private static readonly GenericMenu.MenuFunction2 s_onMenuItem = OnMenuItem;
 
-		private static readonly List<(string, Type)> s_propertyKeysCache = new List<(string, Type)>();
+		[NotNull] private static readonly List<(string, Type)> s_propertyKeysCache = new List<(string, Type)>();
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
@@ -89,7 +90,7 @@ namespace Zor.SimpleBlackboard.Components
 			--EditorGUI.indentLevel;
 		}
 
-		private static void FillPropertyNamesCache(SerializedProperty serializedContainersProperty)
+		private static void FillPropertyNamesCache([CanBeNull] SerializedProperty serializedContainersProperty)
 		{
 			if (serializedContainersProperty == null)
 			{
@@ -110,7 +111,7 @@ namespace Zor.SimpleBlackboard.Components
 			}
 		}
 
-		private static void CreateGenericMenu(SerializedProperty propertyNameProperty)
+		private static void CreateGenericMenu([NotNull] SerializedProperty propertyNameProperty)
 		{
 			var menu = new GenericMenu();
 
@@ -125,7 +126,7 @@ namespace Zor.SimpleBlackboard.Components
 			menu.ShowAsContext();
 		}
 
-		private static void OnMenuItem(object menuItemObject)
+		private static void OnMenuItem([NotNull] object menuItemObject)
 		{
 			var menuItem = (MenuItem)menuItemObject;
 			menuItem.propertyNameProperty.stringValue = menuItem.propertyKeyValue;
@@ -134,10 +135,10 @@ namespace Zor.SimpleBlackboard.Components
 
 		private readonly struct MenuItem
 		{
-			public readonly SerializedProperty propertyNameProperty;
-			public readonly string propertyKeyValue;
+			[NotNull] public readonly SerializedProperty propertyNameProperty;
+			[NotNull] public readonly string propertyKeyValue;
 
-			public MenuItem(SerializedProperty propertyNameProperty, string propertyKeyValue)
+			public MenuItem([NotNull] SerializedProperty propertyNameProperty, [NotNull] string propertyKeyValue)
 			{
 				this.propertyNameProperty = propertyNameProperty;
 				this.propertyKeyValue = propertyKeyValue;

@@ -2,22 +2,25 @@
 
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="sbyte"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte>
 	{
+		/// <inheritdoc/>
 		public override BaseField<sbyte> CreateBaseField(string label)
 		{
 			return new SbyteField(label);
 		}
 
+		/// <inheritdoc/>
 		public override sbyte DrawValue(string label, sbyte value)
 		{
 			return (sbyte)Mathf.Clamp(EditorGUILayout.IntField(label, value), sbyte.MinValue, sbyte.MaxValue);

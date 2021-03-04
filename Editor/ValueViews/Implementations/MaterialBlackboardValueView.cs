@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="Material"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class MaterialBlackboardValueView : UnityObjectBlackboardValueView<Material>
 	{

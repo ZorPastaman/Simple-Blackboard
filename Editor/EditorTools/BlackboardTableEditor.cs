@@ -17,15 +17,15 @@ namespace Zor.SimpleBlackboard.EditorTools
 	/// <typeparam name="T">Value type.</typeparam>
 	internal abstract class BlackboardTableEditor<T> : BlackboardTableEditor_Base
 	{
-		private const string ContainerElementName = "Container";
-		private const string BaseFieldElementName = "BaseField";
+		[NotNull] private const string ContainerElementName = "Container";
+		[NotNull] private const string BaseFieldElementName = "BaseField";
 
-		private static readonly EqualityComparer<T> s_equalityComparer = EqualityComparer<T>.Default;
+		[NotNull] private static readonly EqualityComparer<T> s_equalityComparer = EqualityComparer<T>.Default;
 
-		private static readonly List<KeyValuePair<BlackboardPropertyName, T>> s_properties =
+		[NotNull] private static readonly List<KeyValuePair<BlackboardPropertyName, T>> s_properties =
 			new List<KeyValuePair<BlackboardPropertyName, T>>();
 
-		private readonly BlackboardValueView<T> m_blackboardValueView;
+		[NotNull] private readonly BlackboardValueView<T> m_blackboardValueView;
 
 		/// <summary>
 		/// Creates a <see cref="BlackboardTableEditor{T}"/> using <paramref name="blackboardValueView"/> for drawing.
@@ -33,13 +33,17 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="blackboardValueView">
 		/// This is used for drawing a property in <see cref="BlackboardTable{T}"/>
 		/// </param>
-		protected BlackboardTableEditor(BlackboardValueView<T> blackboardValueView)
+		protected BlackboardTableEditor([NotNull] BlackboardValueView<T> blackboardValueView)
 		{
 			m_blackboardValueView = blackboardValueView;
 		}
 
 		/// <inheritdoc/>
-		public override Type valueType => typeof(T);
+		public override Type valueType
+		{
+			[Pure]
+			get => typeof(T);
+		}
 
 		/// <inheritdoc/>
 		public override void Draw(Blackboard blackboard)
@@ -74,7 +78,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 					EditorGUILayout.EndVertical();
 
 					if (GUILayout.Button(EditorGUIUtility.IconContent(RemoveButtonIconContentName),
-						s_RemoveButtonOptions))
+						RemoveButtonOptions))
 					{
 						blackboard.RemoveObject(key);
 					}
@@ -90,6 +94,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		}
 
+		/// <inheritdoc/>
+		[Pure]
 		public override VisualElement CreateTable()
 		{
 			var root = new Box();
@@ -104,12 +110,17 @@ namespace Zor.SimpleBlackboard.EditorTools
 			return root;
 		}
 
-		public override void UpdateTable(VisualElement root, VisualElement blackboardRoot,
-			Blackboard blackboard)
+		/// <inheritdoc/>
+		public override void UpdateTable(VisualElement tableRoot, VisualElement blackboardRoot)
 		{
+			if (!(blackboardRoot.userData is Blackboard blackboard))
+			{
+				return;
+			}
+
 			try
 			{
-				VisualElement container = root.Q(ContainerElementName);
+				VisualElement container = tableRoot.Q(ContainerElementName);
 				GetProperties(blackboard, s_properties);
 				bool structureChanged = false;
 
@@ -173,7 +184,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <param name="key">Property name.</param>
 		/// <param name="value">Property value.</param>
 		protected abstract void SetValue([NotNull] Blackboard blackboard,
-			BlackboardPropertyName key, T value);
+			BlackboardPropertyName key, [CanBeNull] T value);
 
 		private static bool ContainsPropertyOfName([NotNull] string name)
 		{
@@ -188,7 +199,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			return false;
 		}
 
-		[NotNull]
+		[NotNull, Pure]
 		private VisualElement CreatePropertyElement([NotNull] VisualElement blackboardRoot,
 			BlackboardPropertyName propertyName)
 		{
@@ -216,6 +227,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			return propertyElement;
 		}
 
+		[NotNull, Pure]
 		private static Button CreateRemoveButton([NotNull] VisualElement blackboardRoot,
 			BlackboardPropertyName propertyName)
 		{

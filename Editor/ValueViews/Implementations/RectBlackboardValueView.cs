@@ -5,18 +5,22 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="Rect"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class RectBlackboardValueView : BlackboardValueView<Rect>
 	{
+		/// <inheritdoc/>
 		public override BaseField<Rect> CreateBaseField(string label)
 		{
 			return new RectField(label);
 		}
 
+		/// <inheritdoc/>
 		public override Rect DrawValue(string label, Rect value)
 		{
 			return EditorGUILayout.RectField(label, value);

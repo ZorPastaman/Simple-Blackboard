@@ -5,18 +5,22 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="BoundsInt"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class BoundsIntBlackboardValueView : BlackboardValueView<BoundsInt>
 	{
+		/// <inheritdoc/>
 		public override BaseField<BoundsInt> CreateBaseField(string label)
 		{
 			return new BoundsIntField(label);
 		}
 
+		/// <inheritdoc/>
 		public override BoundsInt DrawValue(string label, BoundsInt value)
 		{
 			return EditorGUILayout.BoundsIntField(label, value);

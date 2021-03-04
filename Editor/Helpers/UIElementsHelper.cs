@@ -9,7 +9,12 @@ namespace Zor.SimpleBlackboard.Helpers
 {
 	internal static class UIElementsHelper
 	{
-		[NotNull]
+		/// <summary>
+		/// Creates a default (as an old inspector gui) gui of a <see cref="SerializedObject"/> on UI Elements.
+		/// </summary>
+		/// <param name="serializedObject">Object that requires a default gui.</param>
+		/// <returns><see cref="VisualElement"/> that contains a default gui.</returns>
+		[NotNull, Pure]
 		public static VisualElement CreateDefaultObjectGUI([NotNull] SerializedObject serializedObject)
 		{
 			var root = new VisualElement();

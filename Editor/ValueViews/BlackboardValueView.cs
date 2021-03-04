@@ -19,13 +19,26 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public abstract class BlackboardValueView<T> : IBlackboardValueView
 	{
 		/// <inheritdoc/>
-		public Type valueType => typeof(T);
+		public Type valueType
+		{
+			[Pure]
+			get => typeof(T);
+		}
 
+		/// <inheritdoc/>
+		/// <summary>
+		/// Creates a <see cref="VisualElement"/> to represent a property of type <typeparamref name="T"/>.
+		/// </summary>
 		public VisualElement CreateVisualElement(string label)
 		{
 			return CreateBaseField(label);
 		}
 
+		/// <summary>
+		/// Creates a <see cref="BaseField{TValueType}"/> to represent a property of type <typeparamref name="T"/>.
+		/// </summary>
+		/// <param name="label">Label of a created <see cref="BaseField{TValueType}"/>.</param>
+		/// <returns><see cref="BaseField{TValueType}"/> that represents a property.</returns>
 		[NotNull]
 		public abstract BaseField<T> CreateBaseField([CanBeNull] string label);
 

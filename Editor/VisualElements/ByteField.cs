@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="byte"/>.
+	/// </summary>
 	public sealed class ByteField : BaseField<byte>
 	{
 		private static readonly EventCallback<ChangeEvent<int>, ByteField> s_onInputChanged = (c, field) =>

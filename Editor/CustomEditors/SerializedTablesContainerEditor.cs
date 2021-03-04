@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using Zor.SimpleBlackboard.EditorTools;
@@ -13,11 +14,11 @@ namespace Zor.SimpleBlackboard.Serialization
 	[CustomEditor(typeof(SimpleSerializedTablesContainer))]
 	public sealed class SerializedTablesContainerEditor : Editor
 	{
-		private const string SerializedTablesPropertyName = "m_SerializedTables";
+		[NotNull] private const string SerializedTablesPropertyName = "m_SerializedTables";
 
-		private readonly Dictionary<Object, Editor> m_editors = new Dictionary<Object, Editor>();
-		private readonly List<Type> m_tableTypes = new List<Type>();
-		private readonly List<Type> m_valueTypes = new List<Type>();
+		[NotNull] private readonly Dictionary<Object, Editor> m_editors = new Dictionary<Object, Editor>();
+		[NotNull] private readonly List<Type> m_tableTypes = new List<Type>();
+		[NotNull] private readonly List<Type> m_valueTypes = new List<Type>();
 
 		private GenericMenu.MenuFunction2 m_addTable;
 
@@ -88,7 +89,7 @@ namespace Zor.SimpleBlackboard.Serialization
 			enumerator.Dispose();
 		}
 
-		private void MakeAddTableDropdown(SerializedProperty serializedTables)
+		private void MakeAddTableDropdown([CanBeNull] SerializedProperty serializedTables)
 		{
 			m_tableTypes.Clear();
 			m_valueTypes.Clear();
@@ -104,7 +105,7 @@ namespace Zor.SimpleBlackboard.Serialization
 			menu.ShowAsContext();
 		}
 
-		private void AddTable(object obj)
+		private void AddTable([NotNull] object obj)
 		{
 			var type = (Type)obj;
 			ScriptableObject instance = CreateInstance(type);

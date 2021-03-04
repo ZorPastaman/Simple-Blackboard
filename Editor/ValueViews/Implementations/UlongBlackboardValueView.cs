@@ -3,19 +3,23 @@
 using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="ulong"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class UlongBlackboardValueView : BlackboardValueView<ulong>
 	{
+		/// <inheritdoc/>
 		public override BaseField<ulong> CreateBaseField(string label)
 		{
 			return new UlongField(label);
 		}
 
+		/// <inheritdoc/>
 		public override ulong DrawValue(string label, ulong value)
 		{
 			long result = EditorGUILayout.LongField(label, (long)value);

@@ -12,20 +12,21 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.EditorTools
 {
 	/// <summary>
-	/// Static helper for drawing a <see cref="Zor.SimpleBlackboard.Core.Blackboard"/> in the editor.
+	/// Static helper for drawing a <see cref="Blackboard"/> in the editor.
 	/// </summary>
 	public static class BlackboardEditor
 	{
-		private const string TablesElementName = "Tables";
-		private const string NoEditorElementName = "NoEditor";
-		private const string NoEditorContainerElementName = "NoEditorContainer";
-		private const string AddElementName = "Add";
+		[NotNull] private const string TablesElementName = "Tables";
+		[NotNull] private const string NoEditorElementName = "NoEditor";
+		[NotNull] private const string NoEditorContainerElementName = "NoEditorContainer";
+		[NotNull] private const string AddElementName = "Add";
 
-		private const string OtherTypesLabel = "Other Types";
-		private const string AddButtonLabel = "Add";
+		[NotNull] private const string OtherTypesLabel = "Other Types";
+		[NotNull] private const string AddButtonLabel = "Add";
 
-		private static readonly Comparison<Type> s_typeByNameComparison = (left, right) =>
+		[NotNull] private static readonly Comparison<Type> s_typeByNameComparison = (left, right) =>
 			string.CompareOrdinal(left.Name, right.Name);
+		[NotNull]
 		private static readonly Comparison<VisualElement> s_visualElementByTypeNameComparison = (left, right) =>
 		{
 			if (left.userData is Type leftType && right.userData is Type rightType)
@@ -41,14 +42,15 @@ namespace Zor.SimpleBlackboard.EditorTools
 			return left.userData is Type ? 1 : -1;
 		};
 
+		[NotNull]
 		private static readonly EventCallback<PointerDownEvent, ToolbarMenu> s_onToolbarPointerDown = (c, menu) =>
 		{
 			menu.userData = GUIUtility.GUIToScreenPoint(c.originalMousePosition);
 		};
-		private static readonly Action<DropdownMenuAction> s_onDropdownAction = a =>
+		[NotNull] private static readonly Action<DropdownMenuAction> s_onDropdownAction = a =>
 		{
 			var popupInfo = (UIElementsPopupInfo)a.userData;
-			if (popupInfo.root.userData is Blackboard blackboard)
+			if (popupInfo.blackboardRoot.userData is Blackboard blackboard)
 			{
 				Vector2 position = popupInfo.menuButton.userData is Vector2 pos
 					? pos
@@ -58,13 +60,13 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		};
 
-		private static readonly GenericMenu.MenuFunction2 s_onCreatePopup = OnCreatePopup;
+		[NotNull] private static readonly GenericMenu.MenuFunction2 s_onCreatePopup = OnCreatePopup;
 
-		private static readonly List<Type> s_tableTypes = new List<Type>();
-		private static readonly List<Type> s_noEditorTables = new List<Type>();
+		[NotNull] private static readonly List<Type> s_tableTypes = new List<Type>();
+		[NotNull] private static readonly List<Type> s_noEditorTables = new List<Type>();
 
 		/// <summary>
-		/// Draws an editor for <paramref name="blackboard"/>.
+		/// Draws an editor for the <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">An editor is drawn for this.</param>
 		public static void DrawBlackboard([CanBeNull] Blackboard blackboard)
@@ -93,14 +95,24 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		}
 
-		[NotNull]
+		/// <summary>
+		/// Creates a <see cref="VisualElement"/> for a <see cref="Blackboard"/>.
+		/// </summary>
+		/// <returns>View template for a <see cref="Blackboard"/>.</returns>
+		/// <remarks>
+		/// <para>
+		/// The returned <see cref="VisualElement"/> is used in <see cref="UpdateBlackboardVisualElement"/>.
+		/// </para>
+		/// <para>Do not modify the returned <see cref="VisualElement"/>.</para>
+		/// </remarks>
+		[NotNull, Pure]
 		public static VisualElement CreateBlackboardVisualElement()
 		{
-			var root = new VisualElement();
-			root.style.display = DisplayStyle.None;
+			var blackboardRoot = new VisualElement();
+			blackboardRoot.style.display = DisplayStyle.None;
 
 			var tables = new VisualElement {name = TablesElementName};
-			root.Add(tables);
+			blackboardRoot.Add(tables);
 
 			var noEditor = new VisualElement {name = NoEditorElementName};
 			noEditor.style.flexDirection = FlexDirection.Row;
@@ -111,10 +123,10 @@ namespace Zor.SimpleBlackboard.EditorTools
 			var noEditorContainer = new VisualElement {name = NoEditorContainerElementName};
 			noEditor.Add(noEditorLabel);
 			noEditor.Add(noEditorContainer);
-			root.Add(noEditor);
+			blackboardRoot.Add(noEditor);
 
 			var toolbar = new Toolbar();
-			root.Add(toolbar);
+			blackboardRoot.Add(toolbar);
 
 			try
 			{
@@ -128,7 +140,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 				for (int i = 0, count = s_tableTypes.Count; i < count; ++i)
 				{
 					Type type = s_tableTypes[i];
-					var popupInfo = new UIElementsPopupInfo {root = root, menuButton = toolbarMenu, type = type};
+					var popupInfo = new UIElementsPopupInfo(blackboardRoot, toolbarMenu, type);
 					menu.AppendAction(type.Name, s_onDropdownAction, a => DropdownMenuAction.Status.Normal, popupInfo);
 				}
 
@@ -139,9 +151,17 @@ namespace Zor.SimpleBlackboard.EditorTools
 				s_tableTypes.Clear();
 			}
 
-			return root;
+			return blackboardRoot;
 		}
 
+		/// <summary>
+		/// Updates the <paramref name="blackboardVisualElement"/> with the <paramref name="blackboard"/>.
+		/// </summary>
+		/// <param name="blackboardVisualElement">View template for a <see cref="Blackboard"/>.</param>
+		/// <param name="blackboard">Blackboard used to update the view.</param>
+		/// <remarks>
+		/// <paramref name="blackboardVisualElement"/> must be created in <see cref="CreateBlackboardVisualElement"/>.
+		/// </remarks>
 		public static void UpdateBlackboardVisualElement([NotNull] VisualElement blackboardVisualElement,
 			[CanBeNull] Blackboard blackboard)
 		{
@@ -161,7 +181,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 				{
 					blackboard.GetValueTypes(s_tableTypes);
 					VisualElement tables = blackboardVisualElement.Q(TablesElementName);
-					UpdateTables(tables, blackboardVisualElement, blackboard);
+					UpdateTables(tables, blackboardVisualElement);
 					VisualElement noEditor = blackboardVisualElement.Q(NoEditorElementName);
 					UpdateNoEditor(noEditor);
 				}
@@ -233,14 +253,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 				for (int i = 0, count = s_tableTypes.Count; i < count; ++i)
 				{
 					Type type = s_tableTypes[i];
-
-					var popupInfo = new PopupInfo
-					{
-						type = type,
-						blackboard = blackboard,
-						screenPoint = screenPoint,
-					};
-
+					var popupInfo = new PopupInfo (type, blackboard, screenPoint);
 					menu.AddItem(new GUIContent(type.Name), false, s_onCreatePopup, popupInfo);
 				}
 
@@ -248,18 +261,17 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		}
 
-		private static void UpdateTables([NotNull] VisualElement root, [NotNull] VisualElement blackboardRoot,
-			[NotNull] Blackboard blackboard)
+		private static void UpdateTables([NotNull] VisualElement tablesRoot, [NotNull] VisualElement blackboardRoot)
 		{
 			bool structureChanged = false;
 
-			for (int i = root.childCount - 1; i >= 0; --i)
+			for (int i = tablesRoot.childCount - 1; i >= 0; --i)
 			{
-				VisualElement element = root[i];
+				VisualElement element = tablesRoot[i];
 
 				if (element.userData is Type type && !s_tableTypes.Contains(type))
 				{
-					root.RemoveAt(i);
+					tablesRoot.RemoveAt(i);
 					structureChanged = true;
 				}
 			}
@@ -274,38 +286,38 @@ namespace Zor.SimpleBlackboard.EditorTools
 					continue;
 				}
 
-				VisualElement table = FindElementWithType(root, type);
+				VisualElement tableRoot = GetElementInChildrenOfType(tablesRoot, type);
 
-				if (table == null)
+				if (tableRoot == null)
 				{
-					table = editor.CreateTable();
-					table.userData = type;
-					root.Add(table);
+					tableRoot = editor.CreateTable();
+					tableRoot.userData = type;
+					tablesRoot.Add(tableRoot);
 					structureChanged = true;
 				}
 
-				editor.UpdateTable(table, blackboardRoot, blackboard);
+				editor.UpdateTable(tableRoot, blackboardRoot);
 			}
 
 			if (structureChanged)
 			{
-				root.Sort(s_visualElementByTypeNameComparison);
+				tablesRoot.Sort(s_visualElementByTypeNameComparison);
 			}
 		}
 
-		private static void UpdateNoEditor([NotNull] VisualElement root)
+		private static void UpdateNoEditor([NotNull] VisualElement noEditorRoot)
 		{
 			int noEditorCount = s_noEditorTables.Count;
 
 			if (noEditorCount == 0)
 			{
-				root.style.display = DisplayStyle.None;
+				noEditorRoot.style.display = DisplayStyle.None;
 				return;
 			}
 
-			root.style.display = DisplayStyle.Flex;
+			noEditorRoot.style.display = DisplayStyle.Flex;
 
-			VisualElement container = root.Q(NoEditorContainerElementName);
+			VisualElement container = noEditorRoot.Q(NoEditorContainerElementName);
 			bool structureChanged = false;
 
 			for (int i = container.childCount - 1; i >= 0; --i)
@@ -323,7 +335,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			{
 				Type type = s_noEditorTables[i];
 
-				if (FindElementWithType(container, type) == null)
+				if (GetElementInChildrenOfType(container, type) == null)
 				{
 					var element = new Label(type.Name) {userData = type};
 					container.Add(element);
@@ -337,8 +349,8 @@ namespace Zor.SimpleBlackboard.EditorTools
 			}
 		}
 
-		[CanBeNull]
-		private static VisualElement FindElementWithType([NotNull] VisualElement root, [NotNull] Type type)
+		[CanBeNull, Pure]
+		private static VisualElement GetElementInChildrenOfType([NotNull] VisualElement root, [NotNull] Type type)
 		{
 			for (int i = 0, count = root.childCount; i < count; ++i)
 			{
@@ -353,7 +365,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			return null;
 		}
 
-		private static void OnCreatePopup(object popupInfoObject)
+		private static void OnCreatePopup([NotNull] object popupInfoObject)
 		{
 			var popupInfo = (PopupInfo)popupInfoObject;
 
@@ -361,18 +373,33 @@ namespace Zor.SimpleBlackboard.EditorTools
 				popupInfo.screenPoint);
 		}
 
-		private sealed class PopupInfo
+		private readonly struct PopupInfo
 		{
-			public Type type;
-			public Blackboard blackboard;
-			public Vector2 screenPoint;
+			[NotNull] public readonly Type type;
+			[NotNull] public readonly Blackboard blackboard;
+			public readonly Vector2 screenPoint;
+
+			public PopupInfo([NotNull] Type type, [NotNull] Blackboard blackboard, Vector2 screenPoint)
+			{
+				this.type = type;
+				this.blackboard = blackboard;
+				this.screenPoint = screenPoint;
+			}
 		}
 
-		private sealed class UIElementsPopupInfo
+		private readonly struct UIElementsPopupInfo
 		{
-			public VisualElement root;
-			public VisualElement menuButton;
-			public Type type;
+			[NotNull] public readonly VisualElement blackboardRoot;
+			[NotNull] public readonly VisualElement menuButton;
+			[NotNull] public readonly Type type;
+
+			public UIElementsPopupInfo([NotNull] VisualElement blackboardRoot, [NotNull] VisualElement menuButton,
+				[NotNull] Type type)
+			{
+				this.blackboardRoot = blackboardRoot;
+				this.menuButton = menuButton;
+				this.type = type;
+			}
 		}
 	}
 }

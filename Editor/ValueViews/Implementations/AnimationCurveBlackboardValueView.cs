@@ -8,14 +8,19 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="AnimationCurve"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class AnimationCurveBlackboardValueView : BlackboardValueView<AnimationCurve>
 	{
+		/// <inheritdoc/>
 		public override BaseField<AnimationCurve> CreateBaseField(string label)
 		{
 			return new CurveField(label);
 		}
 
+		/// <inheritdoc/>
 		public override AnimationCurve DrawValue(string label, AnimationCurve value)
 		{
 			if (value == null)

@@ -5,18 +5,22 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="Gradient"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class GradientBlackboardValueView : BlackboardValueView<Gradient>
 	{
+		/// <inheritdoc/>
 		public override BaseField<Gradient> CreateBaseField(string label)
 		{
 			return new GradientField(label);
 		}
 
+		/// <inheritdoc/>
 		public override Gradient DrawValue(string label, Gradient value)
 		{
 			if (value == null)

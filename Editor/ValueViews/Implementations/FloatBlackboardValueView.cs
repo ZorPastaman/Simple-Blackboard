@@ -4,18 +4,22 @@ using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="float"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class FloatBlackboardValueView : BlackboardValueView<float>
 	{
+		/// <inheritdoc/>
 		public override BaseField<float> CreateBaseField(string label)
 		{
 			return new FloatField(label);
 		}
 
+		/// <inheritdoc/>
 		public override float DrawValue(string label, float value)
 		{
 			return EditorGUILayout.FloatField(label, value);

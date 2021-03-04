@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="ushort"/>.
+	/// </summary>
 	public sealed class UshortField : BaseField<ushort>
 	{
 		private static readonly EventCallback<ChangeEvent<int>, UshortField> s_onInputChanged = (c, field) =>

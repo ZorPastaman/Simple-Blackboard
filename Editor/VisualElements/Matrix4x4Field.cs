@@ -7,6 +7,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="Matrix4x4"/>.
+	/// </summary>
 	public sealed class Matrix4x4Field : BaseField<Matrix4x4>
 	{
 		private static readonly EventCallback<ChangeEvent<Vector4>, RowInfo> s_onRowChanged = (c, info) =>

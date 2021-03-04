@@ -6,6 +6,10 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="Object"/>.
+	/// </summary>
+	/// <typeparam name="T"></typeparam>
 	public sealed class UnityObjectBaseField<T> : BaseField<T> where T : Object
 	{
 		private static readonly EventCallback<ChangeEvent<Object>, UnityObjectBaseField<T>> s_onInputChanged = (c, field) =>

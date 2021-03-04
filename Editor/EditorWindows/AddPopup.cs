@@ -10,17 +10,21 @@ using Zor.SimpleBlackboard.Core;
 namespace Zor.SimpleBlackboard.EditorWindows
 {
 	/// <summary>
-	/// Popup used for adding new properties to <see cref="Zor.SimpleBlackboard.Core.Blackboard"/> in the editor.
+	/// Popup used for adding new properties to <see cref="Blackboard"/> in the editor.
 	/// </summary>
 	public sealed class AddPopup : EditorWindow
 	{
 		/// <summary>
-		/// Sets necessary parameters to <see cref="AddPopup"/>.
+		/// Sets necessary parameters to <see cref="AddPopup"/> and shows it as a popup.
 		/// </summary>
 		/// <param name="blackboard">New property is added to this.</param>
 		/// <param name="key">Initial key. It can be changed in GUI.</param>
-		/// <param name="valueView">Value view wrapper.</param>
+		/// <param name="baseField">Value view.</param>
 		/// <param name="popupPosition">Position of the popup in the editor space.</param>
+		/// <typeparam name="T">Value type.</typeparam>
+		/// <remarks>
+		/// Must be called just after creation of <see cref="AddPopup"/>.
+		/// </remarks>
 		[UsedImplicitly]
 		public void Setup<T>([NotNull] Blackboard blackboard, [NotNull] string key,
 			[NotNull] BaseField<T> baseField, Vector2 popupPosition)

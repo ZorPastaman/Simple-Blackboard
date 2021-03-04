@@ -16,7 +16,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - BlackboardContainer is renamed to SimpleBlackboardContainer.
 - SerializedContainer is renamed to SimpleSerializedContainer.
 - SerializedTablesContainer is renamed to SimpleSerializedTablesContainer.
-- Several parts of editor ui is rewritten with ui elements.
+- Blackboard parts of editor ui are rewritten with ui elements.
+- Unity 2019.4 is now required.
 
 ## [1.3.0] - 2021-01-23
 

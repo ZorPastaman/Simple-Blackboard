@@ -3,21 +3,24 @@
 using System;
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="uint"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class UintBlackboardValueView : BlackboardValueView<uint>
 	{
+		/// <inheritdoc/>
 		public override BaseField<uint> CreateBaseField(string label)
 		{
 			return new UintField(label);
 		}
 
+		/// <inheritdoc/>
 		public override uint DrawValue(string label, uint value)
 		{
 			return (uint)Math.Max(Math.Min(EditorGUILayout.LongField(label, value), uint.MaxValue), uint.MinValue);

@@ -8,6 +8,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="Quaternion"/>.
+	/// </summary>
 	public sealed class QuaternionField : BaseField<Quaternion>
 	{
 		private static readonly EventCallback<ChangeEvent<Vector4>, QuaternionField> s_onInputChanged = (c, field) =>

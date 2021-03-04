@@ -5,6 +5,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="PropertyName"/>.
+	/// </summary>
 	public sealed class PropertyNameField : BaseField<PropertyName>
 	{
 		private static readonly EventCallback<ChangeEvent<string>, PropertyNameField> s_onInputChanged = (c, field) =>

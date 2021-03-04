@@ -10,6 +10,7 @@ using UnityEngine;
 using Zor.SimpleBlackboard.EditorWindows;
 using Zor.SimpleBlackboard.BlackboardValueViews;
 using Zor.SimpleBlackboard.Core;
+using Zor.SimpleBlackboard.Debugging;
 
 namespace Zor.SimpleBlackboard.EditorTools
 {
@@ -19,10 +20,11 @@ namespace Zor.SimpleBlackboard.EditorTools
 	[InitializeOnLoad]
 	internal static class BlackboardEditorToolsCollection
 	{
-		private static readonly MethodInfo s_addPopupSetupInfo = typeof(AddPopup).GetMethod("Setup");
+		[NotNull] private static readonly MethodInfo s_addPopupSetupInfo = typeof(AddPopup).GetMethod("Setup")
+			?? throw new InvalidOperationException();
 
-		private static readonly Dictionary<Type, IBlackboardValueView> s_valueViews;
-		private static readonly Dictionary<Type, BlackboardTableEditor_Base> s_tableEditors;
+		[NotNull] private static readonly Dictionary<Type, IBlackboardValueView> s_valueViews;
+		[NotNull] private static readonly Dictionary<Type, BlackboardTableEditor_Base> s_tableEditors;
 
 		static BlackboardEditorToolsCollection()
 		{
@@ -60,9 +62,12 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// Tries to get an editor for <paramref name="valueType"/>.
 		/// </summary>
 		/// <param name="valueType">Value type for which an editor is needed.</param>
-		/// <param name="blackboardTableEditor">Found table editor or default if it's not found.</param>
+		/// <param name="blackboardTableEditor">
+		/// Found table editor or <see langword="default"/> if it's not found.
+		/// </param>
 		/// <returns>True if the editor is found; false otherwise.</returns>
-		public static bool TryGetTableEditor([NotNull] Type valueType, out BlackboardTableEditor_Base blackboardTableEditor)
+		public static bool TryGetTableEditor([NotNull] Type valueType,
+			[NotNull] out BlackboardTableEditor_Base blackboardTableEditor)
 		{
 			return s_tableEditors.TryGetValue(valueType, out blackboardTableEditor);
 		}
@@ -70,26 +75,33 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// <summary>
 		/// Adds all value types of existing <see cref="IBlackboardValueView"/>s to <paramref name="valueViewTypes"/>.
 		/// </summary>
-		/// <param name="valueViewTypes">Value types of existing <see cref="IBlackboardValueView"/>s are added
-		/// to this.</param>
+		/// <param name="valueViewTypes">
+		/// Value types of existing <see cref="IBlackboardValueView"/>s are added to this.
+		/// </param>
 		public static void GetValueViewTypes([NotNull] List<Type> valueViewTypes)
 		{
 			valueViewTypes.AddRange(s_valueViews.Keys);
 		}
 
 		/// <summary>
-		/// Creates <see cref="AddPopup"/> for <paramref name="valueType"/> and <paramref name="blackboard"/>.
+		/// Creates and shows <see cref="AddPopup"/> for <paramref name="valueType"/> and <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="valueType">Value type of a property to add to <paramref name="blackboard"/>.</param>
 		/// <param name="blackboard">A new property is added to this.</param>
 		/// <param name="key">Initial key of the property.</param>
 		/// <param name="position">Position of the popup.</param>
-		/// <returns>Created <see cref="AddPopup"/>.</returns>
+		/// <returns>
+		/// Created <see cref="AddPopup"/>.
+		/// May be <see langword="null"/> if a <see cref="IBlackboardValueView"/>
+		/// for <paramref name="valueType"/> doesn't exist.
+		/// </returns>
+		[CanBeNull]
 		public static AddPopup CreateAddPopup([NotNull] Type valueType, [NotNull] Blackboard blackboard,
 			[NotNull] string key, Vector2 position)
 		{
 			if (!s_valueViews.TryGetValue(valueType, out IBlackboardValueView valueView))
 			{
+				BlackboardDebug.LogError($"Can't create an add popup of type {valueType.FullName} because there's no value view for that type.");
 				return null;
 			}
 

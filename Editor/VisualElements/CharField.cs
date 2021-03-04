@@ -4,6 +4,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="char"/>.
+	/// </summary>
 	public sealed class CharField : BaseField<char>
 	{
 		private static readonly string s_defaultCharString = default(char).ToString();

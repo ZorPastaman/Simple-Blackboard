@@ -1,16 +1,18 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System.Collections.Generic;
-using UnityEngine.UIElements;
+using JetBrains.Annotations;
 using Zor.SimpleBlackboard.BlackboardValueViews;
 using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.EditorTools
 {
 	/// <inheritdoc/>
+	/// <seealso cref="ClassBlackboardTableEditor{T}"/>
 	internal sealed class StructBlackboardTableEditor<T> : BlackboardTableEditor<T> where T : struct
 	{
-		public StructBlackboardTableEditor(BlackboardValueView<T> blackboardValueView) : base(blackboardValueView)
+		public StructBlackboardTableEditor([NotNull] BlackboardValueView<T> blackboardValueView)
+			: base(blackboardValueView)
 		{
 		}
 

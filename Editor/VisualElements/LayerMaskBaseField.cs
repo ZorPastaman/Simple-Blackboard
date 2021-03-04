@@ -6,6 +6,9 @@ using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
 {
+	/// <summary>
+	/// Makes a text field for entering a <see cref="LayerMask"/>.
+	/// </summary>
 	public sealed class LayerMaskBaseField : BaseField<LayerMask>
 	{
 		private static readonly EventCallback<ChangeEvent<int>, LayerMaskBaseField> s_onInputChanged = (c, field) =>

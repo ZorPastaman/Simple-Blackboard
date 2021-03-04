@@ -21,18 +21,21 @@ namespace Zor.SimpleBlackboard.Components
 	[CustomEditor(typeof(SimpleBlackboardContainer))]
 	public sealed class SimpleBlackboardContainerCustomEditor : Editor
 	{
+		[NotNull]
 		private static readonly EventCallback<MouseEnterEvent, SimpleBlackboardContainerCustomEditor> s_onMouseEnter =
 			(c, editor) =>
 			{
 				editor.m_mouseEntered = true;
 				editor.ResolveUpdate();
 			};
+		[NotNull]
 		private static readonly EventCallback<MouseLeaveEvent, SimpleBlackboardContainerCustomEditor> s_onMouseLeave =
 			(c, editor) =>
 			{
 				editor.m_mouseEntered = false;
 				editor.ResolveUpdate();
 			};
+		[NotNull]
 		private static readonly EventCallback<ChangeEvent<bool>, SimpleBlackboardContainerCustomEditor> s_onToggled =
 			(c, editor) =>
 			{

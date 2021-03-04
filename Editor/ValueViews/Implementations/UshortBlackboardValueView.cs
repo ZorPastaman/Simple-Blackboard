@@ -2,22 +2,25 @@
 
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="ushort"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class UshortBlackboardValueView : BlackboardValueView<ushort>
 	{
+		/// <inheritdoc/>
 		public override BaseField<ushort> CreateBaseField(string label)
 		{
 			return new UshortField(label);
 		}
 
+		/// <inheritdoc/>
 		public override ushort DrawValue(string label, ushort value)
 		{
 			return (ushort)Mathf.Clamp(EditorGUILayout.IntField(label, value), ushort.MinValue, ushort.MaxValue);

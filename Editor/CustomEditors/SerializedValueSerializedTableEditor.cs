@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
@@ -9,11 +10,12 @@ using Zor.SimpleBlackboard.Helpers;
 
 namespace Zor.SimpleBlackboard.Serialization
 {
+	/// <seealso cref="GeneratingValueSerializedTableEditor"/>
 	[CustomEditor(typeof(SerializedValueSerializedTable_Base), true)]
 	public sealed class SerializedValueSerializedTableEditor : Editor
 	{
-		private const string KeysPropertyName = "m_Keys";
-		private const string ValuesPropertyName = "m_Values";
+		[NotNull] private const string KeysPropertyName = "m_Keys";
+		[NotNull] private const string ValuesPropertyName = "m_Values";
 
 		private SerializedProperty m_keysProperty;
 		private SerializedProperty m_valuesProperty;
@@ -89,7 +91,7 @@ namespace Zor.SimpleBlackboard.Serialization
 			serializedObject.ApplyModifiedProperties();
 		}
 
-		private void OnAdd(ReorderableList list)
+		private void OnAdd([NotNull] ReorderableList list)
 		{
 			m_keysProperty.arraySize++;
 			m_valuesProperty.arraySize++;
@@ -97,7 +99,7 @@ namespace Zor.SimpleBlackboard.Serialization
 			serializedObject.ApplyModifiedProperties();
 		}
 
-		private void OnRemove(ReorderableList list)
+		private void OnRemove([NotNull] ReorderableList list)
 		{
 			int index = list.index;
 			SerializedPropertyHelper.CompletelyRemove(m_keysProperty, index);
@@ -106,7 +108,7 @@ namespace Zor.SimpleBlackboard.Serialization
 			serializedObject.ApplyModifiedProperties();
 		}
 
-		private static bool IsSubclassOfRightClass(Type toCheck)
+		private static bool IsSubclassOfRightClass([NotNull] Type toCheck)
 		{
 			while (toCheck != null && toCheck != typeof(object))
 			{

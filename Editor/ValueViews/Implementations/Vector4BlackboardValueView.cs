@@ -5,18 +5,22 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Zor.SimpleBlackboard.Core;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
+	/// <summary>
+	/// Creates a view for a property of type <see cref="Vector4"/>.
+	/// </summary>
 	[UsedImplicitly]
 	public sealed class Vector4BlackboardValueView : BlackboardValueView<Vector4>
 	{
+		/// <inheritdoc/>
 		public override BaseField<Vector4> CreateBaseField(string label)
 		{
 			return new Vector4Field(label);
 		}
 
+		/// <inheritdoc/>
 		public override Vector4 DrawValue(string label, Vector4 value)
 		{
 			return EditorGUILayout.Vector4Field(label, value);
