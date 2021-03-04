@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,16 +8,16 @@ using UnityEngine.UIElements;
 namespace Zor.SimpleBlackboard.VisualElements
 {
 	/// <summary>
-	/// Makes a text field for entering a <see cref="LayerMask"/>.
+	/// Makes a dropdown field for entering a <see cref="LayerMask"/>.
 	/// </summary>
 	public sealed class LayerMaskBaseField : BaseField<LayerMask>
 	{
-		private static readonly EventCallback<ChangeEvent<int>, LayerMaskBaseField> s_onInputChanged = (c, field) =>
+		[NotNull] private static readonly EventCallback<ChangeEvent<int>, LayerMaskBaseField> s_onInputChanged = (c, field) =>
 		{
 			field.value = c.newValue;
 		};
 
-		private readonly LayerMaskField m_input;
+		[NotNull] private readonly LayerMaskField m_input;
 
 		public LayerMaskBaseField() : this(null)
 		{
@@ -26,11 +27,13 @@ namespace Zor.SimpleBlackboard.VisualElements
 		{
 		}
 
-		public LayerMaskBaseField(string label, int defaultMask = 0) : this(label, new LayerMaskField(defaultMask))
+		public LayerMaskBaseField([CanBeNull] string label, int defaultMask = 0)
+			: this(label, new LayerMaskField(defaultMask))
 		{
 		}
 
-		private LayerMaskBaseField(string label, LayerMaskField visualInput) : base(label, visualInput)
+		private LayerMaskBaseField([CanBeNull] string label, [NotNull] LayerMaskField visualInput)
+			: base(label, visualInput)
 		{
 			visualInput.RegisterCallback(s_onInputChanged, this);
 			m_input = visualInput;

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEngine.UIElements;
 
 namespace Zor.SimpleBlackboard.VisualElements
@@ -9,9 +10,9 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class CharField : BaseField<char>
 	{
-		private static readonly string s_defaultCharString = default(char).ToString();
+		[NotNull] private static readonly string s_defaultCharString = default(char).ToString();
 
-		private static readonly EventCallback<ChangeEvent<string>, CharField> s_onInputChanged = (c, field) =>
+		[NotNull] private static readonly EventCallback<ChangeEvent<string>, CharField> s_onInputChanged = (c, field) =>
 		{
 			if (string.IsNullOrEmpty(c.newValue))
 			{
@@ -21,17 +22,18 @@ namespace Zor.SimpleBlackboard.VisualElements
 			field.value = field.m_input.value[0];
 		};
 
-		private readonly TextField m_input;
+		[NotNull] private readonly TextField m_input;
 
 		public CharField() : this(null)
 		{
 		}
 
-		public CharField(string label) : this(label, new TextField(1, false, false, '*'))
+		public CharField([CanBeNull] string label)
+			: this(label, new TextField(1, false, false, '*'))
 		{
 		}
 
-		private CharField(string label, TextField visualInput) : base(label, visualInput)
+		private CharField([CanBeNull] string label, [NotNull] TextField visualInput) : base(label, visualInput)
 		{
 			visualInput.RegisterCallback(s_onInputChanged, this);
 			m_input = visualInput;

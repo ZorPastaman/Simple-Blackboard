@@ -12,7 +12,7 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class Matrix4x4Field : BaseField<Matrix4x4>
 	{
-		private static readonly EventCallback<ChangeEvent<Vector4>, RowInfo> s_onRowChanged = (c, info) =>
+		[NotNull] private static readonly EventCallback<ChangeEvent<Vector4>, RowInfo> s_onRowChanged = (c, info) =>
 		{
 			Matrix4x4Field field = info.field;
 			Matrix4x4 matrix = field.value;
@@ -20,7 +20,7 @@ namespace Zor.SimpleBlackboard.VisualElements
 			field.value = matrix;
 		};
 
-		private readonly Vector4Field[] m_rows = new Vector4Field[4];
+		[NotNull] private readonly Vector4Field[] m_rows = new Vector4Field[4];
 
 		public Matrix4x4Field() : this(null)
 		{
@@ -35,7 +35,7 @@ namespace Zor.SimpleBlackboard.VisualElements
 			for (int i = 0; i < 4; ++i)
 			{
 				Vector4Field row = m_rows[i] = new Vector4Field();
-				row.RegisterCallback(s_onRowChanged, new RowInfo {field = this, index = i});
+				row.RegisterCallback(s_onRowChanged, new RowInfo(this, i));
 				visualInput.Add(row);
 			}
 		}
@@ -50,10 +50,16 @@ namespace Zor.SimpleBlackboard.VisualElements
 			}
 		}
 
-		private sealed class RowInfo
+		private readonly struct RowInfo
 		{
-			public Matrix4x4Field field;
-			public int index;
+			[NotNull] public readonly Matrix4x4Field field;
+			public readonly int index;
+
+			public RowInfo([NotNull] Matrix4x4Field field, int index)
+			{
+				this.field = field;
+				this.index = index;
+			}
 		}
 	}
 }

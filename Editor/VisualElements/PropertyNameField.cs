@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -10,12 +11,13 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class PropertyNameField : BaseField<PropertyName>
 	{
+		[NotNull]
 		private static readonly EventCallback<ChangeEvent<string>, PropertyNameField> s_onInputChanged = (c, field) =>
 		{
 			field.value = c.newValue;
 		};
 
-		private readonly TextField m_input;
+		[NotNull] private readonly TextField m_input;
 
 		public PropertyNameField() : this(-1)
 		{
@@ -25,12 +27,12 @@ namespace Zor.SimpleBlackboard.VisualElements
 		{
 		}
 
-		public PropertyNameField(string label, int maxLength = -1)
+		public PropertyNameField([CanBeNull] string label, int maxLength = -1)
 			: this(label, new TextField(maxLength, false, false, '*'))
 		{
 		}
 
-		private PropertyNameField(string label, TextField visualInput) : base(label, visualInput)
+		private PropertyNameField([CanBeNull] string label, [NotNull] TextField visualInput) : base(label, visualInput)
 		{
 			visualInput.RegisterCallback(s_onInputChanged, this);
 			m_input = visualInput;

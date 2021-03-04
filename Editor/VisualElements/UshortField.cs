@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,12 +12,12 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class UshortField : BaseField<ushort>
 	{
-		private static readonly EventCallback<ChangeEvent<int>, UshortField> s_onInputChanged = (c, field) =>
+		[NotNull] private static readonly EventCallback<ChangeEvent<int>, UshortField> s_onInputChanged = (c, field) =>
 		{
 			field.m_subField.value = field.value = (ushort)Mathf.Clamp(c.newValue, ushort.MinValue, ushort.MaxValue);
 		};
 
-		private readonly IntegerField m_subField;
+		[NotNull] private readonly IntegerField m_subField;
 
 		public UshortField() : this(-1)
 		{
@@ -26,12 +27,13 @@ namespace Zor.SimpleBlackboard.VisualElements
 		{
 		}
 
-		public UshortField(string label, int maxLength = -1)
+		public UshortField([CanBeNull] string label, int maxLength = -1)
 			: this(new IntegerField(label, maxLength), new VisualElement())
 		{
 		}
 
-		private UshortField(IntegerField subField, VisualElement visualInput) : base(null, visualInput)
+		private UshortField([NotNull] IntegerField subField, [NotNull] VisualElement visualInput)
+			: base(null, visualInput)
 		{
 			m_subField = subField;
 			IStyle subFieldStyle = subField.style;

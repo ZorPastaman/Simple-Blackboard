@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
+using JetBrains.Annotations;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
@@ -11,12 +12,12 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class UintField : BaseField<uint>
 	{
-		private static readonly EventCallback<ChangeEvent<long>, UintField> s_onInputChanged = (c, field) =>
+		[NotNull] private static readonly EventCallback<ChangeEvent<long>, UintField> s_onInputChanged = (c, field) =>
 		{
 			field.m_subField.value = field.value = (uint)Math.Max(Math.Min(c.newValue, uint.MaxValue), uint.MinValue);
 		};
 
-		private readonly LongField m_subField;
+		[NotNull] private readonly LongField m_subField;
 
 		public UintField() : this(-1)
 		{
@@ -26,11 +27,13 @@ namespace Zor.SimpleBlackboard.VisualElements
 		{
 		}
 
-		public UintField(string label, int maxLength = -1) : this(new LongField(label, maxLength), new VisualElement())
+		public UintField([CanBeNull] string label, int maxLength = -1)
+			: this(new LongField(label, maxLength), new VisualElement())
 		{
 		}
 
-		private UintField(LongField subField, VisualElement visualInput) : base(null, visualInput)
+		private UintField([NotNull] LongField subField, [NotNull] VisualElement visualInput)
+			: base(null, visualInput)
 		{
 			m_subField = subField;
 			IStyle subFieldStyle = subField.style;

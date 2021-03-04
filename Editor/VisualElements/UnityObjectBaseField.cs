@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -7,29 +8,30 @@ using UnityEngine.UIElements;
 namespace Zor.SimpleBlackboard.VisualElements
 {
 	/// <summary>
-	/// Makes a text field for entering a <see cref="Object"/>.
+	/// Makes a select field for entering a <see cref="Object"/>.
 	/// </summary>
 	/// <typeparam name="T"></typeparam>
 	public sealed class UnityObjectBaseField<T> : BaseField<T> where T : Object
 	{
-		private static readonly EventCallback<ChangeEvent<Object>, UnityObjectBaseField<T>> s_onInputChanged = (c, field) =>
-		{
-			field.value = c.newValue as T;
-		};
+		[NotNull] private static readonly EventCallback<ChangeEvent<Object>, UnityObjectBaseField<T>> s_onInputChanged =
+			(c, field) =>
+			{
+				field.value = c.newValue as T;
+			};
 
-		private readonly ObjectField m_input;
+		[NotNull] private readonly ObjectField m_input;
 
 		public UnityObjectBaseField() : this(null)
 		{
 		}
 
-		public UnityObjectBaseField(string label, bool allowSceneObjects = true)
+		public UnityObjectBaseField([CanBeNull] string label, bool allowSceneObjects = true)
 			: this(label, allowSceneObjects, new ObjectField())
 		{
 		}
 
-		private UnityObjectBaseField(string label, bool allowSceneObjects, ObjectField visualInput)
-			: base(label, visualInput)
+		private UnityObjectBaseField([CanBeNull] string label, bool allowSceneObjects,
+			[NotNull] ObjectField visualInput) : base(label, visualInput)
 		{
 			visualInput.objectType = typeof(T);
 			visualInput.allowSceneObjects = allowSceneObjects;

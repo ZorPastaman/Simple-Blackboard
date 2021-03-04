@@ -13,22 +13,23 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class QuaternionField : BaseField<Quaternion>
 	{
+		[NotNull]
 		private static readonly EventCallback<ChangeEvent<Vector4>, QuaternionField> s_onInputChanged = (c, field) =>
 		{
 			field.value = ToQuaternion(c.newValue);
 		};
 
-		private readonly Vector4Field m_input;
+		[NotNull] private readonly Vector4Field m_input;
 
 		public QuaternionField() : this(null)
 		{
 		}
 
-		public QuaternionField(string label) : this(label, new Vector4Field())
+		public QuaternionField([CanBeNull] string label) : this(label, new Vector4Field())
 		{
 		}
 
-		private QuaternionField(string label, Vector4Field visualInput) : base(label, visualInput)
+		private QuaternionField([CanBeNull] string label, [NotNull] Vector4Field visualInput) : base(label, visualInput)
 		{
 			visualInput.RegisterCallback(s_onInputChanged, this);
 			m_input = visualInput;

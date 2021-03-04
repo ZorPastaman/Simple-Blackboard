@@ -2,9 +2,9 @@
 
 using JetBrains.Annotations;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Zor.SimpleBlackboard.VisualElements;
 
 namespace Zor.SimpleBlackboard.BlackboardValueViews
 {
@@ -17,7 +17,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// <inheritdoc/>
 		public override BaseField<AnimationCurve> CreateBaseField(string label)
 		{
-			return new CurveField(label);
+			return new FastCurveField(label);
 		}
 
 		/// <inheritdoc/>

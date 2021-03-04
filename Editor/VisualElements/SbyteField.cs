@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,12 +12,12 @@ namespace Zor.SimpleBlackboard.VisualElements
 	/// </summary>
 	public sealed class SbyteField : BaseField<sbyte>
 	{
-		private static readonly EventCallback<ChangeEvent<int>, SbyteField> s_onInputChanged = (c, field) =>
+		[NotNull] private static readonly EventCallback<ChangeEvent<int>, SbyteField> s_onInputChanged = (c, field) =>
 		{
 			field.m_subField.value = field.value = (sbyte)Mathf.Clamp(c.newValue, sbyte.MinValue, sbyte.MaxValue);
 		};
 
-		private readonly IntegerField m_subField;
+		[NotNull] private readonly IntegerField m_subField;
 
 		public SbyteField() : this(-1)
 		{
@@ -26,12 +27,13 @@ namespace Zor.SimpleBlackboard.VisualElements
 		{
 		}
 
-		public SbyteField(string label, int maxLength = -1)
+		public SbyteField([CanBeNull] string label, int maxLength = -1)
 			: this(new IntegerField(label, maxLength), new VisualElement())
 		{
 		}
 
-		private SbyteField(IntegerField subField, VisualElement visualInput) : base(null, visualInput)
+		private SbyteField([NotNull] IntegerField subField, [NotNull] VisualElement visualInput)
+			: base(null, visualInput)
 		{
 			m_subField = subField;
 			IStyle subFieldStyle = subField.style;
