@@ -16,12 +16,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class LayerMaskBlackboardValueView : BlackboardValueView<LayerMask>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<LayerMask> CreateBaseField(string label)
 		{
 			return new LayerMaskBaseField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override LayerMask DrawValue(string label, LayerMask value)
 		{
 			return EditorGUILayout.MaskField(label, value, InternalEditorUtility.layers);

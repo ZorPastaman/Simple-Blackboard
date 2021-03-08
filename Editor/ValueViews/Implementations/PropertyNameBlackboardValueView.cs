@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class PropertyNameBlackboardValueView : BlackboardValueView<PropertyName>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<PropertyName> CreateBaseField(string label)
 		{
 			return new PropertyNameField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override PropertyName DrawValue(string label, PropertyName value)
 		{
 			string stringValue = value.ToString();

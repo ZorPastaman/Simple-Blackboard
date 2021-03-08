@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class QuaternionBlackboardValueView : BlackboardValueView<Quaternion>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<Quaternion> CreateBaseField(string label)
 		{
 			return new QuaternionField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override Quaternion DrawValue(string label, Quaternion value)
 		{
 			Vector4 vector = EditorGUILayout.Vector4Field(label, new Vector4(value.x, value.y, value.z, value.w));

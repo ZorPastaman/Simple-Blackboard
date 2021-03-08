@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using UnityEngine;
 
 namespace Zor.SimpleBlackboard.Components.AccessorFlushers
@@ -19,6 +20,7 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		/// <see cref="UnityEngine.YieldInstruction"/> which is processed before calling
 		/// <see cref="Zor.SimpleBlackboard.Components.AccessorFlushers.AccessorFlusher.FlushAccessors"/>.
 		/// </summary>
+		[CanBeNull]
 		protected abstract YieldInstruction instruction { get; }
 
 		/// <summary>

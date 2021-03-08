@@ -186,6 +186,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		protected abstract void SetValue([NotNull] Blackboard blackboard,
 			BlackboardPropertyName key, [CanBeNull] T value);
 
+		[Pure]
 		private static bool ContainsPropertyOfName([NotNull] string name)
 		{
 			for (int i = 0, count = s_properties.Count; i < count; ++i)

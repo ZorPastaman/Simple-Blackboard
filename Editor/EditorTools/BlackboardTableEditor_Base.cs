@@ -22,7 +22,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// Value type of the drawn property.
 		/// </summary>
 		[NotNull]
-		public abstract Type valueType { get; }
+		public abstract Type valueType { [Pure] get; }
 
 		/// <summary>
 		/// Draws an editor for <see cref="BlackboardTable{T}"/> in <paramref name="blackboard"/>.

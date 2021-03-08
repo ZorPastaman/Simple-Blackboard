@@ -14,12 +14,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class UlongBlackboardValueView : BlackboardValueView<ulong>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<ulong> CreateBaseField(string label)
 		{
 			return new UlongField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override ulong DrawValue(string label, ulong value)
 		{
 			long result = EditorGUILayout.LongField(label, (long)value);

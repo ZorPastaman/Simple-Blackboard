@@ -13,12 +13,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class BoolBlackboardValueView : BlackboardValueView<bool>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<bool> CreateBaseField(string label)
 		{
 			return new Toggle(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override bool DrawValue(string label, bool value)
 		{
 			return EditorGUILayout.Toggle(label, value);

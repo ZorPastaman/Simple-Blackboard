@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class Vector4BlackboardValueView : BlackboardValueView<Vector4>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<Vector4> CreateBaseField(string label)
 		{
 			return new Vector4Field(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override Vector4 DrawValue(string label, Vector4 value)
 		{
 			return EditorGUILayout.Vector4Field(label, value);

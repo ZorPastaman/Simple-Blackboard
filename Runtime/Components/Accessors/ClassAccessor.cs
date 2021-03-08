@@ -14,6 +14,7 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 	/// </summary>
 	/// <typeparam name="T">Value type.</typeparam>
 	/// <typeparam name="TEvent">Unity event which is invoked on <see cref="Accessor{T,TEvent}.Flush"/>.</typeparam>
+	/// <seealso cref="StructAccessor{T,TEvent}"/>
 	public abstract class ClassAccessor<T, TEvent> : Accessor<T, TEvent> where T : class where TEvent : UnityEvent<T>
 	{
 		[Preserve]

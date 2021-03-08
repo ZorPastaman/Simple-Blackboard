@@ -66,8 +66,9 @@ namespace Zor.SimpleBlackboard.EditorTools
 		/// Found table editor or <see langword="default"/> if it's not found.
 		/// </param>
 		/// <returns>True if the editor is found; false otherwise.</returns>
+		[Pure]
 		public static bool TryGetTableEditor([NotNull] Type valueType,
-			[NotNull] out BlackboardTableEditor_Base blackboardTableEditor)
+			[CanBeNull] out BlackboardTableEditor_Base blackboardTableEditor)
 		{
 			return s_tableEditors.TryGetValue(valueType, out blackboardTableEditor);
 		}

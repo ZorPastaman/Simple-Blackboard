@@ -20,11 +20,12 @@ namespace Zor.SimpleBlackboard.Core
 		/// <summary>
 		/// Value type to table of that type dictionary.
 		/// </summary>
+		[NotNull]
 		private readonly Dictionary<Type, IBlackboardTable> m_tables = new Dictionary<Type, IBlackboardTable>();
 		/// <summary>
 		/// Property name to value type of that property dictionary.
 		/// </summary>
-		private readonly Dictionary<BlackboardPropertyName, Type> m_propertyTypes =
+		[NotNull] private readonly Dictionary<BlackboardPropertyName, Type> m_propertyTypes =
 			new Dictionary<BlackboardPropertyName, Type>();
 
 		/// <summary>
@@ -106,7 +107,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
 		/// <seealso cref="TryGetObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		public bool TryGetClassValue<T>(BlackboardPropertyName propertyName, out T value) where T : class
+		public bool TryGetClassValue<T>(BlackboardPropertyName propertyName, [CanBeNull] out T value) where T : class
 		{
 			Profiler.BeginSample("Blackboard.TryGetClassValue<T>");
 
@@ -132,7 +133,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetClassValue{T}"/>
 		/// <seealso cref="TryGetObjectValue(Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
 		[Pure]
-		public bool TryGetObjectValue([NotNull] Type valueType, BlackboardPropertyName propertyName, out object value)
+		public bool TryGetObjectValue([NotNull] Type valueType, BlackboardPropertyName propertyName,
+			[CanBeNull] out object value)
 		{
 			Profiler.BeginSample("Blackboard.TryGetObjectValue typed");
 
@@ -165,7 +167,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <seealso cref="TryGetClassValue{T}"/>
 		/// <seealso cref="TryGetObjectValue(System.Type,Zor.SimpleBlackboard.Core.BlackboardPropertyName,out object)"/>
 		[Pure]
-		public bool TryGetObjectValue(BlackboardPropertyName propertyName, out object value)
+		public bool TryGetObjectValue(BlackboardPropertyName propertyName, [CanBeNull] out object value)
 		{
 			Profiler.BeginSample("Blackboard.TryGetObjectValue");
 
@@ -447,6 +449,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// <param name="propertyName"></param>
 		/// <returns>Type of a property with the property name <paramref name="propertyName"/>
 		/// or null if such a property is not found.</returns>
+		/// <seealso cref="GetValueTypes"/>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public Type GetValueType(BlackboardPropertyName propertyName)
 		{
 			Profiler.BeginSample("Blackboard.GetValueType");
@@ -463,6 +467,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// and adds them to <paramref name="valueTypes"/>.
 		/// </summary>
 		/// <param name="valueTypes">Found value types are added to this.</param>
+		/// <seealso cref="GetValueType"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetValueTypes([NotNull] List<Type> valueTypes)
 		{
@@ -478,6 +483,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// and adds them to <paramref name="propertyNames"/>.
 		/// </summary>
 		/// <param name="propertyNames">Found property names are added to this.</param>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetPropertyNames([NotNull] List<BlackboardPropertyName> propertyNames)
 		{
 			Profiler.BeginSample("Blackboard.GetPropertyNames");
@@ -991,6 +997,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// Copies its properties into <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
+		/// <seealso cref="CopyTo(Blackboard,BlackboardPropertyName)"/>
+		/// <seealso cref="CopyTo(Blackboard,BlackboardPropertyName[])"/>
+		/// <seealso cref="CopyTo{T}(Blackboard,T)"/>
 		public void CopyTo([NotNull] Blackboard blackboard)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(Blackboard)");
@@ -1029,6 +1038,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyName">Property to copy.</param>
+		/// <seealso cref="CopyTo(Blackboard)"/>
+		/// <seealso cref="CopyTo(Blackboard,BlackboardPropertyName[])"/>
+		/// <seealso cref="CopyTo{T}(Blackboard,T)"/>
 		public void CopyTo([NotNull] Blackboard blackboard, BlackboardPropertyName propertyName)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName)");
@@ -1051,6 +1063,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyNames">Properties to copy.</param>
+		/// <seealso cref="CopyTo(Blackboard)"/>
+		/// <seealso cref="CopyTo(Blackboard,BlackboardPropertyName)"/>
+		/// <seealso cref="CopyTo{T}(Blackboard,T)"/>
 		public void CopyTo([NotNull] Blackboard blackboard, [NotNull] BlackboardPropertyName[] propertyNames)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(Blackboard, BlackboardPropertyName[])");
@@ -1078,6 +1093,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyNames">Properties to copy.</param>
+		/// <seealso cref="CopyTo(Blackboard)"/>
+		/// <seealso cref="CopyTo(Blackboard,BlackboardPropertyName)"/>
+		/// <seealso cref="CopyTo(Blackboard,BlackboardPropertyName[])"/>
 		public void CopyTo<T>([NotNull] Blackboard blackboard, [NotNull] T propertyNames)
 			where T : IList<BlackboardPropertyName>
 		{
@@ -1106,6 +1124,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="array">Destination.</param>
 		/// <param name="index">Starting index.</param>
+		/// <seealso cref="CopyTo(object[],int)"/>
+		/// <seealso cref="CopyTo(Array,int)"/>
 		public void CopyTo(KeyValuePair<BlackboardPropertyName, object>[] array, int index)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(KeyValuePair[], int)");
@@ -1129,6 +1149,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="array">Destination.</param>
 		/// <param name="index">Starting index.</param>
+		/// <seealso cref="CopyTo(KeyValuePair{BlackboardPropertyName,object}[],int)"/>
+		/// <seealso cref="CopyTo(Array,int)"/>
 		public void CopyTo([NotNull] object[] array, int index)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(object[], int)");
@@ -1156,6 +1178,8 @@ namespace Zor.SimpleBlackboard.Core
 		/// Arrays of types <see cref="KeyValuePair{BlackboardPropertyName,Object}"/> and <see cref="object"/>
 		/// are supported only.
 		/// </remarks>
+		/// <seealso cref="CopyTo(KeyValuePair{BlackboardPropertyName,object}[],int)"/>
+		/// <seealso cref="CopyTo(object[],int)"/>
 		public void CopyTo(Array array, int index)
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(Array, int)");

@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class BoundsIntBlackboardValueView : BlackboardValueView<BoundsInt>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<BoundsInt> CreateBaseField(string label)
 		{
 			return new BoundsIntField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override BoundsInt DrawValue(string label, BoundsInt value)
 		{
 			return EditorGUILayout.BoundsIntField(label, value);

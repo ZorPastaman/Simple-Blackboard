@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class SbyteBlackboardValueView : BlackboardValueView<sbyte>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<sbyte> CreateBaseField(string label)
 		{
 			return new SbyteField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override sbyte DrawValue(string label, sbyte value)
 		{
 			return (sbyte)Mathf.Clamp(EditorGUILayout.IntField(label, value), sbyte.MinValue, sbyte.MaxValue);

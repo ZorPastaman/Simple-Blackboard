@@ -21,11 +21,12 @@ namespace Zor.SimpleBlackboard.Core
 		/// Dictionary of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>
 		/// to their ids.
 		/// </summary>
+		[NotNull]
 		private static readonly Dictionary<string, int> s_nameIds = new Dictionary<string, int>(InitialCapacity);
 		/// <summary>
 		/// List of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>.
 		/// </summary>
-		private static readonly List<string> s_names = new List<string>(InitialCapacity);
+		[NotNull] private static readonly List<string> s_names = new List<string>(InitialCapacity);
 
 #if SIMPLE_BLACKBOARD_MULTITHREADING
 		/// <summary>

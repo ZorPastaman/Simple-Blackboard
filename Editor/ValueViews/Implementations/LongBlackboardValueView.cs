@@ -14,12 +14,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class LongBlackboardValueView : BlackboardValueView<long>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<long> CreateBaseField(string label)
 		{
 			return new LongField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override long DrawValue(string label, long value)
 		{
 			return EditorGUILayout.LongField(label, value);

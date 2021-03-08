@@ -18,6 +18,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <summary>
 		/// Property names to values dictionary.
 		/// </summary>
+		[NotNull]
 		private readonly Dictionary<BlackboardPropertyName, T> m_table = new Dictionary<BlackboardPropertyName, T>();
 
 		/// <summary>
@@ -139,6 +140,7 @@ namespace Zor.SimpleBlackboard.Core
 			enumerator.Dispose();
 		}
 
+		[Pure]
 		public override string ToString()
 		{
 			var builder = new StringBuilder();

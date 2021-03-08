@@ -108,6 +108,7 @@ namespace Zor.SimpleBlackboard.Serialization
 			serializedObject.ApplyModifiedProperties();
 		}
 
+		[Pure]
 		private static bool IsSubclassOfRightClass([NotNull] Type toCheck)
 		{
 			while (toCheck != null && toCheck != typeof(object))

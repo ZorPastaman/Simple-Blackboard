@@ -14,12 +14,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class CharBlackboardValueView : BlackboardValueView<char>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<char> CreateBaseField(string label)
 		{
 			return new CharField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override char DrawValue(string label, char value)
 		{
 			string result = EditorGUILayout.TextField(label, value.ToString());

@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class RectBlackboardValueView : BlackboardValueView<Rect>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<Rect> CreateBaseField(string label)
 		{
 			return new RectField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override Rect DrawValue(string label, Rect value)
 		{
 			return EditorGUILayout.RectField(label, value);

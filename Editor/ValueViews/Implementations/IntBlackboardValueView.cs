@@ -14,12 +14,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class IntBlackboardValueView : BlackboardValueView<int>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<int> CreateBaseField(string label)
 		{
 			return new IntegerField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override int DrawValue(string label, int value)
 		{
 			return EditorGUILayout.IntField(label, value);

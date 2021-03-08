@@ -8,6 +8,8 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 	/// This flusher calls <see cref="AccessorFlusher.FlushAccessors"/>
 	/// every <see cref="LateUpdate"/>.
 	/// </summary>
+	/// <seealso cref="FixedUpdateAccessorFlusher"/>
+	/// <seealso cref="UpdateAccessorFlusher"/>
 	[AddComponentMenu(AddComponentConstants.AccessorFlushersFolder + "Late Update Accessor Flusher")]
 	public sealed class LateUpdateAccessorFlusher : AccessorFlusher
 	{

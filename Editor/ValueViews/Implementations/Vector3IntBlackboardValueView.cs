@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class Vector3IntBlackboardValueView : BlackboardValueView<Vector3Int>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<Vector3Int> CreateBaseField(string label)
 		{
 			return new Vector3IntField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override Vector3Int DrawValue(string label, Vector3Int value)
 		{
 			return EditorGUILayout.Vector3IntField(label, value);

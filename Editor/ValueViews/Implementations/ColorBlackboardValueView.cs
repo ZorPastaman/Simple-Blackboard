@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class ColorBlackboardValueView : BlackboardValueView<Color>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<Color> CreateBaseField(string label)
 		{
 			return new ColorField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override Color DrawValue(string label, Color value)
 		{
 			return EditorGUILayout.ColorField(label, value);

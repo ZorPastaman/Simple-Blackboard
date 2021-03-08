@@ -29,6 +29,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// <summary>
 		/// Creates a <see cref="VisualElement"/> to represent a property of type <typeparamref name="T"/>.
 		/// </summary>
+		[Pure]
 		public VisualElement CreateVisualElement(string label)
 		{
 			return CreateBaseField(label);
@@ -39,7 +40,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// </summary>
 		/// <param name="label">Label of a created <see cref="BaseField{TValueType}"/>.</param>
 		/// <returns><see cref="BaseField{TValueType}"/> that represents a property.</returns>
-		[NotNull]
+		[NotNull, Pure]
 		public abstract BaseField<T> CreateBaseField([CanBeNull] string label);
 
 		/// <summary>
@@ -48,7 +49,7 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// <param name="label">Label which is used in the editor.</param>
 		/// <param name="value">Current value.</param>
 		/// <returns>New value.</returns>
-		[CanBeNull]
+		[CanBeNull, Pure]
 		public abstract T DrawValue([NotNull] string label, [CanBeNull] T value);
 	}
 }

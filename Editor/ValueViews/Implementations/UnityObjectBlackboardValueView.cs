@@ -1,5 +1,6 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using JetBrains.Annotations;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -15,12 +16,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public abstract class UnityObjectBlackboardValueView<T> : BlackboardValueView<T> where T : Object
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public sealed override BaseField<T> CreateBaseField(string label)
 		{
 			return new UnityObjectBaseField<T>(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public sealed override T DrawValue(string label, T value)
 		{
 			return EditorGUILayout.ObjectField(label, value, typeof(T), true) as T;

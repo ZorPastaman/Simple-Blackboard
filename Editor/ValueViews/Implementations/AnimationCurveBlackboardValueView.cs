@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class AnimationCurveBlackboardValueView : BlackboardValueView<AnimationCurve>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<AnimationCurve> CreateBaseField(string label)
 		{
 			return new FastCurveField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override AnimationCurve DrawValue(string label, AnimationCurve value)
 		{
 			if (value == null)

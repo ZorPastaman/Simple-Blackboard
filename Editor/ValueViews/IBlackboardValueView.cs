@@ -15,14 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 		/// Value type of the drawn property.
 		/// </summary>
 		[NotNull]
-		Type valueType { get; }
+		Type valueType { [Pure] get; }
 
 		/// <summary>
 		/// Creates a <see cref="VisualElement"/> to represent a property.
 		/// </summary>
 		/// <param name="label">Label of a created <see cref="VisualElement"/>.</param>
 		/// <returns><see cref="VisualElement"/> that represents a property.</returns>
-		[NotNull]
+		[NotNull, Pure]
 		VisualElement CreateVisualElement([CanBeNull] string label);
 	}
 }

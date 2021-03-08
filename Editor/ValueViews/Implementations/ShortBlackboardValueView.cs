@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class ShortBlackboardValueView : BlackboardValueView<short>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<short> CreateBaseField(string label)
 		{
 			return new ShortField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override short DrawValue(string label, short value)
 		{
 			return (short)Mathf.Clamp(EditorGUILayout.IntField(label, value), short.MinValue, short.MaxValue);

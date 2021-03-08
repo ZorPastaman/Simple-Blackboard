@@ -14,12 +14,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class FloatBlackboardValueView : BlackboardValueView<float>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<float> CreateBaseField(string label)
 		{
 			return new FloatField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override float DrawValue(string label, float value)
 		{
 			return EditorGUILayout.FloatField(label, value);

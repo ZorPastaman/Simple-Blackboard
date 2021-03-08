@@ -14,12 +14,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class DoubleBlackboardValueView : BlackboardValueView<double>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<double> CreateBaseField(string label)
 		{
 			return new DoubleField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override double DrawValue(string label, double value)
 		{
 			return EditorGUILayout.DoubleField(label, value);

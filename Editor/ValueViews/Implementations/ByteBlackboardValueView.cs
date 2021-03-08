@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class ByteBlackboardValueView : BlackboardValueView<byte>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<byte> CreateBaseField(string label)
 		{
 			return new ByteField(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override byte DrawValue(string label, byte value)
 		{
 			return (byte)Mathf.Clamp(EditorGUILayout.IntField(label, value), byte.MinValue, byte.MaxValue);

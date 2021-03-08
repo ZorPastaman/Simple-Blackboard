@@ -15,12 +15,14 @@ namespace Zor.SimpleBlackboard.BlackboardValueViews
 	public sealed class Matrix4x4BlackboardValueView : BlackboardValueView<Matrix4x4>
 	{
 		/// <inheritdoc/>
+		[Pure]
 		public override BaseField<Matrix4x4> CreateBaseField(string label)
 		{
 			return new Matrix4x4Field(label);
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public override Matrix4x4 DrawValue(string label, Matrix4x4 value)
 		{
 			EditorGUILayout.BeginHorizontal();

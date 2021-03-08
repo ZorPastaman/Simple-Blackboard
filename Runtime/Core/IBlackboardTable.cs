@@ -6,18 +6,22 @@ using JetBrains.Annotations;
 
 namespace Zor.SimpleBlackboard.Core
 {
+	/// <summary>
+	/// <para>Interface for an entry of <see cref="Zor.SimpleBlackboard.Core.Blackboard"/>.</para>
+	/// <para>The only implementor is <see cref="BlackboardTable{T}"/>.</para>
+	/// </summary>
 	internal interface IBlackboardTable
 	{
 		/// <summary>
 		/// Type of values that are contained in the <see cref="IBlackboardTable"/>.
 		/// </summary>
 		[NotNull]
-		Type valueType { get; }
+		Type valueType { [Pure] get; }
 
 		/// <summary>
 		/// How many values are contained in the <see cref="IBlackboardTable"/>.
 		/// </summary>
-		int count { get; }
+		int count { [Pure] get; }
 
 		/// <summary>
 		/// Gets a value of the property name <paramref name="propertyName"/>

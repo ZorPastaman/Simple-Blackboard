@@ -10,6 +10,8 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 	/// This flusher calls <see cref="AccessorFlusher.FlushAccessors"/>
 	/// every time in <see cref="Coroutine"/> after <see cref="WaitForSeconds"/>.
 	/// </summary>
+	/// <seealso cref="WaitForFixedUpdateAccessorFlusher"/>
+	/// <seealso cref="WaitForNullAccessorFlusher"/>
 	[AddComponentMenu(AddComponentConstants.AccessorFlushersFolder + "Wait For Seconds Accessor Flusher")]
 	public sealed class WaitForSecondsAccessorFlusher : CoroutineAccessorFlusher
 	{
@@ -33,6 +35,11 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 			}
 		}
 
-		protected override YieldInstruction instruction => new WaitForSeconds(m_Seconds);
+		[NotNull]
+		protected override YieldInstruction instruction
+		{
+			[Pure]
+			get => new WaitForSeconds(m_Seconds);
+		}
 	}
 }
