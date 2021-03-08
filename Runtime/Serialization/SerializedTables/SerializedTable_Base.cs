@@ -21,7 +21,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// Type of serialized value in this table.
 		/// </summary>
 		[NotNull]
-		public abstract Type valueType { get; }
+		public abstract Type valueType { [Pure] get; }
 
 		/// <summary>
 		/// Applies its properties to <paramref name="blackboard"/>.

@@ -77,9 +77,19 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// </remarks>
 		public void SetProperties([NotNull] string[] keys, [NotNull] T[] values)
 		{
-			m_Keys = keys;
-			m_Values = values;
-			EnsureEqualLength();
+			int count = Mathf.Min(keys.Length, values.Length);
+
+			if (m_Keys.Length != count)
+			{
+				m_Keys = new string[count];
+			}
+			if (m_Values.Length != count)
+			{
+				m_Values = new T[count];
+			}
+
+			Array.Copy(keys, 0, m_Keys, 0, count);
+			Array.Copy(values, 0, m_Values, 0, count);
 		}
 
 		/// <inheritdoc/>
@@ -104,11 +114,6 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		protected override void OnValidate()
-		{
-			EnsureEqualLength();
-		}
-
-		private void EnsureEqualLength()
 		{
 			int keysLength = m_Keys.Length;
 			int valuesLength = m_Values.Length;

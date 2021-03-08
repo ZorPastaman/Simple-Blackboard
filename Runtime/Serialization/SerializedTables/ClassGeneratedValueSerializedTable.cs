@@ -65,10 +65,16 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// Sets <paramref name="keys"/>.
 		/// </summary>
 		/// <param name="keys"></param>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetKeys([NotNull] string[] keys)
 		{
-			m_Keys = keys;
+			int count = keys.Length;
+
+			if (m_Keys.Length != count)
+			{
+				m_Keys = new string[count];
+			}
+
+			Array.Copy(keys, 0, m_Keys, 0, count);
 		}
 
 		/// <inheritdoc/>

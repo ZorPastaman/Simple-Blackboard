@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -94,10 +95,16 @@ namespace Zor.SimpleBlackboard.Components
 		/// <remarks>
 		/// You need to call <see cref="RecreateBlackboard"/> to apply changes.
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetSerializedContainers([NotNull] SimpleSerializedContainer[] serializedContainers)
 		{
-			m_SerializedContainers = serializedContainers;
+			int count = serializedContainers.Length;
+
+			if (m_SerializedContainers.Length != count)
+			{
+				m_SerializedContainers = new SimpleSerializedContainer[count];
+			}
+
+			Array.Copy(serializedContainers, 0, m_SerializedContainers, 0, count);
 		}
 
 		/// <summary>
@@ -132,10 +139,16 @@ namespace Zor.SimpleBlackboard.Components
 		/// <remarks>
 		/// You need to call <see cref="RecreateBlackboard"/> to apply changes.
 		/// </remarks>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetComponentReferences(ComponentReference[] componentReferences)
 		{
-			m_ComponentReferences = componentReferences;
+			int count = componentReferences.Length;
+
+			if (m_ComponentReferences.Length != count)
+			{
+				m_ComponentReferences = new ComponentReference[count];
+			}
+
+			Array.Copy(componentReferences, 0, m_ComponentReferences, 0, count);
 		}
 
 		/// <summary>

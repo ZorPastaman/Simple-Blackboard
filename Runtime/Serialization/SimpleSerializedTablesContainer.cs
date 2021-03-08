@@ -59,10 +59,16 @@ namespace Zor.SimpleBlackboard.Serialization
 		/// Sets the serialized tables.
 		/// </summary>
 		/// <param name="serializedTables"></param>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetSerializedTables([NotNull] SerializedTable_Base[] serializedTables)
 		{
-			m_SerializedTables = serializedTables;
+			int count = serializedTables.Length;
+
+			if (m_SerializedTables.Length != count)
+			{
+				m_SerializedTables = new SerializedTable_Base[count];
+			}
+
+			Array.Copy(serializedTables, 0, m_SerializedTables, 0, count);
 		}
 
 		/// <inheritdoc/>

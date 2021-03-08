@@ -1,5 +1,6 @@
 // Copyright (c) 2020-2021 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
+using System;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 using UnityEngine;
@@ -54,10 +55,16 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		/// Sets the accessors <paramref name="accessors"/>.
 		/// </summary>
 		/// <param name="accessors"></param>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetAccessors([NotNull] Accessor_Base[] accessors)
 		{
-			m_Accessors = accessors;
+			int count = accessors.Length;
+
+			if (m_Accessors.Length != count)
+			{
+				m_Accessors = new Accessor_Base[count];
+			}
+
+			Array.Copy(accessors, 0, m_Accessors, 0, count);
 		}
 
 		/// <summary>
