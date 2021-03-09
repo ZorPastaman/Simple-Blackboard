@@ -13,14 +13,8 @@ namespace Zor.SimpleBlackboard.Core
 	/// contains values of the type <typeparamref name="T"/>.
 	/// </summary>
 	/// <typeparam name="T">Value type.</typeparam>
-	internal sealed class BlackboardTable<T> : IBlackboardTable
+	internal sealed class BlackboardTable<T> : Dictionary<BlackboardPropertyName, T>, IBlackboardTable
 	{
-		/// <summary>
-		/// Property names to values dictionary.
-		/// </summary>
-		[NotNull]
-		private readonly Dictionary<BlackboardPropertyName, T> m_table = new Dictionary<BlackboardPropertyName, T>();
-
 		/// <summary>
 		/// Type of values that are contained in the <see cref="BlackboardTable{T}"/>.
 		/// </summary>
@@ -36,7 +30,7 @@ namespace Zor.SimpleBlackboard.Core
 		public int count
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-			get => m_table.Count;
+			get => Count;
 		}
 
 		/// <summary>
@@ -47,13 +41,14 @@ namespace Zor.SimpleBlackboard.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining), CanBeNull, Pure]
 		public T GetValue(BlackboardPropertyName propertyName)
 		{
-			return m_table[propertyName];
+			return this[propertyName];
 		}
 
 		/// <inheritdoc/>
+		[Pure]
 		public object GetObjectValue(BlackboardPropertyName propertyName)
 		{
-			return m_table[propertyName];
+			return this[propertyName];
 		}
 
 		/// <summary>
@@ -64,13 +59,13 @@ namespace Zor.SimpleBlackboard.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void SetValue(BlackboardPropertyName propertyName, [CanBeNull] T value)
 		{
-			m_table[propertyName] = value;
+			this[propertyName] = value;
 		}
 
 		/// <inheritdoc/>
 		public void SetObjectValue(BlackboardPropertyName propertyName, object value)
 		{
-			m_table[propertyName] = value is T typedValue
+			this[propertyName] = value is T typedValue
 				? typedValue
 				: default;
 		}
@@ -83,14 +78,14 @@ namespace Zor.SimpleBlackboard.Core
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public void GetProperties([NotNull] List<KeyValuePair<BlackboardPropertyName, T>> properties)
 		{
-			properties.AddRange(m_table);
+			properties.AddRange(this);
 		}
 
 		/// <inheritdoc/>
 		/// <seealso cref="GetProperties(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{Zor.SimpleBlackboard.Core.BlackboardPropertyName,T}})"/>
 		public void GetProperties(List<KeyValuePair<BlackboardPropertyName, object>> properties)
 		{
-			Dictionary<BlackboardPropertyName, T>.Enumerator enumerator = m_table.GetEnumerator();
+			Enumerator enumerator = GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
@@ -103,7 +98,7 @@ namespace Zor.SimpleBlackboard.Core
 		public void GetPropertiesAs<TAs>(List<KeyValuePair<BlackboardPropertyName, TAs>> properties)
 			where TAs : class
 		{
-			Dictionary<BlackboardPropertyName, T>.Enumerator enumerator = m_table.GetEnumerator();
+			Enumerator enumerator = GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
@@ -113,25 +108,11 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <inheritdoc/>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public bool Remove(BlackboardPropertyName propertyName)
-		{
-			return m_table.Remove(propertyName);
-		}
-
-		/// <inheritdoc/>
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void Clear()
-		{
-			m_table.Clear();
-		}
-
-		/// <inheritdoc/>
 		public void CopyTo(IBlackboardTable table)
 		{
 			var typedTable = (BlackboardTable<T>)table;
 
-			Dictionary<BlackboardPropertyName, T>.Enumerator enumerator = m_table.GetEnumerator();
+			Enumerator enumerator = GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
@@ -145,7 +126,7 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			var builder = new StringBuilder();
 
-			Dictionary<BlackboardPropertyName, T>.Enumerator enumerator = m_table.GetEnumerator();
+			Enumerator enumerator = GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
