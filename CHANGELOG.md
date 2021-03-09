@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Package icon.
+
 ### Fixed
 
 - Add popup close button icon is now visible.
