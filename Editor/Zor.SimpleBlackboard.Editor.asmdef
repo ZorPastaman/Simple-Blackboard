@@ -1,9 +1,8 @@
 {
     "name": "Zor.SimpleBlackboard.Editor",
     "references": [
-        "Zor.SimpleBlackboard"
+        "GUID:e1703ee141f53e64180a32309e02ea34"
     ],
-    "optionalUnityReferences": [],
     "includePlatforms": [
         "Editor"
     ],
@@ -12,5 +11,7 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": []
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
