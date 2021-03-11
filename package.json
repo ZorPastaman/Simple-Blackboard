@@ -2,13 +2,14 @@
   "name": "com.zor.simple-blackboard",
   "version": "1.4.0",
   "displayName": "Simple Blackboard",
-  "description": "Simple Blackboard for Unity is a flexible data storage that can contain any count of properties of any type. The properties can be accessed with property names.",
+  "description": "Simple Blackboard for Unity is a flexible runtime data container that can contain any count of properties of any type. The properties can be accessed with property names.\nThe main advantage of Simple Blackboard is that it allocates as little as possible. Also, it has good enough performance and supports derivation.",
   "unity": "2019.4",
   "keywords": [
     "data",
     "blackboard",
     "flexible",
-    "storage"
+    "runtime",
+    "container"
   ],
   "author": {
     "name": "Vladimir Popov",

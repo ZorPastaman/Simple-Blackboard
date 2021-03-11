@@ -60,7 +60,7 @@ namespace Zor.SimpleBlackboard.Core
 
 		/// <summary>
 		/// Tries to get and return a value of the struct type <typeparamref name="T"/>
-		/// and the property name <paramref name="propertyName"/>.
+		/// and the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to get.</param>
 		/// <param name="value">If the property is found, this contains its value; otherwise
@@ -95,7 +95,7 @@ namespace Zor.SimpleBlackboard.Core
 
 		/// <summary>
 		/// Tries to get and return a value of the class type <typeparamref name="T"/>
-		/// and the property name <paramref name="propertyName"/>.
+		/// and the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to get.</param>
 		/// <param name="value">If the property is found, this contains its value; otherwise
@@ -121,7 +121,7 @@ namespace Zor.SimpleBlackboard.Core
 
 		/// <summary>
 		/// Tries to get and return a value of the type <paramref name="valueType"/>
-		/// and the property name <paramref name="propertyName"/>.
+		/// and the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="valueType">Type of the value to get.</param>
 		/// <param name="propertyName">Name of the value property to get.</param>
@@ -157,7 +157,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Tries to get and return a value of the property name <paramref name="propertyName"/>.
+		/// Tries to get and return a value of the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to get.</param>
 		/// <param name="value">If the property is found, this contains its value; otherwise
@@ -189,8 +189,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Sets the value <paramref name="value"/> of the struct type <typeparamref name="T"/>
-		/// and the property name <paramref name="propertyName"/>.
+		/// Sets the <paramref name="value"/> of the struct type <typeparamref name="T"/>
+		/// and the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to set.</param>
 		/// <param name="value">Value to set.</param>
@@ -233,8 +233,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Sets the value <paramref name="value"/> of the class type <typeparamref name="T"/>
-		/// and the property name <paramref name="propertyName"/>.
+		/// Sets the <paramref name="value"/> of the class type <typeparamref name="T"/>
+		/// and the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to set.</param>
 		/// <param name="value">Value to set.</param>
@@ -242,7 +242,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <remarks>This method allocates if a property of the type <typeparamref name="T"/> is set first
 		/// or when the internal table resizes.</remarks>
 		/// <remarks>
-		/// <para>If the <see cref="Blackboard"/> contains a property of the property name <paramref name="propertyName"/>,
+		/// <para>If the <see cref="Blackboard"/> contains a property of the <paramref name="propertyName"/>,
 		/// it replaces that property with the new one.</para>
 		/// </remarks>
 		/// <seealso cref="SetStructValue{T}"/>
@@ -281,8 +281,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Sets the value <paramref name="value"/> of the type <paramref name="valueType"/>
-		/// and the property name <paramref name="propertyName"/>.
+		/// Sets the <paramref name="value"/> of the type <paramref name="valueType"/>
+		/// and the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="valueType">Value type to set.</param>
 		/// <param name="propertyName">Name of the value property to set.</param>
@@ -290,7 +290,7 @@ namespace Zor.SimpleBlackboard.Core
 		/// <remarks>
 		/// <para>This method allocates if a property of the type <paramref name="valueType"/> is set first
 		/// or when the internal table resizes.</para>
-		/// <para>If the <see cref="Blackboard"/> contains a property of the property name <paramref name="propertyName"/>,
+		/// <para>If the <see cref="Blackboard"/> contains a property of the <paramref name="propertyName"/>,
 		/// it replaces that property with the new one.</para>
 		/// </remarks>
 		/// <seealso cref="SetStructValue{T}"/>
@@ -444,11 +444,12 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Gets value type of a property with the property name <paramref name="propertyName"/>.
+		/// Gets value type of a property with the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName"></param>
-		/// <returns>Type of a property with the property name <paramref name="propertyName"/>
-		/// or null if such a property is not found.</returns>
+		/// <returns>
+		/// Type of a property with the <paramref name="propertyName"/> or null if such a property is not found.
+		/// </returns>
 		/// <seealso cref="GetValueTypes"/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public Type GetValueType(BlackboardPropertyName propertyName)
@@ -495,7 +496,7 @@ namespace Zor.SimpleBlackboard.Core
 
 		/// <summary>
 		/// Checks if the <see cref="Blackboard"/> contains a property of
-		/// the property name <paramref name="propertyName"/> and the struct type <typeparamref name="T"/>.
+		/// the <paramref name="propertyName"/> and the struct type <typeparamref name="T"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to find.</param>
 		/// <typeparam name="T">Struct value type.</typeparam>
@@ -519,7 +520,7 @@ namespace Zor.SimpleBlackboard.Core
 
 		/// <summary>
 		/// Checks if the <see cref="Blackboard"/> contains a property of
-		/// the property name <paramref name="propertyName"/> and the type <typeparamref name="T"/>.
+		/// the <paramref name="propertyName"/> and the type <typeparamref name="T"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to find.</param>
 		/// <typeparam name="T">Value type.</typeparam>
@@ -544,7 +545,7 @@ namespace Zor.SimpleBlackboard.Core
 
 		/// <summary>
 		/// Checks if the <see cref="Blackboard"/> contains a property of
-		/// the property name <paramref name="propertyName"/> and the type <paramref name="valueType"/>.
+		/// the <paramref name="propertyName"/> and the type <paramref name="valueType"/>.
 		/// </summary>
 		/// <param name="valueType">Value type.</param>
 		/// <param name="propertyName">Name of the value property to find.</param>
@@ -568,8 +569,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Checks if the <see cref="Blackboard"/> contains a property of
-		/// the property name <paramref name="propertyName"/>.
+		/// Checks if the <see cref="Blackboard"/> contains a property of the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the value property to find.</param>
 		/// <returns>
@@ -591,8 +591,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Checks if the <see cref="Blackboard"/> contains or contained
-		/// a property of the type <typeparamref name="T"/>.
+		/// Checks if the <see cref="Blackboard"/> contains
+		/// or contained a property of the type <typeparamref name="T"/>.
 		/// </summary>
 		/// <typeparam name="T">Value type.</typeparam>
 		/// <returns>
@@ -617,8 +617,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Checks if the <see cref="Blackboard"/> contains or contained
-		/// a property of the type <paramref name="valueType"/>.
+		/// Checks if the <see cref="Blackboard"/> contains
+		/// or contained a property of the type <paramref name="valueType"/>.
 		/// </summary>
 		/// <param name="valueType">Value type.</param>
 		/// <returns>
@@ -643,8 +643,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Checks if the <see cref="Blackboard"/> contains or contained
-		/// a property of the type <typeparamref name="T"/>.
+		/// Checks if the <see cref="Blackboard"/> contains
+		/// or contained a property of the type <typeparamref name="T"/>.
 		/// </summary>
 		/// <typeparam name="T">Value type.</typeparam>
 		/// <returns>
@@ -666,8 +666,8 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Checks if the <see cref="Blackboard"/> contains or contained
-		/// a property of the type <paramref name="valueType"/>.
+		/// Checks if the <see cref="Blackboard"/> contains
+		/// or contained a property of the type <paramref name="valueType"/>.
 		/// </summary>
 		/// <param name="valueType">Value type.</param>
 		/// <returns>
@@ -705,10 +705,12 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <typeparam name="T">Value type.</typeparam>
 		/// <returns>
-		/// <para>How many values of the type <typeparamref name="T"/>
-		/// are contained in the <see cref="Blackboard"/>.</para>
-		/// <para>-1 if the <see cref="Blackboard"/> doesn't contain a value
-		/// of the type <typeparamref name="T"/>.</para>
+		/// <para>
+		/// How many values of the type <typeparamref name="T"/> are contained in the <see cref="Blackboard"/>.
+		/// </para>
+		/// <para>
+		/// -1 if the <see cref="Blackboard"/> doesn't contain a value of the type <typeparamref name="T"/>.
+		/// </para>
 		/// </returns>
 		/// <remarks>
 		/// This method doesn't support derivation.
@@ -736,10 +738,12 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="valueType">Value type.</param>
 		/// <returns>
-		/// <para>How many values of the type <paramref name="valueType"/>
-		/// are contained in the <see cref="Blackboard"/>.</para>
-		/// <para>-1 if the <see cref="Blackboard"/> doesn't contain a value
-		/// of the type <paramref name="valueType"/>.</para>
+		/// <para>
+		/// How many values of the type <paramref name="valueType"/> are contained in the <see cref="Blackboard"/>.
+		/// </para>
+		/// <para>
+		/// -1 if the <see cref="Blackboard"/> doesn't contain a value of the type <paramref name="valueType"/>.
+		/// </para>
 		/// </returns>
 		/// <remarks>
 		/// This method doesn't support derivation.
@@ -766,10 +770,12 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <typeparam name="T">Value type.</typeparam>
 		/// <returns>
-		/// <para>How many values of the type <typeparamref name="T"/>
-		/// are contained in the <see cref="Blackboard"/>.</para>
-		/// <para>-1 if the <see cref="Blackboard"/> doesn't contain a value
-		/// of the type <typeparamref name="T"/>.</para>
+		/// <para>
+		/// How many values of the type <typeparamref name="T"/> are contained in the <see cref="Blackboard"/>.
+		/// </para>
+		/// <para>
+		/// -1 if the <see cref="Blackboard"/> doesn't contain a value of the type <typeparamref name="T"/>.
+		/// </para>
 		/// </returns>
 		/// <seealso cref="GetCount{T}"/>
 		/// <seealso cref="GetCount"/>
@@ -792,10 +798,12 @@ namespace Zor.SimpleBlackboard.Core
 		/// </summary>
 		/// <param name="valueType">Value type.</param>
 		/// <returns>
-		/// <para>How many values of the type <paramref name="valueType"/>
-		/// are contained in the <see cref="Blackboard"/>.</para>
-		/// <para>-1 if the <see cref="Blackboard"/> doesn't contain a value
-		/// of the type <paramref name="valueType"/>.</para>
+		/// <para>
+		/// How many values of the type <paramref name="valueType"/> are contained in the <see cref="Blackboard"/>.
+		/// </para>
+		/// <para>
+		/// -1 if the <see cref="Blackboard"/> doesn't contain a value of the type <paramref name="valueType"/>.
+		/// </para>
 		/// </returns>
 		/// <seealso cref="GetCount{T}"/>
 		/// <seealso cref="GetCount"/>
@@ -829,8 +837,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Removes a property of the property name <paramref name="propertyName"/>
-		/// and the struct type <typeparamref name="T"/>.
+		/// Removes a property of the <paramref name="propertyName"/> and the struct type <typeparamref name="T"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the property to remove.</param>
 		/// <typeparam name="T">Struct value type.</typeparam>
@@ -864,8 +871,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Removes a property of the property name <paramref name="propertyName"/> and
-		/// the type <typeparamref name="T"/>.
+		/// Removes a property of the p<paramref name="propertyName"/> and the type <typeparamref name="T"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the property to remove.</param>
 		/// <typeparam name="T">Value type.</typeparam>
@@ -898,8 +904,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Removes a property of the property name <paramref name="propertyName"/>
-		/// and the type <paramref name="valueType"/>.
+		/// Removes a property of the <paramref name="propertyName"/> and the type <paramref name="valueType"/>.
 		/// </summary>
 		/// <param name="valueType">Value type.</param>
 		/// <param name="propertyName">Name of the property to remove.</param>
@@ -930,7 +935,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Removes a property of the property name <paramref name="propertyName"/>.
+		/// Removes a property of the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the property to remove.</param>
 		/// <returns>True if the property is removed; false if it doesn't exist.</returns>
@@ -1034,7 +1039,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Copies a property of the property name <paramref name="propertyName"/> into <paramref name="blackboard"/>.
+		/// Copies a property of the <paramref name="propertyName"/> into <paramref name="blackboard"/>.
 		/// </summary>
 		/// <param name="blackboard">Destination.</param>
 		/// <param name="propertyName">Property to copy.</param>

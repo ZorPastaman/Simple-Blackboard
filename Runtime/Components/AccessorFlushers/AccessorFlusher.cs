@@ -30,10 +30,10 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		}
 
 		/// <summary>
-		/// Gets a <see cref="Accessor_Base"/> at the index <paramref name="index"/>.
+		/// Gets a <see cref="Accessor_Base"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns><see cref="Accessor_Base"/> at the index <paramref name="index"/>.</returns>
+		/// <returns><see cref="Accessor_Base"/> at the <paramref name="index"/>.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), NotNull, Pure]
 		public Accessor_Base GetAccessor(int index)
 		{
@@ -41,7 +41,7 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		}
 
 		/// <summary>
-		/// Sets the accessor <paramref name="accessor"/> at the index <paramref name="index"/>
+		/// Sets the <paramref name="accessor"/> at the <paramref name="index"/>
 		/// </summary>
 		/// <param name="accessor"></param>
 		/// <param name="index"></param>
@@ -52,7 +52,7 @@ namespace Zor.SimpleBlackboard.Components.AccessorFlushers
 		}
 
 		/// <summary>
-		/// Sets the accessors <paramref name="accessors"/>.
+		/// Sets the <paramref name="accessors"/>.
 		/// </summary>
 		/// <param name="accessors"></param>
 		public void SetAccessors([NotNull] Accessor_Base[] accessors)

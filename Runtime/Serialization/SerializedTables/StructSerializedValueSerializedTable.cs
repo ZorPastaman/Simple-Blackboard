@@ -40,8 +40,8 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Gets a property as a pair of <see cref="string"/> and <typeparamref name="T"/>
-		/// at the index <paramref name="index"/>.
+		/// Gets a property as a pair of <see cref="string"/>
+		/// and <typeparamref name="T"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns>
@@ -54,8 +54,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Sets <paramref name="key"/> and <paramref name="value"/>
-		/// as a property at the index <paramref name="index"/>.
+		/// Sets <paramref name="key"/> and <paramref name="value"/> as a property at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="value"></param>

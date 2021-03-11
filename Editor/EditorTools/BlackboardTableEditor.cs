@@ -178,7 +178,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 
 		/// <summary>
 		/// Sets <paramref name="value"/> into <paramref name="blackboard"/>
-		/// with property name <paramref name="key"/>.
+		/// with <paramref name="key"/> as a property name.
 		/// </summary>
 		/// <param name="blackboard">Property is set into this.</param>
 		/// <param name="key">Property name.</param>

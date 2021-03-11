@@ -60,7 +60,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Creates a <see cref="BlackboardPropertyName"/> with the specified <paramref name="id"></paramref>.
+		/// Creates a <see cref="BlackboardPropertyName"/> with the specified <paramref name="id"/>.
 		/// </summary>
 		/// <param name="id">Id to set.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

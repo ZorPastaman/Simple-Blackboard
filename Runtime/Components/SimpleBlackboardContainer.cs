@@ -60,10 +60,10 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// Gets a <see cref="SimpleSerializedContainer"/> at the index <paramref name="index"/>.
+		/// Gets a <see cref="SimpleSerializedContainer"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns><see cref="SimpleSerializedContainer"/> at the index <paramref name="index"/>.</returns>
+		/// <returns><see cref="SimpleSerializedContainer"/> at the <paramref name="index"/>.</returns>
 		/// <remarks>
 		/// If you change a gotten <see cref="SetSerializedContainer"/>,
 		/// you need to call <see cref="RecreateBlackboard"/> to apply changes.
@@ -75,7 +75,7 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// Sets the serialized container <paramref name="serializedContainer"/> at the index <paramref name="index"/>
+		/// Sets the <paramref name="serializedContainer"/> at the <paramref name="index"/>
 		/// </summary>
 		/// <param name="serializedContainer"></param>
 		/// <param name="index"></param>
@@ -89,7 +89,7 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// Sets the serialized containers <paramref name="serializedContainers"/>.
+		/// Sets the <paramref name="serializedContainers"/>.
 		/// </summary>
 		/// <param name="serializedContainers"></param>
 		/// <remarks>
@@ -108,10 +108,10 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// Gets a <see cref="ComponentReference"/> at the index <paramref name="index"/>.
+		/// Gets a <see cref="ComponentReference"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns><see cref="ComponentReference"/> at the index <paramref name="index"/>.</returns>
+		/// <returns><see cref="ComponentReference"/> at the <paramref name="index"/>.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public ComponentReference GetComponentReference(int index)
 		{
@@ -119,7 +119,7 @@ namespace Zor.SimpleBlackboard.Components
 		}
 
 		/// <summary>
-		/// Sets the component reference <paramref name="componentReference"/> at the index <paramref name="index"/>.
+		/// Sets the component reference <paramref name="componentReference"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="componentReference"></param>
 		/// <param name="index"></param>

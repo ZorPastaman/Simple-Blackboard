@@ -38,7 +38,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Gets a key at the index <paramref name="index"/>.
+		/// Gets a key at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
 		/// <returns>
@@ -51,7 +51,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Sets the key <paramref name="key"/> at the index <paramref name="index"/>.
+		/// Sets the <paramref name="key"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="key"></param>
 		/// <param name="index"></param>

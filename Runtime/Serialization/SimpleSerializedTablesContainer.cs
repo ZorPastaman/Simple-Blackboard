@@ -34,10 +34,10 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Gets a <see cref="SerializedTable_Base"/> at the index <paramref name="index"/>.
+		/// Gets a <see cref="SerializedTable_Base"/> at the <paramref name="index"/>.
 		/// </summary>
 		/// <param name="index"></param>
-		/// <returns><see cref="SerializedTable_Base"/> at the index <paramref name="index"/>.</returns>
+		/// <returns><see cref="SerializedTable_Base"/> at the <paramref name="index"/>.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
 		public SerializedTable_Base GetSerializedTable(int index)
 		{
@@ -45,7 +45,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Sets the serialized table <paramref name="serializedTable"/> at the index <paramref name="index"/>.
+		/// Sets the <paramref name="serializedTable"/> at the index <paramref name="index"/>.
 		/// </summary>
 		/// <param name="serializedTable"></param>
 		/// <param name="index"></param>
@@ -56,7 +56,7 @@ namespace Zor.SimpleBlackboard.Serialization
 		}
 
 		/// <summary>
-		/// Sets the serialized tables.
+		/// Sets the <paramref name="serializedTables"/>.
 		/// </summary>
 		/// <param name="serializedTables"></param>
 		public void SetSerializedTables([NotNull] SerializedTable_Base[] serializedTables)

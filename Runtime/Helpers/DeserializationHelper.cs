@@ -122,7 +122,7 @@ namespace Zor.SimpleBlackboard.Helpers
 		/// <param name="componentReferences"></param>
 		/// <param name="blackboard"></param>
 		/// <returns><paramref name="blackboard"/> after applying <paramref name="componentReferences"/>.</returns>
-		[NotNull, Pure]
+		[NotNull]
 		public static Blackboard Deserialize([NotNull] ComponentReference[] componentReferences,
 			[NotNull] Blackboard blackboard)
 		{

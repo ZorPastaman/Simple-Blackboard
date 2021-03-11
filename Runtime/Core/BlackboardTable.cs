@@ -34,7 +34,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Gets a value of the property name <paramref name="propertyName"/>.
+		/// Gets a value of the <paramref name="propertyName"/>.
 		/// </summary>
 		/// <param name="propertyName">Name of the property to get.</param>
 		/// <returns>Gotten value.</returns>
@@ -52,7 +52,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Sets the value <paramref name="value"/> of the property name <paramref name="propertyName"/>
+		/// Sets the <paramref name="value"/> of the <paramref name="propertyName"/>
 		/// </summary>
 		/// <param name="propertyName">Name of the property to set.</param>
 		/// <param name="value">Set value.</param>
