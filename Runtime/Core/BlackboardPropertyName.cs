@@ -15,25 +15,16 @@ namespace Zor.SimpleBlackboard.Core
 	/// </remarks>
 	public readonly struct BlackboardPropertyName : IEquatable<BlackboardPropertyName>
 	{
-		private const int InitialCapacity = 1000;
-
 		/// <summary>
-		/// Dictionary of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>
-		/// to their ids.
+		/// 0 on little endian machines, 1 on big endian machines.
+		/// Used in <see cref="ComputeHash"/>.
 		/// </summary>
-		[NotNull]
-		private static readonly Dictionary<string, int> s_nameIds = new Dictionary<string, int>(InitialCapacity);
+		private static readonly int s_hashByteOffset;
+		
 		/// <summary>
-		/// List of all unique strings that were used in <see cref="BlackboardPropertyName(string)"/>.
+		/// Pairs of ids and strings that were used in <see cref="BlackboardPropertyName(string)"/>.
 		/// </summary>
-		[NotNull] private static readonly List<string> s_names = new List<string>(InitialCapacity);
-
-#if SIMPLE_BLACKBOARD_MULTITHREADING
-		/// <summary>
-		/// Empty object that is used in locks.
-		/// </summary>
-		private static readonly object s_syncRoot = new object();
-#endif
+		[NotNull] private static readonly Dictionary<int, string> s_names = new(1000);
 
 		/// <summary>
 		/// Unique per string id.
@@ -41,21 +32,30 @@ namespace Zor.SimpleBlackboard.Core
 		public readonly int id;
 
 		/// <summary>
+		/// Initializes <see cref="s_hashByteOffset"/>.
+		/// </summary>
+		static unsafe BlackboardPropertyName()
+		{
+			bool isBigEndian = !BitConverter.IsLittleEndian;
+			s_hashByteOffset = *(byte*)&isBigEndian;
+		}
+
+		/// <summary>
 		/// Creates a <see cref="BlackboardPropertyName"/> with unique <see cref="id"/> per <paramref name="name"/>.
 		/// </summary>
-		/// <param name="name">For this, unique <see cref="id"/> is set.</param>
+		/// <param name="name">
+		/// For this, unique <see cref="id"/> is set.
+		/// Every symbol must be from ascii table.
+		/// </param>
 		public BlackboardPropertyName([NotNull] string name)
 		{
+			id = ComputeHash(name);
+			
 #if SIMPLE_BLACKBOARD_MULTITHREADING
-			lock (s_syncRoot)
+			lock (s_names)
 #endif
 			{
-				if (!s_nameIds.TryGetValue(name, out id))
-				{
-					id = s_names.Count;
-					s_nameIds.Add(name, id);
-					s_names.Add(name);
-				}
+				s_names[id] = name;
 			}
 		}
 
@@ -90,10 +90,10 @@ namespace Zor.SimpleBlackboard.Core
 			get
 			{
 #if SIMPLE_BLACKBOARD_MULTITHREADING
-				lock (s_syncRoot)
+				lock (s_names)
 #endif
 				{
-					return id >= 0 & id < s_names.Count ? s_names[id] : string.Empty;
+					return s_names.TryGetValue(id, out string propertyName) ? propertyName : string.Empty;
 				}
 			}
 		}
@@ -132,6 +132,27 @@ namespace Zor.SimpleBlackboard.Core
 		public static bool operator !=(BlackboardPropertyName lhs, BlackboardPropertyName rhs)
 		{
 			return lhs.id != rhs.id;
+		}
+		
+		/// <summary>
+		/// Computes hash for <see cref="str"/>. It uses FNV-1a hash algorithm.
+		/// </summary>
+		/// <param name="str">String to be hashed.</param>
+		/// <returns>Computed hash.</returns>
+		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
+		private static unsafe int ComputeHash(string str)
+		{
+			uint hash = 2166136261;
+			
+			fixed (char* c = str)
+			{
+				for (byte* b = (byte*)c + s_hashByteOffset; *b != 0; b += 2)
+				{
+					hash = (hash ^ *b) * 16777619;
+				}
+			}
+
+			return unchecked((int)hash);
 		}
 	}
 }

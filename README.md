@@ -50,6 +50,10 @@ as a property name, not string. You can create that struct with one of its const
 It transforms strings into unique integer ids. That makes work of [Blackboard] faster. 
 But it's not recommended to create a new [BlackboardPropertyName] via string every time, cache it.
 
+#### !Attention!
+
+[BlackboardPropertyName] fully supports only ascii symbols. It may work incorrectly with other symbols.
+
 ## Serialization
 
 If you use a [Blackboard] as a regular c# class, you have to support serialization yourself.
