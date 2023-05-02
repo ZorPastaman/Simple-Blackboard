@@ -11,5 +11,7 @@ namespace Zor.SimpleBlackboard
 		/// With this define, different locks are compiled.
 		/// </summary>
 		public const string MultithreadingDefine = "SIMPLE_BLACKBOARD_MULTITHREADING";
+
+		public const string SaveNamesDefine = "SIMPLE_BLACKBOARD_SAVE_NAMES";
 	}
 }

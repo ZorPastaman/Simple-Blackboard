@@ -101,6 +101,19 @@ It contains conditional methods for logging. You can control a compilation of th
 
 [Blackboard] may allocate in its methods new strings if you have any of those defines turned on.
 
+## Save names feature
+
+[BlackboardPropertyName] can save string names
+so that you always can get an original string it was created with.
+This feature is optional. To turn it on, add SIMPLE_BLACKBOARD_SAVE_NAMES define.
+
+When this feature is enabled, property name of [BlackboardPropertyName] returns original name; 
+otherwise it returns empty string.
+Also, with this feature enabled, method ToString of [BlackboardPropertyName] adds name to the result. 
+And it affects logs so that you can see original names of properties.
+
+[GlobalDefines] has SIMPLE_BLACKBOARD_SAVE_NAMES define as a public const string.
+
 ## Multithreading
 
 The package has an optional multithreading support. 
@@ -113,7 +126,8 @@ in different classes of this package and internal work of [BlackboardPropertyNam
 Also, you can use the package in a multithreading code without the define SIMPLE_BLACKBOARD_MULTITHREADING.
 In that case, you have to guarantee that you don't access the same [Blackboard]
 from different threads and that you access the constructor with string 
-and the name property of [BlackboardPropertyName] only from one thread.
+and the name property of [BlackboardPropertyName] only from one thread. 
+The latter is not required if you don't use SIMPLE_BLACKBOARD_SAVE_NAMES define.
 
 [GlobalDefines] has the define SIMPLE_BLACKBOARD_MULTITHREADING as a public const string.
 

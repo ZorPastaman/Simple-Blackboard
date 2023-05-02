@@ -1,7 +1,6 @@
 ﻿// Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using JetBrains.Annotations;
 
@@ -20,11 +19,13 @@ namespace Zor.SimpleBlackboard.Core
 		/// Used in <see cref="ComputeHash"/>.
 		/// </summary>
 		private static readonly int s_hashByteOffset;
-		
+
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
 		/// <summary>
 		/// Pairs of ids and strings that were used in <see cref="BlackboardPropertyName(string)"/>.
 		/// </summary>
-		[NotNull] private static readonly Dictionary<int, string> s_names = new(1000);
+		[NotNull] private static readonly System.Collections.Generic.Dictionary<int, string> s_names = new(1000);
+#endif
 
 		/// <summary>
 		/// Unique per string id.
@@ -50,13 +51,15 @@ namespace Zor.SimpleBlackboard.Core
 		public BlackboardPropertyName([NotNull] string name)
 		{
 			id = ComputeHash(name);
-			
+
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
 #if SIMPLE_BLACKBOARD_MULTITHREADING
 			lock (s_names)
 #endif
 			{
 				s_names[id] = name;
 			}
+#endif
 		}
 
 		/// <summary>
@@ -70,7 +73,7 @@ namespace Zor.SimpleBlackboard.Core
 		}
 
 		/// <summary>
-		/// Name of the property.
+		/// Name of the property. This method requires SIMPLE_BLACKBOARD_SAVE_NAMES define enabled.
 		/// </summary>
 		/// <returns>
 		/// <para>
@@ -82,6 +85,9 @@ namespace Zor.SimpleBlackboard.Core
 		/// this may return <see cref="string.Empty"/> or a name if another <see cref="BlackboardPropertyName"/>
 		/// was created with <see cref="BlackboardPropertyName(string)"/> and got the same <see cref="id"/>.
 		/// </para>
+		/// <para>
+		/// Empty string if SIMPLE_BLACKBOARD_SAVE_NAMES define is not enabled.
+		/// </para>
 		/// </returns>
 		[NotNull]
 		public string name
@@ -89,12 +95,16 @@ namespace Zor.SimpleBlackboard.Core
 			[Pure]
 			get
 			{
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
 #if SIMPLE_BLACKBOARD_MULTITHREADING
 				lock (s_names)
 #endif
 				{
 					return s_names.TryGetValue(id, out string propertyName) ? propertyName : string.Empty;
 				}
+#else
+				return string.Empty;
+#endif
 			}
 		}
 
@@ -119,7 +129,11 @@ namespace Zor.SimpleBlackboard.Core
 		[Pure]
 		public override string ToString()
 		{
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
 			return $"{id.ToString()}({name})";
+#else
+			return id.ToString();
+#endif
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
@@ -133,26 +147,26 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			return lhs.id != rhs.id;
 		}
-		
+
 		/// <summary>
 		/// Computes hash for <see cref="str"/>. It uses FNV-1a hash algorithm.
 		/// </summary>
 		/// <param name="str">String to be hashed.</param>
 		/// <returns>Computed hash.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-		private static unsafe int ComputeHash(string str)
+		private static unsafe int ComputeHash([NotNull] string str)
 		{
-			uint hash = 2166136261;
-			
 			fixed (char* c = str)
 			{
+				uint hash = 2166136261;
+
 				for (byte* b = (byte*)c + s_hashByteOffset; *b != 0; b += 2)
 				{
 					hash = (hash ^ *b) * 16777619;
 				}
-			}
 
-			return unchecked((int)hash);
+				return unchecked((int)hash);
+			}
 		}
 	}
 }
