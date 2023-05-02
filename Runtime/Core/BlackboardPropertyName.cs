@@ -96,12 +96,17 @@ namespace Zor.SimpleBlackboard.Core
 			get
 			{
 #if SIMPLE_BLACKBOARD_SAVE_NAMES
+				string propertyName;
+				bool found;
+
 #if SIMPLE_BLACKBOARD_MULTITHREADING
 				lock (s_names)
 #endif
 				{
-					return s_names.TryGetValue(id, out string propertyName) ? propertyName : string.Empty;
+					found = s_names.TryGetValue(id, out propertyName);
 				}
+
+				return found ? propertyName : string.Empty;
 #else
 				return string.Empty;
 #endif

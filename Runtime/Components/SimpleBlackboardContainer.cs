@@ -177,7 +177,12 @@ namespace Zor.SimpleBlackboard.Components
 		[ContextMenu("Log")]
 		private void Log()
 		{
-			Debug.Log(m_blackboard.ToString(), this);
+#if SIMPLE_BLACKBOARD_MULTITHREADING
+			lock (m_blackboard)
+#endif
+			{
+				Debug.Log(m_blackboard.ToString(), this);
+			}
 		}
 	}
 }

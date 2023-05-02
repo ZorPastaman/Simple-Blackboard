@@ -24,14 +24,16 @@ namespace Zor.SimpleBlackboard.Components.Accessors
 			get
 			{
 				Blackboard blackboard = blackboardPropertyReference.blackboardContainer.blackboard;
+				T answer;
 
 #if SIMPLE_BLACKBOARD_MULTITHREADING
 				lock (blackboard)
 #endif
 				{
-					blackboard.TryGetClassValue(propertyName, out T answer);
-					return answer;
+					blackboard.TryGetClassValue(propertyName, out answer);
 				}
+				
+				return answer;
 			}
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			set
