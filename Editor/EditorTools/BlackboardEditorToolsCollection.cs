@@ -102,7 +102,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 		{
 			if (!s_valueViews.TryGetValue(valueType, out IBlackboardValueView valueView))
 			{
-				BlackboardDebug.LogError($"Can't create an add popup of type {valueType.FullName} because there's no value view for that type.");
+				BlackboardDebug.LogError($"Can't create an add popup of type {valueType.FullName} because there's no value view for that type");
 				return null;
 			}
 

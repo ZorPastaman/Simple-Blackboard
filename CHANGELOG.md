@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - BlackboardPropertyName now uses FNV-1a hash algorithm.
 
+### Fixed
+
+- Exception while setting a value of type of Unity Object into a blackboard in a non-main thread 
+when SIMPLE_BLACKBOARD_LOG_DETAILS define is enabled. 
+
 ## [1.4.0] - 2021-03-12
 
 ### Added

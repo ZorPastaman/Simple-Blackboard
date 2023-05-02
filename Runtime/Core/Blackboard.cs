@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using JetBrains.Annotations;
@@ -21,12 +22,11 @@ namespace Zor.SimpleBlackboard.Core
 		/// Value type to table of that type dictionary.
 		/// </summary>
 		[NotNull]
-		private readonly Dictionary<Type, IBlackboardTable> m_tables = new Dictionary<Type, IBlackboardTable>();
+		private readonly Dictionary<Type, IBlackboardTable> m_tables = new();
 		/// <summary>
 		/// Property name to value type of that property dictionary.
 		/// </summary>
-		[NotNull] private readonly Dictionary<BlackboardPropertyName, Type> m_propertyTypes =
-			new Dictionary<BlackboardPropertyName, Type>();
+		[NotNull] private readonly Dictionary<BlackboardPropertyName, Type> m_propertyTypes = new();
 
 		/// <summary>
 		/// How many value types are contained in the <see cref="Blackboard"/>.
@@ -206,7 +206,7 @@ namespace Zor.SimpleBlackboard.Core
 			Type newType = typeof(T);
 			BlackboardTable<T> table;
 
-			BlackboardDebug.LogDetails($"[Blackboard] Set struct value '{value}' of type '{newType.FullName}' into property '{propertyName}'");
+			LogSetValue(propertyName, value,"struct");
 
 			if (m_propertyTypes.TryGetValue(propertyName, out Type currentType))
 			{
@@ -254,7 +254,7 @@ namespace Zor.SimpleBlackboard.Core
 			Type valueType = value == null ? typeof(T) : value.GetType();
 			IBlackboardTable table;
 
-			BlackboardDebug.LogDetails($"[Blackboard] Set class value '{value}' of type '{valueType.FullName}' into property '{propertyName}'");
+			LogSetValue(propertyName, value,"class");
 
 			if (m_propertyTypes.TryGetValue(propertyName, out Type currentType))
 			{
@@ -307,7 +307,7 @@ namespace Zor.SimpleBlackboard.Core
 
 			IBlackboardTable table;
 
-			BlackboardDebug.LogDetails($"[Blackboard] Set object value '{value}' of type '{valueType.FullName}' into property '{propertyName}'");
+			LogSetValue(propertyName, value,"object");
 
 			if (m_propertyTypes.TryGetValue(propertyName, out Type currentType))
 			{
@@ -1341,6 +1341,23 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.EndSample();
 
 			return table;
+		}
+
+		[Conditional(BlackboardDebug.LogDetailsDefine), MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static void LogSetValue<T>(BlackboardPropertyName propertyName, T value, string valuePrefix)
+		{
+			string valueText;
+
+			try
+			{
+				valueText = value.ToString();
+			}
+			catch (Exception)
+			{
+				valueText = "unknown";
+			}
+			
+			BlackboardDebug.LogDetails($"[Blackboard] Set {valuePrefix} value '{valueText}' of type '{typeof(T).FullName}' into property '{propertyName}'");
 		}
 
 		/// <summary>
