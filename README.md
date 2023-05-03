@@ -114,6 +114,8 @@ And it affects logs so that you can see original names of properties.
 
 [GlobalDefines] has SIMPLE_BLACKBOARD_SAVE_NAMES define as a public const string.
 
+It's recommended not to use this define if you don't need it because the code works faster without it.
+
 ## Multithreading
 
 The package has an optional multithreading support. 

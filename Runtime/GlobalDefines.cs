@@ -12,6 +12,10 @@ namespace Zor.SimpleBlackboard
 		/// </summary>
 		public const string MultithreadingDefine = "SIMPLE_BLACKBOARD_MULTITHREADING";
 
+		/// <summary>
+		/// With this define, original names of <see cref="Zor.SimpleBlackboard.Core.BlackboardPropertyName"/>
+		/// are saved.
+		/// </summary>
 		public const string SaveNamesDefine = "SIMPLE_BLACKBOARD_SAVE_NAMES";
 	}
 }

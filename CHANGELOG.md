@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- SIMPLE_BLACKBOARD_SAVE_NAMES define that allows to toggle 
+if original names of BlackboardPropertyNames are saved.
+
 ### Changed
 
 - BlackboardPropertyName now uses FNV-1a hash algorithm.
