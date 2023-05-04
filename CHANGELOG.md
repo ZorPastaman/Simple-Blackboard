@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.5.0] - 2023-05-04
+
 ### Added
 
 - SIMPLE_BLACKBOARD_SAVE_NAMES define that allows to toggle 
@@ -78,7 +80,8 @@ when SIMPLE_BLACKBOARD_LOG_DETAILS define is enabled.
 - Unity editor support.
 - Tests.
 
-[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.4.0...HEAD
+[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.5.0...HEAD
+[1.5.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.5.0
 [1.4.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.4.0
 [1.3.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.3.0
 [1.2.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.2.0
