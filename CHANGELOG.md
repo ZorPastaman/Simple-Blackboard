@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [1.5.1] - 2023-09-27
 
-## Fixed
+### Fixed
 
 - Editor ui issues when SIMPLE_BLACKBOARD_SAVE_NAMES is not defined.
 
