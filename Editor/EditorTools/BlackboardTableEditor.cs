@@ -55,8 +55,14 @@ namespace Zor.SimpleBlackboard.EditorTools
 				EditorGUILayout.LabelField(valueType.Name, EditorStyles.boldLabel);
 
 				GetProperties(blackboard, s_properties);
+
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
 				s_properties.Sort((left, right)
 					=> string.CompareOrdinal(left.Key.name, right.Key.name));
+#else
+				s_properties.Sort((left, right)
+					=> left.Key.id.CompareTo(right.Key.id));
+#endif
 
 				for (int i = 0, count = s_properties.Count; i < count; ++i)
 				{
@@ -68,7 +74,13 @@ namespace Zor.SimpleBlackboard.EditorTools
 					EditorGUI.BeginChangeCheck();
 
 					BlackboardPropertyName key = property.Key;
-					T newValue = m_blackboardValueView.DrawValue(key.name, property.Value);
+					string keyName =
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
+						key.name;
+#else
+						key.id.ToString();
+#endif
+					T newValue = m_blackboardValueView.DrawValue(keyName, property.Value);
 
 					if (EditorGUI.EndChangeCheck())
 					{
@@ -140,7 +152,14 @@ namespace Zor.SimpleBlackboard.EditorTools
 					KeyValuePair<BlackboardPropertyName, T> property = s_properties[i];
 					BlackboardPropertyName key = property.Key;
 
-					VisualElement propertyElement = container.Q(key.name);
+					string keyName =
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
+						key.name;
+#else
+						key.id.ToString();
+#endif
+
+					VisualElement propertyElement = container.Q(keyName);
 					if (propertyElement == null)
 					{
 						propertyElement = CreatePropertyElement(blackboardRoot, key);
@@ -191,7 +210,14 @@ namespace Zor.SimpleBlackboard.EditorTools
 		{
 			for (int i = 0, count = s_properties.Count; i < count; ++i)
 			{
-				if (s_properties[i].Key.name == name)
+				string keyName =
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
+					s_properties[i].Key.name;
+#else
+					s_properties[i].Key.id.ToString();
+#endif
+
+				if (keyName == name)
 				{
 					return true;
 				}
@@ -204,7 +230,12 @@ namespace Zor.SimpleBlackboard.EditorTools
 		private VisualElement CreatePropertyElement([NotNull] VisualElement blackboardRoot,
 			BlackboardPropertyName propertyName)
 		{
-			string keyName = propertyName.name;
+			string keyName =
+#if SIMPLE_BLACKBOARD_SAVE_NAMES
+				propertyName.name;
+#else
+				propertyName.id.ToString();
+#endif
 
 			var propertyElement = new VisualElement {name = keyName};
 			propertyElement.style.flexDirection = FlexDirection.Row;
@@ -214,8 +245,7 @@ namespace Zor.SimpleBlackboard.EditorTools
 			{
 				if (blackboardRoot.userData is Blackboard blackboard)
 				{
-					SetValue(blackboard, new BlackboardPropertyName(keyName),
-						c.newValue is T newValue ? newValue : default);
+					SetValue(blackboard, propertyName, c.newValue);
 				}
 			});
 			baseField.name = BaseFieldElementName;
