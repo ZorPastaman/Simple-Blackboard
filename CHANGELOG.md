@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.5.1] - 2023-09-27
+
+## Fixed
+
+- Editor ui issues when SIMPLE_BLACKBOARD_SAVE_NAMES is not defined.
+
 ## [1.5.0] - 2023-05-04
 
 ### Added
@@ -80,7 +86,8 @@ when SIMPLE_BLACKBOARD_LOG_DETAILS define is enabled.
 - Unity editor support.
 - Tests.
 
-[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.5.0...HEAD
+[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.5.1...HEAD
+[1.5.1]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.5.1
 [1.5.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.5.0
 [1.4.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.4.0
 [1.3.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.3.0
