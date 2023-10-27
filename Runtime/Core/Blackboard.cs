@@ -21,12 +21,11 @@ namespace Zor.SimpleBlackboard.Core
 		/// <summary>
 		/// Value type to table of that type dictionary.
 		/// </summary>
-		[NotNull]
-		private readonly Dictionary<Type, IBlackboardTable> m_tables = new();
+		[NotNull] private readonly Dictionary<Type, IBlackboardTable> m_tables = new();
 		/// <summary>
-		/// Property name to value type of that property dictionary.
+		/// Property name to value index dictionary.
 		/// </summary>
-		[NotNull] private readonly Dictionary<BlackboardPropertyName, Type> m_propertyTypes = new();
+		[NotNull] private readonly Dictionary<BlackboardPropertyName, ValueIndex> m_properties = new();
 
 		/// <summary>
 		/// How many value types are contained in the <see cref="Blackboard"/>.
@@ -43,7 +42,7 @@ namespace Zor.SimpleBlackboard.Core
 		public int propertiesCount
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-			get => m_propertyTypes.Count;
+			get => m_properties.Count;
 		}
 
 		int ICollection<KeyValuePair<BlackboardPropertyName, object>>.Count => propertiesCount;
@@ -75,8 +74,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.TryGetStructValue<T>");
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				|| currentType != typeof(T))
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				|| valueIndex.table.valueType != typeof(T))
 			{
 				value = default;
 
@@ -85,8 +84,8 @@ namespace Zor.SimpleBlackboard.Core
 				return false;
 			}
 
-			var table = (BlackboardTable<T>)m_tables[currentType];
-			value = table.GetValue(propertyName);
+			var table = (BlackboardTable<T>)valueIndex.table;
+			value = table.GetValue(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -138,8 +137,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.TryGetObjectValue typed");
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				|| !valueType.IsAssignableFrom(currentType))
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				|| !valueType.IsAssignableFrom(valueIndex.table.valueType))
 			{
 				value = default;
 
@@ -148,8 +147,8 @@ namespace Zor.SimpleBlackboard.Core
 				return false;
 			}
 
-			IBlackboardTable table = m_tables[currentType];
-			value = table.GetObjectValue(propertyName);
+			IBlackboardTable table = valueIndex.table;
+			value = table.GetObjectValue(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -171,7 +170,7 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.TryGetObjectValue");
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType))
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 			{
 				value = default;
 
@@ -180,8 +179,8 @@ namespace Zor.SimpleBlackboard.Core
 				return false;
 			}
 
-			IBlackboardTable table = m_tables[currentType];
-			value = table.GetObjectValue(propertyName);
+			IBlackboardTable table = valueIndex.table;
+			value = table.GetObjectValue(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -204,30 +203,30 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.BeginSample("Blackboard.SetStructValue<T>");
 
 			Type newType = typeof(T);
-			BlackboardTable<T> table;
 
 			LogSetValue(propertyName, value,"struct");
 
-			if (m_propertyTypes.TryGetValue(propertyName, out Type currentType))
+			if (m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 			{
-				if (currentType == newType)
+				if (valueIndex.table.valueType == newType)
 				{
-					table = (BlackboardTable<T>)m_tables[newType];
+					var table = (BlackboardTable<T>)valueIndex.table;
+					table.SetValue(value, valueIndex.index);
 				}
 				else
 				{
-					m_tables[currentType].Remove(propertyName);
-					m_propertyTypes[propertyName] = newType;
-					table = GetOrCreateTable<T>();
+					valueIndex.table.Remove(valueIndex.index);
+					BlackboardTable<T> table = GetOrCreateTable<T>();
+					int index = table.AddValue(value);
+					m_properties[propertyName] = new ValueIndex(table, index);
 				}
 			}
 			else
 			{
-				m_propertyTypes[propertyName] = newType;
-				table = GetOrCreateTable<T>();
+				BlackboardTable<T> table = GetOrCreateTable<T>();
+				int index = table.AddValue(value);
+				m_properties[propertyName] = new ValueIndex(table, index);
 			}
-
-			table.SetValue(propertyName, value);
 
 			Profiler.EndSample();
 		}
@@ -252,30 +251,30 @@ namespace Zor.SimpleBlackboard.Core
 			Profiler.BeginSample("Blackboard.SetClassValue<T>");
 
 			Type valueType = value == null ? typeof(T) : value.GetType();
-			IBlackboardTable table;
 
 			LogSetValue(propertyName, value,"class");
 
-			if (m_propertyTypes.TryGetValue(propertyName, out Type currentType))
+			if (m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 			{
-				if (currentType == valueType)
+				if (valueIndex.table.valueType == valueType)
 				{
-					table = m_tables[valueType];
+					IBlackboardTable table = valueIndex.table;
+					table.SetObjectValue(value, valueIndex.index);
 				}
 				else
 				{
-					m_tables[currentType].Remove(propertyName);
-					m_propertyTypes[propertyName] = valueType;
-					table = GetOrCreateTable(valueType);
+					valueIndex.table.Remove(valueIndex.index);
+					IBlackboardTable table = GetOrCreateTable(valueType);
+					int index = table.AddObjectValue(value);
+					m_properties[propertyName] = new ValueIndex(table, index);
 				}
 			}
 			else
 			{
-				m_propertyTypes[propertyName] = valueType;
-				table = GetOrCreateTable(valueType);
+				IBlackboardTable table = GetOrCreateTable(valueType);
+				int index = table.AddObjectValue(value);
+				m_properties[propertyName] = new ValueIndex(table, index);
 			}
-
-			table.SetObjectValue(propertyName, value);
 
 			Profiler.EndSample();
 		}
@@ -305,30 +304,29 @@ namespace Zor.SimpleBlackboard.Core
 				valueType = value.GetType();
 			}
 
-			IBlackboardTable table;
-
 			LogSetValue(propertyName, value,"object");
 
-			if (m_propertyTypes.TryGetValue(propertyName, out Type currentType))
+			if (m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 			{
-				if (currentType == valueType)
+				if (valueIndex.table.valueType == valueType)
 				{
-					table = m_tables[valueType];
+					IBlackboardTable table = m_tables[valueType];
+					table.SetObjectValue(value, valueIndex.index);
 				}
 				else
 				{
-					m_tables[currentType].Remove(propertyName);
-					m_propertyTypes[propertyName] = valueType;
-					table = GetOrCreateTable(valueType);
+					valueIndex.table.Remove(valueIndex.index);
+					IBlackboardTable table = GetOrCreateTable(valueType);
+					int index = table.AddObjectValue(value);
+					m_properties[propertyName] = new ValueIndex(table, index);
 				}
 			}
 			else
 			{
-				m_propertyTypes[propertyName] = valueType;
-				table = GetOrCreateTable(valueType);
+				IBlackboardTable table = GetOrCreateTable(valueType);
+				int index = table.AddObjectValue(value);
+				m_properties[propertyName] = new ValueIndex(table, index);
 			}
-
-			table.SetObjectValue(propertyName, value);
 
 			Profiler.EndSample();
 		}
@@ -353,10 +351,18 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.GetStructProperties");
 
-			if (m_tables.TryGetValue(typeof(T), out IBlackboardTable table))
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
+				IBlackboardTable table = property.Value.table;
+
+				if (table.valueType != typeof(T))
+				{
+					continue;
+				}
+
 				var typedTable = (BlackboardTable<T>)table;
-				typedTable.GetProperties(properties);
+				properties.Add(new KeyValuePair<BlackboardPropertyName, T>(property.Key,
+					typedTable.GetValue(property.Value.index)));
 			}
 
 			Profiler.EndSample();
@@ -378,17 +384,18 @@ namespace Zor.SimpleBlackboard.Core
 
 			Type valueType = typeof(T);
 
-			Dictionary<Type, IBlackboardTable>.Enumerator enumerator = m_tables.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				KeyValuePair<Type, IBlackboardTable> current = enumerator.Current;
+				IBlackboardTable table = property.Value.table;
 
-				if (valueType.IsAssignableFrom(current.Key))
+				if (!valueType.IsAssignableFrom(table.valueType))
 				{
-					current.Value.GetPropertiesAs(properties);
+					continue;
 				}
+
+				properties.Add(new KeyValuePair<BlackboardPropertyName, T>(property.Key,
+					(T)table.GetObjectValue(property.Value.index)));
 			}
-			enumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -407,17 +414,18 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.GetObjectProperties typed");
 
-			Dictionary<Type, IBlackboardTable>.Enumerator enumerator = m_tables.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				KeyValuePair<Type, IBlackboardTable> current = enumerator.Current;
+				IBlackboardTable table = property.Value.table;
 
-				if (valueType.IsAssignableFrom(current.Key))
+				if (!valueType.IsAssignableFrom(table.valueType))
 				{
-					current.Value.GetProperties(properties);
+					continue;
 				}
+
+				properties.Add(new KeyValuePair<BlackboardPropertyName, object>(property.Key,
+					table.GetObjectValue(property.Value.index)));
 			}
-			enumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -433,12 +441,12 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.GetObjectProperties");
 
-			Dictionary<Type, IBlackboardTable>.ValueCollection.Enumerator enumerator = m_tables.Values.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				enumerator.Current.GetProperties(properties);
+				IBlackboardTable table = property.Value.table;
+				properties.Add(new KeyValuePair<BlackboardPropertyName, object>(property.Key,
+					table.GetObjectValue(property.Value.index)));
 			}
-			enumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -456,7 +464,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.GetValueType");
 
-			m_propertyTypes.TryGetValue(propertyName, out Type answer);
+			m_properties.TryGetValue(propertyName, out ValueIndex valueIndex);
+			Type answer = valueIndex.table?.valueType;
 
 			Profiler.EndSample();
 
@@ -489,7 +498,7 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.GetPropertyNames");
 
-			propertyNames.AddRange(m_propertyTypes.Keys);
+			propertyNames.AddRange(m_properties.Keys);
 
 			Profiler.EndSample();
 		}
@@ -511,7 +520,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.ContainsStructValue<T>");
 
-			bool answer = m_propertyTypes.TryGetValue(propertyName, out Type currentType) && currentType == typeof(T);
+			bool answer = m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				&& valueIndex.table.valueType == typeof(T);
 
 			Profiler.EndSample();
 
@@ -535,8 +545,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.ContainsObjectValue<T>");
 
-			bool answer = m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				&& typeof(T).IsAssignableFrom(currentType);
+			bool answer = m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				&& typeof(T).IsAssignableFrom(valueIndex.table.valueType);
 
 			Profiler.EndSample();
 
@@ -560,8 +570,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.ContainsObjectValue typed");
 
-			bool answer = m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				&& valueType.IsAssignableFrom(currentType);
+			bool answer = m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				&& valueType.IsAssignableFrom(valueIndex.table.valueType);
 
 			Profiler.EndSample();
 
@@ -583,7 +593,7 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.ContainsObjectValue");
 
-			bool answer = m_propertyTypes.ContainsKey(propertyName);
+			bool answer = m_properties.ContainsKey(propertyName);
 
 			Profiler.EndSample();
 
@@ -681,18 +691,15 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.ContainsInheritingType");
 
-			bool answer = false;
-
-			Dictionary<Type, IBlackboardTable>.KeyCollection.Enumerator enumerator = m_tables.Keys.GetEnumerator();
-			while (enumerator.MoveNext() & !answer)
+			foreach (Type type in m_tables.Keys)
 			{
-				answer = valueType.IsAssignableFrom(enumerator.Current);
+				if (valueType.IsAssignableFrom(type))
+				{
+					return true;
+				}
 			}
-			enumerator.Dispose();
 
-			Profiler.EndSample();
-
-			return answer;
+			return false;
 		}
 
 		bool ICollection<KeyValuePair<BlackboardPropertyName, object>>.Contains(KeyValuePair<BlackboardPropertyName, object> item)
@@ -816,18 +823,14 @@ namespace Zor.SimpleBlackboard.Core
 			bool found = false;
 			int count = 0;
 
-			Dictionary<Type, IBlackboardTable>.Enumerator enumerator = m_tables.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<Type, IBlackboardTable> typeTable in m_tables)
 			{
-				KeyValuePair<Type, IBlackboardTable> current = enumerator.Current;
-
-				if (valueType.IsAssignableFrom(current.Key))
+				if (valueType.IsAssignableFrom(typeTable.Key))
 				{
 					found = true;
-					count += current.Value.count;
+					count += typeTable.Value.count;
 				}
 			}
-			enumerator.Dispose();
 
 			int answer = found ? count : -1;
 
@@ -851,8 +854,8 @@ namespace Zor.SimpleBlackboard.Core
 
 			Type valueType = typeof(T);
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				|| currentType != valueType)
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				|| valueIndex.table.valueType != valueType)
 			{
 				Profiler.EndSample();
 
@@ -861,9 +864,9 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails($"[Blackboard] Remove struct of type '{valueType.FullName}' from property '{propertyName}'");
 
-			m_propertyTypes.Remove(propertyName);
-			var typedTable = (BlackboardTable<T>)m_tables[currentType];
-			typedTable.Remove(propertyName);
+			m_properties.Remove(propertyName);
+			var typedTable = (BlackboardTable<T>)valueIndex.table;
+			typedTable.Remove(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -885,8 +888,8 @@ namespace Zor.SimpleBlackboard.Core
 
 			Type valueType = typeof(T);
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				|| !valueType.IsAssignableFrom(currentType))
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				|| !valueType.IsAssignableFrom(valueIndex.table.valueType))
 			{
 				Profiler.EndSample();
 
@@ -895,8 +898,8 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails($"[Blackboard] Remove object of type '{valueType.FullName}' from property '{propertyName}'");
 
-			m_propertyTypes.Remove(propertyName);
-			m_tables[currentType].Remove(propertyName);
+			m_properties.Remove(propertyName);
+			valueIndex.table.Remove(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -916,8 +919,8 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.RemoveObject typed");
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType)
-				|| !valueType.IsAssignableFrom(currentType))
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex)
+				|| !valueType.IsAssignableFrom(valueIndex.table.valueType))
 			{
 				Profiler.EndSample();
 
@@ -926,8 +929,8 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails($"[Blackboard] Remove object of type '{valueType.FullName}' from property '{propertyName}'");
 
-			m_propertyTypes.Remove(propertyName);
-			m_tables[currentType].Remove(propertyName);
+			m_properties.Remove(propertyName);
+			valueIndex.table.Remove(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -946,7 +949,7 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.RemoveObject");
 
-			if (!m_propertyTypes.TryGetValue(propertyName, out Type currentType))
+			if (!m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 			{
 				Profiler.EndSample();
 
@@ -955,8 +958,8 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails($"[Blackboard] Remove object from property {propertyName}");
 
-			m_propertyTypes.Remove(propertyName);
-			m_tables[currentType].Remove(propertyName);
+			m_properties.Remove(propertyName);
+			valueIndex.table.Remove(valueIndex.index);
 
 			Profiler.EndSample();
 
@@ -986,14 +989,12 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails("[Blackboard] Clear");
 
-			m_propertyTypes.Clear();
+			m_properties.Clear();
 
-			Dictionary<Type, IBlackboardTable>.ValueCollection.Enumerator enumerator = m_tables.Values.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (IBlackboardTable table in m_tables.Values)
 			{
-				enumerator.Current.Clear();
+				table.Clear();
 			}
-			enumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -1011,29 +1012,12 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails($"[Blackboard] CopyTo(Blackboard)");
 
-			Dictionary<Type, IBlackboardTable>.Enumerator tableEnumerator = m_tables.GetEnumerator();
-			while (tableEnumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				KeyValuePair<Type, IBlackboardTable> current = tableEnumerator.Current;
-				IBlackboardTable tableToCopy = current.Value;
-
-				if (tableToCopy.count == 0)
-				{
-					continue;
-				}
-
-				IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(current.Key);
-				tableToCopy.CopyTo(tableToCopyTo);
+				IBlackboardTable table = property.Value.table;
+				object value = table.GetObjectValue(property.Value.index);
+				blackboard.SetObjectValue(table.valueType, property.Key, value);
 			}
-			tableEnumerator.Dispose();
-
-			Dictionary<BlackboardPropertyName, Type>.Enumerator propertyEnumerator = m_propertyTypes.GetEnumerator();
-			while (propertyEnumerator.MoveNext())
-			{
-				KeyValuePair<BlackboardPropertyName, Type> current = propertyEnumerator.Current;
-				blackboard.m_propertyTypes[current.Key] = current.Value;
-			}
-			propertyEnumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -1052,12 +1036,11 @@ namespace Zor.SimpleBlackboard.Core
 
 			BlackboardDebug.LogDetails($"[Blackboard] CopyTo(Blackboard, BlackboardPropertyName)");
 
-			if (m_propertyTypes.TryGetValue(propertyName, out Type propertyType))
+			if (m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 			{
-				IBlackboardTable tableToCopy = m_tables[propertyType];
-				IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(propertyType);
-				tableToCopy.CopyTo(tableToCopyTo);
-				blackboard.m_propertyTypes[propertyName] = propertyType;
+				IBlackboardTable table = valueIndex.table;
+				object value = table.GetObjectValue(valueIndex.index);
+				blackboard.SetObjectValue(table.valueType, propertyName, value);
 			}
 
 			Profiler.EndSample();
@@ -1081,12 +1064,11 @@ namespace Zor.SimpleBlackboard.Core
 			{
 				BlackboardPropertyName propertyName = propertyNames[i];
 
-				if (m_propertyTypes.TryGetValue(propertyName, out Type propertyType))
+				if (m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 				{
-					IBlackboardTable tableToCopy = m_tables[propertyType];
-					IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(propertyType);
-					tableToCopy.CopyTo(tableToCopyTo);
-					blackboard.m_propertyTypes[propertyName] = propertyType;
+					IBlackboardTable table = valueIndex.table;
+					object value = table.GetObjectValue(valueIndex.index);
+					blackboard.SetObjectValue(table.valueType, propertyName, value);
 				}
 			}
 
@@ -1112,12 +1094,11 @@ namespace Zor.SimpleBlackboard.Core
 			{
 				BlackboardPropertyName propertyName = propertyNames[i];
 
-				if (m_propertyTypes.TryGetValue(propertyName, out Type propertyType))
+				if (m_properties.TryGetValue(propertyName, out ValueIndex valueIndex))
 				{
-					IBlackboardTable tableToCopy = m_tables[propertyType];
-					IBlackboardTable tableToCopyTo = blackboard.GetOrCreateTable(propertyType);
-					tableToCopy.CopyTo(tableToCopyTo);
-					blackboard.m_propertyTypes[propertyName] = propertyType;
+					IBlackboardTable table = valueIndex.table;
+					object value = table.GetObjectValue(valueIndex.index);
+					blackboard.SetObjectValue(table.valueType, propertyName, value);
 				}
 			}
 
@@ -1135,16 +1116,12 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(KeyValuePair[], int)");
 
-			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				KeyValuePair<BlackboardPropertyName, Type> current = enumerator.Current;
-				BlackboardPropertyName propertyName = current.Key;
-				array[index++] = new KeyValuePair<BlackboardPropertyName, object>(
-					propertyName,
-					m_tables[current.Value].GetObjectValue(propertyName));
+				IBlackboardTable table = property.Value.table;
+				object value = table.GetObjectValue(property.Value.index);
+				array[index++] = new KeyValuePair<BlackboardPropertyName, object>(property.Key, value);
 			}
-			enumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -1160,16 +1137,12 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			Profiler.BeginSample("Blackboard.CopyTo(object[], int)");
 
-			Dictionary<BlackboardPropertyName, Type>.Enumerator enumerator = m_propertyTypes.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				KeyValuePair<BlackboardPropertyName, Type> current = enumerator.Current;
-				BlackboardPropertyName propertyName = current.Key;
-				array[index++] = new KeyValuePair<BlackboardPropertyName, object>(
-					propertyName,
-					m_tables[current.Value].GetObjectValue(propertyName));
+				IBlackboardTable table = property.Value.table;
+				object value = table.GetObjectValue(property.Value.index);
+				array[index++] = new KeyValuePair<BlackboardPropertyName, object>(property.Key, value);
 			}
-			enumerator.Dispose();
 
 			Profiler.EndSample();
 		}
@@ -1236,13 +1209,10 @@ namespace Zor.SimpleBlackboard.Core
 		{
 			var builder = new StringBuilder();
 
-			Dictionary<Type, IBlackboardTable>.Enumerator enumerator = m_tables.GetEnumerator();
-			while (enumerator.MoveNext())
+			foreach (KeyValuePair<BlackboardPropertyName, ValueIndex> property in m_properties)
 			{
-				KeyValuePair<Type, IBlackboardTable> current = enumerator.Current;
-				builder.Append($"{{{current.Key.FullName}, {current.Value}}},\n");
+				builder.Append($"{{{property.Key}, {property.Value.table.GetObjectValue(property.Value.index)}}},\n");
 			}
-			enumerator.Dispose();
 
 			int builderLength = builder.Length;
 			int length = builderLength >= 2 ? builderLength - 2 : 0;
@@ -1356,7 +1326,7 @@ namespace Zor.SimpleBlackboard.Core
 			{
 				valueText = "unknown";
 			}
-			
+
 			BlackboardDebug.LogDetails($"[Blackboard] Set {valuePrefix} value '{valueText}' of type '{typeof(T).FullName}' into property '{propertyName}'");
 		}
 
@@ -1366,13 +1336,13 @@ namespace Zor.SimpleBlackboard.Core
 		public struct Enumerator : IEnumerator<KeyValuePair<BlackboardPropertyName, object>>
 		{
 			[NotNull] private readonly Blackboard m_blackboard;
-			private Dictionary<BlackboardPropertyName, Type>.Enumerator m_enumerator;
+			private Dictionary<BlackboardPropertyName, ValueIndex>.Enumerator m_enumerator;
 			private KeyValuePair<BlackboardPropertyName, object> m_current;
 
 			internal Enumerator([NotNull] Blackboard blackboard)
 			{
 				m_blackboard = blackboard;
-				m_enumerator = m_blackboard.m_propertyTypes.GetEnumerator();
+				m_enumerator = m_blackboard.m_properties.GetEnumerator();
 				m_current = new KeyValuePair<BlackboardPropertyName, object>();
 			}
 
@@ -1399,11 +1369,11 @@ namespace Zor.SimpleBlackboard.Core
 					return false;
 				}
 
-				KeyValuePair<BlackboardPropertyName, Type> current = m_enumerator.Current;
+				KeyValuePair<BlackboardPropertyName, ValueIndex> current = m_enumerator.Current;
 				BlackboardPropertyName propertyName = current.Key;
 				m_current = new KeyValuePair<BlackboardPropertyName, object>(
 					propertyName,
-					m_blackboard.m_tables[current.Value].GetObjectValue(propertyName));
+					current.Value.table.GetObjectValue(current.Value.index));
 
 				Profiler.EndSample();
 
@@ -1414,7 +1384,7 @@ namespace Zor.SimpleBlackboard.Core
 			void IEnumerator.Reset()
 			{
 				m_enumerator.Dispose();
-				m_enumerator = m_blackboard.m_propertyTypes.GetEnumerator();
+				m_enumerator = m_blackboard.m_properties.GetEnumerator();
 				m_current = new KeyValuePair<BlackboardPropertyName, object>();
 			}
 
@@ -1423,6 +1393,21 @@ namespace Zor.SimpleBlackboard.Core
 			public void Dispose()
 			{
 				m_enumerator.Dispose();
+			}
+		}
+
+		/// <summary>
+		/// Struct that holds a ref to a <see cref="IBlackboardTable"/> and index of a value in it.
+		/// </summary>
+		private readonly struct ValueIndex
+		{
+			public readonly IBlackboardTable table;
+			public readonly int index;
+
+			public ValueIndex(IBlackboardTable table, int index)
+			{
+				this.table = table;
+				this.index = index;
 			}
 		}
 	}

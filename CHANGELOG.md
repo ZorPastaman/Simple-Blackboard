@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.6.0] - 2023-10-27
+
+### Changed
+
+- Increased performance of get and set methods of Blackboard. In some cases, up to 50% percent better.
+
 ## [1.5.1] - 2023-09-27
 
 ### Fixed
@@ -86,7 +92,8 @@ when SIMPLE_BLACKBOARD_LOG_DETAILS define is enabled.
 - Unity editor support.
 - Tests.
 
-[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.5.1...HEAD
+[unreleased]: https://github.com/ZorPastaman/Simple-Blackboard/compare/v1.6.0...HEAD
+[1.6.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.6.0
 [1.5.1]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.5.1
 [1.5.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.5.0
 [1.4.0]: https://github.com/ZorPastaman/Simple-Blackboard/releases/tag/v1.4.0

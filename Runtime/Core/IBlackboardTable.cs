@@ -1,7 +1,6 @@
 // Copyright (c) 2020-2023 Vladimir Popov zor1994@gmail.com https://github.com/ZorPastaman/Simple-Blackboard
 
 using System;
-using System.Collections.Generic;
 using JetBrains.Annotations;
 
 namespace Zor.SimpleBlackboard.Core
@@ -24,51 +23,36 @@ namespace Zor.SimpleBlackboard.Core
 		int count { [Pure] get; }
 
 		/// <summary>
-		/// Gets a value of the <paramref name="propertyName"/>
+		/// Gets a value by the <paramref name="index"/>
 		/// </summary>
-		/// <param name="propertyName">Name of the property to get.</param>
+		/// <param name="index">Index of the property to get.</param>
 		/// <returns>Gotten value.</returns>
 		[CanBeNull, Pure]
-		object GetObjectValue(BlackboardPropertyName propertyName);
+		object GetObjectValue(int index);
 
 		/// <summary>
-		/// Sets the <paramref name="value"/> of the <paramref name="propertyName"/>.
+		/// Sets the <paramref name="value"/> by the <paramref name="index"/>.
 		/// </summary>
-		/// <param name="propertyName">Name of the property to set.</param>
 		/// <param name="value">Value to set.</param>
-		void SetObjectValue(BlackboardPropertyName propertyName, [CanBeNull] object value);
+		/// <param name="index">Index of the property to set.</param>
+		void SetObjectValue([CanBeNull] object value, int index);
 
 		/// <summary>
-		/// Gets all properties and adds them to <paramref name="properties"/>.
+		/// Adds the <paramref name="value"/> to the table.
 		/// </summary>
-		/// <param name="properties">Properties are added to this.</param>
-		void GetProperties([NotNull] List<KeyValuePair<BlackboardPropertyName, object>> properties);
+		/// <param name="value">Value to add.</param>
+		/// <returns>Value index.</returns>
+		int AddObjectValue([CanBeNull] object value);
 
 		/// <summary>
-		/// Gets all properties, casts their values to <typeparamref name="TAs"/> and
-		/// adds them to <paramref name="properties"/>.
+		/// Removes a property by the <paramref name="index"/>.
 		/// </summary>
-		/// <param name="properties">Properties are added to this.</param>
-		/// <typeparam name="TAs">Cast value type.</typeparam>
-		void GetPropertiesAs<TAs>([NotNull] List<KeyValuePair<BlackboardPropertyName, TAs>> properties)
-			where TAs : class;
-
-		/// <summary>
-		/// Removes a property of the <paramref name="propertyName"/>.
-		/// </summary>
-		/// <param name="propertyName">Name of the property to remove.</param>
-		/// <returns>True if the property is removed; false if it doesn't exist.</returns>
-		bool Remove(BlackboardPropertyName propertyName);
+		/// <param name="index">Index of the property to remove.</param>
+		void Remove(int index);
 
 		/// <summary>
 		/// Clears of all properties.
 		/// </summary>
 		void Clear();
-
-		/// <summary>
-		/// Copies its properties to <paramref name="table"/>.
-		/// </summary>
-		/// <param name="table">Destination. Must be the same type.</param>
-		void CopyTo([NotNull] IBlackboardTable table);
 	}
 }

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 using JetBrains.Annotations;
 
 namespace Zor.SimpleBlackboard.Core
@@ -13,8 +12,11 @@ namespace Zor.SimpleBlackboard.Core
 	/// contains values of the type <typeparamref name="T"/>.
 	/// </summary>
 	/// <typeparam name="T">Value type.</typeparam>
-	internal sealed class BlackboardTable<T> : Dictionary<BlackboardPropertyName, T>, IBlackboardTable
+	internal sealed class BlackboardTable<T> : IBlackboardTable
 	{
+		private readonly List<T> m_values = new();
+		private readonly Stack<int> m_freeIndices = new();
+
 		/// <summary>
 		/// Type of values that are contained in the <see cref="BlackboardTable{T}"/>.
 		/// </summary>
@@ -30,114 +32,87 @@ namespace Zor.SimpleBlackboard.Core
 		public int count
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining), Pure]
-			get => Count;
+			get => m_values.Count - m_freeIndices.Count;
 		}
 
 		/// <summary>
-		/// Gets a value of the <paramref name="propertyName"/>.
+		/// Gets a value by the <paramref name="index"/>.
 		/// </summary>
-		/// <param name="propertyName">Name of the property to get.</param>
+		/// <param name="index">Index of the property to get.</param>
 		/// <returns>Gotten value.</returns>
 		[MethodImpl(MethodImplOptions.AggressiveInlining), CanBeNull, Pure]
-		public T GetValue(BlackboardPropertyName propertyName)
+		public T GetValue(int index)
 		{
-			return this[propertyName];
+			return m_values[index];
 		}
 
 		/// <inheritdoc/>
 		[Pure]
-		public object GetObjectValue(BlackboardPropertyName propertyName)
+		public object GetObjectValue(int index)
 		{
-			return this[propertyName];
+			return GetValue(index);
 		}
 
 		/// <summary>
-		/// Sets the <paramref name="value"/> of the <paramref name="propertyName"/>
+		/// Sets the <paramref name="value"/> by the <paramref name="index"/>
 		/// </summary>
-		/// <param name="propertyName">Name of the property to set.</param>
+		/// <param name="index">Name of the property to set.</param>
 		/// <param name="value">Set value.</param>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetValue(BlackboardPropertyName propertyName, [CanBeNull] T value)
+		public void SetValue([CanBeNull] T value, int index)
 		{
-			this[propertyName] = value;
+			m_values[index] = value;
 		}
 
 		/// <inheritdoc/>
-		public void SetObjectValue(BlackboardPropertyName propertyName, object value)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void SetObjectValue(object value, int index)
 		{
-			this[propertyName] = value is T typedValue
-				? typedValue
-				: default;
+			SetValue((T)value, index);
 		}
 
 		/// <summary>
-		/// Gets all properties and adds them to <paramref name="properties"/>.
+		/// Adds the <paramref name="value"/> to the table.
 		/// </summary>
-		/// <param name="properties">Properties are added to this.</param>
-		/// <seealso cref="GetProperties(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{Zor.SimpleBlackboard.Core.BlackboardPropertyName,object}})"/>
+		/// <param name="value">Value to add.</param>
+		/// <returns>Value index.</returns>
+		public int AddValue([CanBeNull] T value)
+		{
+			if (m_freeIndices.TryPop(out int index))
+			{
+				SetValue(value, index);
+				return index;
+			}
+
+			m_values.Add(value);
+			return m_values.Count - 1;
+		}
+
+		/// <inheritdoc/>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void GetProperties([NotNull] List<KeyValuePair<BlackboardPropertyName, T>> properties)
+		public int AddObjectValue(object value)
 		{
-			properties.AddRange(this);
+			return AddValue((T)value);
 		}
 
 		/// <inheritdoc/>
-		/// <seealso cref="GetProperties(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{Zor.SimpleBlackboard.Core.BlackboardPropertyName,T}})"/>
-		public void GetProperties(List<KeyValuePair<BlackboardPropertyName, object>> properties)
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public void Remove(int index)
 		{
-			Enumerator enumerator = GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
-				properties.Add(new KeyValuePair<BlackboardPropertyName, object>(current.Key, current.Value));
-			}
-			enumerator.Dispose();
+			m_values[index] = default;
+			m_freeIndices.Push(index);
 		}
 
 		/// <inheritdoc/>
-		public void GetPropertiesAs<TAs>(List<KeyValuePair<BlackboardPropertyName, TAs>> properties)
-			where TAs : class
+		public void Clear()
 		{
-			Enumerator enumerator = GetEnumerator();
-			while (enumerator.MoveNext())
+			for (int i = 0, valueCount = m_values.Count; i < valueCount; ++i)
 			{
-				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
-				properties.Add(new KeyValuePair<BlackboardPropertyName, TAs>(current.Key, current.Value as TAs));
+				if (!m_freeIndices.Contains(i))
+				{
+					Remove(i);
+				}
 			}
-			enumerator.Dispose();
-		}
-
-		/// <inheritdoc/>
-		public void CopyTo(IBlackboardTable table)
-		{
-			var typedTable = (BlackboardTable<T>)table;
-
-			Enumerator enumerator = GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
-				typedTable.SetValue(current.Key, current.Value);
-			}
-			enumerator.Dispose();
-		}
-
-		[Pure]
-		public override string ToString()
-		{
-			var builder = new StringBuilder();
-
-			Enumerator enumerator = GetEnumerator();
-			while (enumerator.MoveNext())
-			{
-				KeyValuePair<BlackboardPropertyName, T> current = enumerator.Current;
-				builder.Append($"[{current.Key.ToString()}, {current.Value.ToString()}], ");
-			}
-			enumerator.Dispose();
-
-			int builderLength = builder.Length;
-			int length = builderLength >= 2 ? builderLength - 2 : 0;
-
-			return builder.ToString(0, length);
 		}
 	}
 }
